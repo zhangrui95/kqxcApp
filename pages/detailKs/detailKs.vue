@@ -13,8 +13,8 @@
 			<detailList></detailList>
 		</view>
 		<view class="buttonBox">
-			 <button type="primary" style="background: #00b7f0;">委托同事</button>
-			 <button type="primary" style="background: #f19049;">马上巡查</button>
+			 <button type="primary" style="background: #00b7f0;" @click="entrustColleague()">委托同事</button>
+			 <button type="primary" style="background: #f19049;" @click="goXc(name)">马上巡查</button>
 		</view>
 	</view>
 </template>
@@ -33,7 +33,7 @@
 		components: {
 			detailList,
 		},
-	  onLoad: function (option) { //option为object类型，会序列化上个页面传递的参数
+	    onLoad: function (option) { //option为object类型，会序列化上个页面传递的参数
 			console.log(option.name); //打印出上个页面传递的参数。
 			this.name=option.name;
 		}, 
@@ -41,6 +41,17 @@
 			timeSearch:function(){
 				uni.navigateTo({
 				    url: '../detailKsTimeSearch/detailKsTimeSearch'
+				});
+			},
+			goXc:function(e){
+				console.log('e', e);
+				uni.navigateTo({
+				    url: '../inspection/inspection?name='+e
+				});
+			},
+			entrustColleague:function(){
+				uni.navigateTo({
+				    url: '../entrustColleague/entrustColleague'
 				});
 			}
 		}
@@ -124,5 +135,6 @@
 		float: left;
 		margin: 0 2%;
 		border-radius: 50px;
+		box-shadow:0px 5px 15px 0px rgba(0, 0, 0, 0.2);
 	}
 </style>

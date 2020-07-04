@@ -112,12 +112,19 @@
 			}
 		},
 		methods: {
-	
+			goDetail:function(e){
+				uni.navigateTo({
+				    url: '../../pages/inspectionDetail/inspectionDetail'
+				});
+			}
 		}
 	}
 </script>
 
 <style>
+	.uni-list-item__container{
+		border: 0!important;
+	}
 	.timeBtn{
 		color: #2f67d5;
 		position: absolute;

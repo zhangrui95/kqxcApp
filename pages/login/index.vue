@@ -9,10 +9,10 @@
 		<view class="titleTop">矿区巡检</view>
 		<view class="form">
 			<view class="loginBox">
-				<form @submit="formSubmit" @reset="formReset">
+				<form @submit="formSubmit">
 					<view class="uni-form-item uni-column">
 						<view class="title">用户名</view>
-						<input class="uni-input" name="input" placeholder="请输入用户名" />
+						<input class="uni-input" name="username" placeholder="请输入用户名" />
 					</view>
 					<view class="uni-form-item uni-column">
 						<view class="title">密码</view>
@@ -23,9 +23,9 @@
 					</view>
 				</form>
 			</view>
-			<view class="forgotBtn">
+			<!-- <view class="forgotBtn">
 				<text>忘记密码</text>
-			</view>
+			</view> -->
 		</view>
 	</view>
 </template>
@@ -37,15 +37,84 @@
 				title: 'Hello'
 			}
 		},
-		onLoad() {
-
+		onShow() {
+			uni.request({
+			    url: getApp().globalData.ip + '/getConfig', //仅为示例，并非真实接口地址。
+			    data: {},
+				method:'POST',
+			    success: (res) => {
+					console.log('res.data',res.data);
+					if(res.data.data && !res.data.error){
+						// uni.setStorage({
+						//     key: 'config',
+						//     data: JSON.stringify(res.data.data),
+						//     success: function () {
+						//         console.log('success');
+						//     }
+						// });
+						// 请求本地文件系统对象
+						plus.io.requestFileSystem(
+						    plus.io.PUBLIC_DOCUMENTS,  // 文件系统中的根目录
+						    fs => {
+						        // 创建或打开文件, fs.root是根目录操作对象,直接fs表示当前操作对象
+						        fs.root.getFile('data.json', {
+						            create: true  // 文件不存在则创建
+						        }, fileEntry => {
+						           // 文件在手机中的路径
+						           console.log(fileEntry.fullPath)
+						           fileEntry.createWriter(writer => {
+									   console.log('writer=======>',JSON.stringify(writer))
+						               // 写入文件成功完成的回调函数
+						               writer.onwrite = e => {
+						                    console.log("写入数据成功");  
+						               };
+						               // 写入数据
+						               writer.write(JSON.stringify({data:['1','2']}));
+						           })
+						        }, e => {
+						             console.log("getFile failed: " + e.message);
+						        });
+						     },
+						     e => {
+						         console.log(e.message);
+						     }
+						);
+					}
+			    }
+			});
 		},
 		methods: {
 			formSubmit: function(e) {
 				console.log('e.detail.value',e.detail.value);
-				uni.switchTab({
-					url: '../index/index'
-				});
+				let value = e.detail.value;
+				if(value.username && value.password){
+					uni.request({
+					    url: getApp().globalData.ip + '/userLogin', //仅为示例，并非真实接口地址。
+					    data: {"user":value.username,"password":value.password},
+						method:'POST',
+					    success: (res) => {
+							console.log('res.data',res.data);
+							if(res.data.data && !res.data.error){
+								getApp().globalData.is_admin = res.data.data.is_admin;
+								uni.redirectTo({
+								    url: '../index/index'
+								});
+							}else{
+								uni.showToast({
+									title:'用户名或密码错误',
+									icon:'none',
+								});
+							}
+							
+					    }
+					});
+				}else{
+					uni.showToast({
+						title:'用户名及密码不能为空',
+						icon:'none',
+					});
+				}
+				
 			}
 		}
 	}
@@ -97,7 +166,7 @@
 	
 	.loginBtn{
 		width: 100%;
-		height: 80upx;
+		height: 40px;
 		background: linear-gradient(45deg, #0055ff, #00eaff);
 		border-radius: 50upx;
 		margin-top: 50px;
@@ -128,7 +197,7 @@
 	.uni-btn-v{
 		position: absolute;
 		bottom: -20px;
-		width: 180px;
-		margin-left: calc(45% - 90px);
+		width: 60%;
+		margin-left: 15%;
 	}
 </style>

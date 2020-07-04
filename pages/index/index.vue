@@ -1,10 +1,7 @@
 <template>
 	<view class="box">
-		<view class="header">
-			<text class="titleName">矿山<text class="time">{{time}}</text></text>
-		</view>
 		<view class="warnTop">
-			提示：有1个矿区巡检逾期，2个矿区需要2日内巡检。
+			提示：有1个矿区巡检逾期，2个矿区需要2日内巡检。 
 		</view>
 		<view class="listBox">
 			<uni-list>
@@ -52,6 +49,7 @@
 				</uni-list-item>
 			</uni-list>
 		</view>
+		<tabBar :pagePath="'/pages/index/index'"></tabBar>
 	</view>
 </template>
 
@@ -64,8 +62,24 @@
 	export default {
 		data() {
 			return {
-				time: moment().format('YYYY.MM.DD')
+				time: moment().format('YYYY.MM.DD'),
 			}
+		},
+		onLoad(){
+			console.log('执行')
+			uni.setTabBarItem({
+								index: 1,
+								pagePath: "pages/work/work",
+								iconPath: "static/icon2.png",
+								selectedIconPath: "static/icon_2.png",
+								 text: "工作督查"
+							});
+		},
+		onReady() {
+			uni.setNavigationBarTitle({
+			    title: '矿山 ' + moment().format('YYYY.MM.DD')
+			});
+			
 		},
 		methods: {
 			goDetail: function(e) {
@@ -73,7 +87,7 @@
 				uni.navigateTo({
 				    url: '../detailKs/detailKs?name='+e
 				});
-			}
+			},
 		}
 	}
 </script>
@@ -148,7 +162,7 @@
 		width: 100%;
 	}
 	.listBox{
-		margin-top: 74px;
+		margin-top: 30px;
 		width: 100%;
 	}
 	.warnTop{
@@ -160,8 +174,9 @@
 		color: #f45619;
 		width: 100%;
 		position: fixed;
-		top: 44px;
+		top: 0px;
 		left: 0;
+		z-index: 99;
 	}
 	.header{
 		    position: fixed;

@@ -1,5 +1,9 @@
 <script>
 export default {
+	globalData: {  
+	   ip: 'http://192.168.104.100:8082',
+	   is_admin:'0',
+	},  
 	onLaunch: function() {
 		console.log('App Launch');
 	},

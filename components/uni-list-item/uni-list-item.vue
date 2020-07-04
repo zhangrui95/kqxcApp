@@ -183,9 +183,9 @@
 		justify-content: space-between;
 		align-items: center;
 		/* #ifdef APP-PLUS */
-		border-top-color: #e5e5e5;
-		border-top-style: solid;
-		border-top-width: 0.5px;
+		/* border-top-color: #e5e5e5; */
+		/* border-top-style: solid; */
+		/* border-top-width: 0.5px; */
 		/* #endif */
 	}
 
