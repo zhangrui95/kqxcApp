@@ -2,8 +2,8 @@
 	<view>
 		<view class="boxList">
 			<uni-list>
-					<uni-list-item :show-arrow="false" @click="goDetail('巫山矿山')">
-						<view class="listTitle"><text>黑山矿山</text></view>
+					<uni-list-item :show-arrow="false" @click="goDetail(item)" v-for="(item,index) in list">
+						<view class="listTitle"><text>{{item.ks_id}}</text></view>
 						<view class="msgBox">
 							<text class="bzBox">矿山地址：黑龙江省鸡西市黑山</text>
 						</view>
@@ -18,7 +18,7 @@
 						           <image style="width: 30px;height: 30px;" src="/static/phone.png" mode="widthFix" @click="makePhone"></image>
 						       </template>
 					</uni-list-item>
-					<uni-list-item :show-arrow="false" @click="goDetail('巫山矿山')">
+				<!-- 	<uni-list-item :show-arrow="false" @click="goDetail('巫山矿山')">
 						<view class="listTitle"><text>黑山矿山</text></view>
 						<view class="msgBox">
 							<text class="bzBox">矿山地址：黑龙江省鸡西市黑山</text>
@@ -113,7 +113,7 @@
 						<template v-slot:right="">
 						           <image style="width: 30px;height: 30px;" src="/static/phone.png" mode="widthFix" @click="makePhone"></image>
 						       </template>
-					</uni-list-item> 
+					</uni-list-item>  -->
 				</uni-list>
 		</view>
 		<view class="buttonBox">
@@ -128,19 +128,23 @@
 	import moment from 'moment';
 	import uniIcons from "@/components/uni-icons/uni-icons.vue"
 	import detailList from "@/components/detail-list/detail-list.vue"
+	import {getWtData} from '../common/env.js'
 	export default {
 		data() {
 			return {
-				name:'',
-				time: moment().format('YYYY.MM.DD')
+				time: moment().format('YYYY.MM.DD'),
+				list:[],
 			}
 		},
 		components: {
 			detailList,
 		},
-	  onLoad: function (option) { //option为object类型，会序列化上个页面传递的参数
-			console.log(option.name); //打印出上个页面传递的参数。
-			this.name=option.name;
+	  onLoad: function () { //option为object类型，会序列化上个页面传递的参数
+	        console.log('--------------执行------------')
+			getWtData('select * from wtData',(data)=>{
+				console.log('委托',data);
+				 this.list = data;
+			});
 		}, 
 		methods: {
 			timeSearch:function(){

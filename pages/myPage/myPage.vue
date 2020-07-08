@@ -2,7 +2,7 @@
 	<view>
 		<view class="headerTop">
 			<image src="../../static/myHeader.png" style="width: 120px;height: 120px;"></image>
-			<view class="name">卢展</view>
+			<view class="name">{{name}}</view>
 		</view>
 		<uni-list style="margin-top:10px;">
 		    <uni-list-item thumb="../../static/bbjc.png" title="检查版本"></uni-list-item>
@@ -34,8 +34,19 @@
 	export default {
 		data() {
 			return {
-				
+				name:''
 			}
+		},
+		onLoad() {
+			let that = this;
+			uni.getStorage({
+			    key: 'user',
+			    success: function (res) {
+					if(res.data){
+						that.name = JSON.parse(res.data).xm;
+					}
+			    }
+			});
 		},
 		components: {
 			uniPopup,

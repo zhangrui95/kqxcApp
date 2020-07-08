@@ -31,83 +31,141 @@
 </template>
 
 <script>
+	import {openComDB,dropSQL,setConfig,getConfig} from '../common/env.js'
 	export default {
 		data() {
 			return {
-				title: 'Hello'
+				network:false,
 			}
 		},
-		onShow() {
-			uni.request({
-			    url: getApp().globalData.ip + '/getConfig', //仅为示例，并非真实接口地址。
-			    data: {},
-				method:'POST',
-			    success: (res) => {
-					console.log('res.data',res.data);
-					if(res.data.data && !res.data.error){
-						// uni.setStorage({
-						//     key: 'config',
-						//     data: JSON.stringify(res.data.data),
-						//     success: function () {
-						//         console.log('success');
-						//     }
-						// });
-						// 请求本地文件系统对象
-						plus.io.requestFileSystem(
-						    plus.io.PUBLIC_DOCUMENTS,  // 文件系统中的根目录
-						    fs => {
-						        // 创建或打开文件, fs.root是根目录操作对象,直接fs表示当前操作对象
-						        fs.root.getFile('data.json', {
-						            create: true  // 文件不存在则创建
-						        }, fileEntry => {
-						           // 文件在手机中的路径
-						           console.log(fileEntry.fullPath)
-						           fileEntry.createWriter(writer => {
-									   console.log('writer=======>',JSON.stringify(writer))
-						               // 写入文件成功完成的回调函数
-						               writer.onwrite = e => {
-						                    console.log("写入数据成功");  
-						               };
-						               // 写入数据
-						               writer.write(JSON.stringify({data:['1','2']}));
-						           })
-						        }, e => {
-						             console.log("getFile failed: " + e.message);
-						        });
-						     },
-						     e => {
-						         console.log(e.message);
-						     }
-						);
+		onShow(){
+			console.log('========================================================')
+			let that = this;
+			uni.getNetworkType({
+			    success: function (res) {
+			        console.log('网络状态',res.networkType);
+					that.isOpenDB(res.networkType);  
+					if(res.networkType !== 'none'){
+						that.network = true
+						uni.request({
+						    url: getApp().globalData.ip + '/getConfig', 
+						    data: {},
+							method:'POST',
+						    success: (res) => {
+								console.log('getConfig===========>',res.data);
+								if(res.data.data && !res.data.error){
+									setConfig(res.data.data);
+									getApp().globalData.weedIp = res.data.data.zp_base;
+									getApp().globalData.httpImg = res.data.data.zp_pub;
+								}
+						    } 
+						});
+					}else{
+						that.network = false
 					}
 			    }
 			});
+			uni.onNetworkStatusChange(function (res) {
+				that.network = res.isConnected;
+			});
 		},
 		methods: {
+			 isOpenDB(network) {  
+					console.log('是否打开数据库');  
+					var isOpen = plus.sqlite.isOpenDatabase({  
+						name: 'kqxj', //数据库的名字  
+						path: '_doc/kqxjList.db' //地址  
+					});  
+					console.log(!isOpen);  
+	
+					if (!isOpen) {  
+						console.log('Unoepned:' + isOpen);  
+						// plus.nativeUI.alert('Unopened!');  
+						this.openDB(); //打開DB  
+					} else {  
+						// plus.nativeUI.alert('Opened!');  
+						this.isNet(network);  
+						// this.getLocalType();  
+					}  
+			},  
+			openDB() {  
+				//SQLite      
+				openComDB('kqxj', '_doc/kqxjList.db', res => {   
+					console.log('打开数据库');  
+					this.isNet();  
+				});  
+			},  
+			isNet(network){  
+				if (network == 'wifi' || network == '4g') {  
+					console.log('-------------网络正常------------')
+				} else {  
+					  console.log('-------------无网------------')
+				}
+			},  		
 			formSubmit: function(e) {
 				console.log('e.detail.value',e.detail.value);
 				let value = e.detail.value;
 				if(value.username && value.password){
-					uni.request({
-					    url: getApp().globalData.ip + '/userLogin', //仅为示例，并非真实接口地址。
-					    data: {"user":value.username,"password":value.password},
-						method:'POST',
-					    success: (res) => {
-							console.log('res.data',res.data);
-							if(res.data.data && !res.data.error){
-								getApp().globalData.is_admin = res.data.data.is_admin;
-								uni.redirectTo({
-								    url: '../index/index'
-								});
-							}else{
-								uni.showToast({
-									title:'用户名或密码错误',
-									icon:'none',
-								});
-							}
-							
-					    }
-					});
+					if(this.network){
+						uni.request({
+						    url: getApp().globalData.ip + '/userLogin', 
+						    data: {"user":value.username,"password":value.password},
+							method:'POST',
+						    success: (res) => {
+								console.log('res.data',res.data);
+								if(res.data.data && !res.data.error){
+									getApp().globalData.is_admin = res.data.data.is_admin;
+									getApp().globalData.uid = res.data.data.id;
+									let id = res.data.data.id || '';
+									let name = res.data.data.xm || '';
+									let password = res.data.data.mm || '';
+									let is_admin = res.data.data.is_admin || '';
+									uni.setStorage({
+									    key: 'user',
+									    data: JSON.stringify(res.data.data),
+									    success: function () {
+									       uni.redirectTo({
+									           url: '../index/index'
+									       });
+									    }
+									});
+								}else{
+									uni.showToast({
+										title:'用户名或密码错误',
+										icon:'none',
+									});
+								}
+								
+						    }
+						});
+					}else{
+						uni.getStorage({
+						    key: 'user',
+						    success: function (res) {
+						        console.log(res.data);
+								if(res.data){
+									console.log(value.username === res.data.lxdh  && value.password === res.data.mm);
+									console.log(value.username,res.data.lxdh,value.password,res.data.mm);
+									if(value.username === JSON.parse(res.data).lxdh  && value.password === JSON.parse(res.data).mm){
+										uni.redirectTo({
+										    url: '../index/index'
+										});
+									}else{
+										uni.showToast({
+											title:'用户名或密码错误',
+											icon:'none',
+										});
+									}
+								}else{
+									uni.showToast({
+										title:'首次登陆请连接互联网',
+										icon:'none',
+									});
+								}
+						    }
+						});
+					}
+					
 				}else{
 					uni.showToast({
 						title:'用户名及密码不能为空',

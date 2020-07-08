@@ -1,20 +1,20 @@
 <template>
 	<view>
 		<view class="boxTop">
-			<view class="name">{{name}}</view>
-			<view class="address">矿山地址：鸡西市XX县XX乡黑山</view>
-			<view class='address'>矿山说明：说明矿山，说明矿山说明矿山说明矿山说明矿山说明矿山。</view>
+			<view class="name">{{record.mc}}</view>
+			<view class="address">矿山地址：{{record.dz}}</view>
+			<view class='address'>矿山说明：{{record.ms}}</view>
 		</view>
 		<view class="boxList">
 			<view class="timeSearch">
 				<text>历史巡查列表（当前日期：{{time}}）</text>
-				<text class="timeBtn" @click="timeSearch">时间筛选 <uni-icons type="search" size="16" color="#2f67d5"></uni-icons></text>
+				<view class="timeBtn" @click="timeSearch">时间筛选 <uni-icons type="search" size="16" color="#2f67d5"></uni-icons></view>
 			</view>
-			<detailList></detailList>
+			<detailList :list="list"></detailList>
 		</view>
 		<view class="buttonBox">
 			 <button type="primary" style="background: #00b7f0;" @click="entrustColleague()">委托同事</button>
-			 <button type="primary" style="background: #f19049;" @click="goXc(name)">马上巡查</button>
+			 <button type="primary" style="background: #f19049;" @click="goXc()">马上巡查</button>
 		</view>
 	</view>
 </template>
@@ -23,35 +23,43 @@
 	import moment from 'moment';
 	import uniIcons from "@/components/uni-icons/uni-icons.vue"
 	import detailList from "@/components/detail-list/detail-list.vue"
+	import {getXjData} from '../common/env.js'
 	export default {
 		data() {
 			return {
-				name:'',
-				time: moment().format('YYYY.MM.DD')
+				record:{},
+				time: moment().format('YYYY.MM.DD'),
+				list:[],
 			}
 		},
 		components: {
 			detailList,
 		},
 	    onLoad: function (option) { //option为object类型，会序列化上个页面传递的参数
-			console.log(option.name); //打印出上个页面传递的参数。
-			this.name=option.name;
+			console.log(option.record); //打印出上个页面传递的参数。
+			this.record = JSON.parse(option.record);
+			let id = JSON.parse(option.record).id;
+			console.log('id',id)
+			getXjData(`SELECT A.*, B.xm, C.mc FROM xjData A LEFT JOIN usersData B ON A.users_id = B.id LEFT JOIN ksData C ON A.ks_id = C.id WHERE A.ks_id = '${id}' ORDER BY dk_sj DESC`,(data)=>{
+				console.log('巡检记录======================callback====================>',data)
+				this.list = data;
+			});
 		}, 
 		methods: {
 			timeSearch:function(){
 				uni.navigateTo({
-				    url: '../detailKsTimeSearch/detailKsTimeSearch'
+				    url: '../detailKsTimeSearch/detailKsTimeSearch?record='+JSON.stringify(this.record)
 				});
 			},
 			goXc:function(e){
 				console.log('e', e);
 				uni.navigateTo({
-				    url: '../inspection/inspection?name='+e
+				    url: '../inspection/inspection?record=' + JSON.stringify(this.record),
 				});
 			},
 			entrustColleague:function(){
 				uni.navigateTo({
-				    url: '../entrustColleague/entrustColleague'
+				    url: '../entrustColleague/entrustColleague?record=' + JSON.stringify(this.record),
 				});
 			}
 		}

@@ -7,7 +7,7 @@
 								</picker>  
 			    <uni-icons type="arrowdown" size="16" color="#000" class="icon"></uni-icons>
 			</view>
-			<view class="pageAll">共5条记录</view>
+			<view class="pageAll">共{{list.length}}条记录</view>
 		</view>
 		<!-- <picker-view v-if="visible" indicator-style="height:30px;" :value="value" @change="bindChange" class="pickerBox">
 		            <picker-view-column>
@@ -18,7 +18,7 @@
 		            </picker-view-column>
 		</picker-view> -->
 		<view class="listBox">
-			<detailList></detailList>
+			<detailList :list="list"></detailList>
 		</view>
 	</view>
 </template>
@@ -26,6 +26,7 @@
 <script>
 	import detailList from "@/components/detail-list/detail-list.vue"
 	import uniIcons from "@/components/uni-icons/uni-icons.vue"
+	import {getXjData} from '../common/env.js'
 	export default {
 		data() {
 			const currentDate = this.getDate({
@@ -33,36 +34,22 @@
 			        })
 			        return {
 			            date: currentDate,
+						record:{},
+						list:[],
+						data:[]
 			        }
-			 // const date = new Date()
-			 //        const years = []
-			 //        const year = date.getFullYear()
-			 //        const months = []
-			 //        const month = date.getMonth() + 1
-			 //        const days = []
-			 //        const day = date.getDate()
-			 //        for (let i = 1990; i <= date.getFullYear(); i++) {
-			 //            years.push(i)
-			 //        }
-			 //        for (let i = 1; i <= 12; i++) {
-			 //            months.push(i)
-			 //        }
-			 //        for (let i = 1; i <= 31; i++) {
-			 //            days.push(i)
-			 //        }
-			 //        return {
-			 //            title: 'picker-view',
-			 //            years,
-			 //            year,
-			 //            months,
-			 //            month,
-			 //            days,
-			 //            day,
-			 //            value: [9999, month - 1, day - 1],
-			 //            visible: false,
-			 //            indicatorStyle: `height: ${Math.round(uni.getSystemInfoSync().screenWidth/(750/100))}px;`
-			 //        }
 		},
+		onLoad: function (option) { //option为object类型，会序列化上个页面传递的参数
+			console.log(option.record); //打印出上个页面传递的参数。
+			this.record = JSON.parse(option.record);
+			let id = JSON.parse(option.record).id;
+			console.log('id',id)
+			getXjData(`SELECT A.*, B.xm, C.mc FROM xjData A LEFT JOIN usersData B ON A.users_id = B.id LEFT JOIN ksData C ON A.ks_id = C.id WHERE A.ks_id = '${id}' ORDER BY dk_sj DESC`,(data)=>{
+				this.data = data;
+				let list = data.filter(item => item.dk_sj.indexOf(this.date) > -1);
+				this.list = list;
+			});
+		}, 
 		components: {
 			detailList,
 		},
@@ -75,9 +62,11 @@
 		        }
 		    },
 		methods: {
-			   bindDateChange: function(e) {
-            this.date = e.target.value
-        },
+			bindDateChange: function(e) {
+				this.date = e.target.value
+				let list = this.data.filter(item => item.dk_sj.indexOf(e.target.value) > -1);
+				this.list = list;
+			},
 			 bindChange: function (e) {
 			            const val = e.detail.value
 			            this.year = this.years[val[0]]

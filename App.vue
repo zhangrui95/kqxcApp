@@ -1,8 +1,11 @@
 <script>
 export default {
 	globalData: {  
-	   ip: 'http://192.168.104.100:8082',
+	   ip:'http://112.102.212.130:10006',//http://192.168.104.100:8082',
 	   is_admin:'0',
+	   uid:'',
+	   weedIp:'',
+	   httpImg:''
 	},  
 	onLaunch: function() {
 		console.log('App Launch');

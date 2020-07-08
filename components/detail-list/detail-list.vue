@@ -1,102 +1,20 @@
 <template name='detailList'>
 	<view>
-		<uni-list>
-				<uni-list-item :show-arrow="true" @click="goDetail('巫山矿山')">
-					<view class="listTitle"><text>2019年11月10日</text></view>
+		<view class="noList" v-if="list.length == 0">暂无数据</view>
+		<uni-list v-for="(item,index) in list" v-if="list.length > 0">
+				<uni-list-item :show-arrow="true" @click="goDetail(item)">
+					<view class="listTitle"><text>{{item.dk_sj.substring(0,10)}}</text></view>
 					<view class="msgBox">
-						<text class="leftBox">巡查时间：10:22</text>
-						<text class="rightBox">巡查人：张三</text>
+						<text class="leftBox">巡查时间：{{item.dk_sj.substring(11,19)}}</text>
+						<text class="rightBox">巡查人：{{item.xm}}</text>
 					</view>
 					<view class="msgBox">
-						<text class="leftBox">巡查结果：<text>未开采</text></text>
-						<text class="rightBox">矿山状态：<text>无异常</text><text style="margin-left: 5px;">8照片</text></text> 
+						<text class="leftBox">巡查结果：<text :style="{color:item.kczt_dm === '02' ? '#747474' : '#2de17e'}">{{item.kczt_dm === '02' ? '未开采' : '开采中'}}</text></text>
+						<text class="rightBox">矿山状态：<text :style="{color:item.yczt_dm === '02' ? '#747474' : '#ee4c26'}">{{item.yczt_dm === '02' ? '无异常' : '有异常'}}</text>
+						<text style="margin-left: 5px;">{{item.yj_zp.split('#').length + item.jj_zp.split('#').length}}照片</text></text> 
 					</view>
 					<view class="msgBox">
-						<text class="bzBox">备注：需场人填写备注</text>
-					</view>
-				</uni-list-item>
-				<uni-list-item :show-arrow="true" @click="goDetail('巫山矿山')">
-					<view class="listTitle"><text>2019年12月10日</text></view>
-					<view class="msgBox">
-						<text class="leftBox">巡查时间：11:56</text>
-						<text class="rightBox">巡查人：张三</text>
-					</view>
-					<view class="msgBox">
-						<text class="leftBox">巡查结果：<text>未开采</text></text>
-						<text class="rightBox">矿山状态：<text style="color: #ee4c26;">有异常</text><text style="margin-left: 5px;">5照片</text></text> 
-					</view>
-					<view class="msgBox">
-						<text class="bzBox">备注：需场人填写备注</text>
-					</view>
-				</uni-list-item>
-				<uni-list-item :show-arrow="true" @click="goDetail('巫山矿山')">
-					<view class="listTitle"><text>2019年11月10日</text></view>
-					<view class="msgBox">
-						<text class="leftBox">巡查时间：10:22</text>
-						<text class="rightBox">巡查人：张三</text>
-					</view>
-					<view class="msgBox">
-						<text class="leftBox">巡查结果：<text>未开采</text></text>
-						<text class="rightBox">矿山状态：<text>无异常</text><text style="margin-left: 5px;">8照片</text></text> 
-					</view>
-					<view class="msgBox">
-						<text class="bzBox">备注：需场人填写备注</text>
-					</view>
-				</uni-list-item>
-				<uni-list-item :show-arrow="true" @click="goDetail('巫山矿山')">
-					<view class="listTitle"><text>2019年11月10日</text></view>
-					<view class="msgBox">
-						<text class="leftBox">巡查时间：10:22</text>
-						<text class="rightBox">巡查人：张三</text>
-					</view>
-					<view class="msgBox">
-						<text class="leftBox">巡查结果：<text>未开采</text></text>
-						<text class="rightBox">矿山状态：<text>无异常</text><text style="margin-left: 5px;">8照片</text></text> 
-					</view>
-					<view class="msgBox">
-						<text class="bzBox">备注：需场人填写备注</text>
-					</view>
-				</uni-list-item>
-				<uni-list-item :show-arrow="true" @click="goDetail('巫山矿山')">
-					<view class="listTitle"><text>2019年12月10日</text></view>
-					<view class="msgBox">
-						<text class="leftBox">巡查时间：11:56</text>
-						<text class="rightBox">巡查人：张三</text>
-					</view>
-					<view class="msgBox">
-						<text class="leftBox">巡查结果：<text>未开采</text></text>
-						<text class="rightBox">矿山状态：<text style="color: #ee4c26;">有异常</text><text style="margin-left: 5px;">5照片</text></text> 
-					</view>
-					<view class="msgBox">
-						<text class="bzBox">备注：需场人填写备注</text>
-					</view>
-				</uni-list-item>
-				<uni-list-item :show-arrow="true" @click="goDetail('巫山矿山')">
-					<view class="listTitle"><text>2019年11月10日</text></view>
-					<view class="msgBox">
-						<text class="leftBox">巡查时间：10:22</text>
-						<text class="rightBox">巡查人：张三</text>
-					</view>
-					<view class="msgBox">
-						<text class="leftBox">巡查结果：<text>未开采</text></text>
-						<text class="rightBox">矿山状态：<text>无异常</text><text style="margin-left: 5px;">8照片</text></text> 
-					</view>
-					<view class="msgBox">
-						<text class="bzBox">备注：需场人填写备注</text>
-					</view>
-				</uni-list-item>
-				<uni-list-item :show-arrow="true" @click="goDetail('巫山矿山')">
-					<view class="listTitle"><text>2019年12月10日</text></view>
-					<view class="msgBox">
-						<text class="leftBox">巡查时间：11:56</text>
-						<text class="rightBox">巡查人：张三</text>
-					</view>
-					<view class="msgBox">
-						<text class="leftBox">巡查结果：<text>未开采</text></text>
-						<text class="rightBox">矿山状态：<text style="color: #ee4c26;">有异常</text><text style="margin-left: 5px;">5照片</text></text> 
-					</view>
-					<view class="msgBox">
-						<text class="bzBox">备注：需场人填写备注</text>
+						<text class="bzBox">备注：{{item.bz}}</text>
 					</view>
 				</uni-list-item>
 			</uni-list>
@@ -106,15 +24,18 @@
 <script>
 	export default {
 		name:'detailList',
+		props:{
+			list: Array,
+		},
 		data() {
 			return {
 			
 			}
 		},
 		methods: {
-			goDetail:function(e){
+			goDetail:function(item){
 				uni.navigateTo({
-				    url: '../../pages/inspectionDetail/inspectionDetail'
+				    url: '../../pages/inspectionDetail/inspectionDetail?detail='+JSON.stringify(item)
 				});
 			}
 		}
@@ -122,6 +43,13 @@
 </script>
 
 <style>
+	.noList{
+		text-align: center;
+		font-size: 14px;
+		color: #999;
+		height: 50px;
+		line-height: 50px;
+	}
 	.uni-list-item__container{
 		border: 0!important;
 	}

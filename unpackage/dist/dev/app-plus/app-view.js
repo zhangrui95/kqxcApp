@@ -1134,21 +1134,33 @@ var render = function() {
     "v-uni-view",
     { staticClass: _vm._$g(0, "sc"), attrs: { _i: 0 } },
     [
-      _c("v-uni-view", { staticClass: _vm._$g(1, "sc"), attrs: { _i: 1 } }, [
-        _vm._v("提示：有1个矿区巡检逾期，2个矿区需要2日内巡检。")
-      ]),
       _c(
         "v-uni-view",
-        { staticClass: _vm._$g(2, "sc"), attrs: { _i: 2 } },
+        { staticClass: _vm._$g(1, "sc"), attrs: { _i: 1 } },
         [
-          _c(
+          _vm._v("提示："),
+          _c("v-uni-text", { attrs: { _i: 2 } }, [
+            _vm._v("有" + _vm._$g(2, "t0-0") + "个矿区巡检逾期")
+          ]),
+          _c("v-uni-text", { attrs: { _i: 3 } }, [
+            _vm._v("，" + _vm._$g(3, "t0-0") + "个矿区需要2日内巡检")
+          ]),
+          _vm._v("。")
+        ],
+        1
+      ),
+      _c(
+        "v-uni-view",
+        { staticClass: _vm._$g(4, "sc"), attrs: { _i: 4 } },
+        _vm._l(_vm._$g(5, "f"), function(item, index, $20, $30) {
+          return _c(
             "uni-list",
-            { attrs: { _i: 3 } },
+            { key: item, attrs: { _i: "5-" + $30 } },
             [
               _c(
                 "uni-list-item",
                 {
-                  attrs: { _i: 4 },
+                  attrs: { _i: "6-" + $30 },
                   on: {
                     click: function($event) {
                       return _vm.$handleViewEvent($event)
@@ -1158,163 +1170,95 @@ var render = function() {
                 [
                   _c(
                     "v-uni-view",
-                    { staticClass: _vm._$g(5, "sc"), attrs: { _i: 5 } },
+                    {
+                      staticClass: _vm._$g("7-" + $30, "sc"),
+                      attrs: { _i: "7-" + $30 }
+                    },
                     [
-                      _c("v-uni-text", { attrs: { _i: 6 } }, [
-                        _vm._v("黑山矿山")
+                      _c("v-uni-text", { attrs: { _i: "8-" + $30 } }, [
+                        _vm._v(_vm._$g("8-" + $30, "t0-0"))
                       ]),
-                      _c("uni-tag", { attrs: { _i: 7 } })
+                      _vm._$g("9-" + $30, "i")
+                        ? _c("uni-tag", { attrs: { _i: "9-" + $30 } })
+                        : _vm._e()
                     ],
                     1
                   ),
                   _c(
                     "v-uni-view",
-                    { staticClass: _vm._$g(8, "sc"), attrs: { _i: 8 } },
+                    {
+                      staticClass: _vm._$g("10-" + $30, "sc"),
+                      attrs: { _i: "10-" + $30 }
+                    },
                     [
                       _c(
                         "v-uni-text",
-                        { staticClass: _vm._$g(9, "sc"), attrs: { _i: 9 } },
-                        [_vm._v("上次巡查：2019年12月10日 11:56")]
+                        {
+                          staticClass: _vm._$g("11-" + $30, "sc"),
+                          attrs: { _i: "11-" + $30 }
+                        },
+                        [_vm._v("上次巡查：" + _vm._$g("11-" + $30, "t0-0"))]
                       ),
                       _c(
                         "v-uni-text",
-                        { staticClass: _vm._$g(10, "sc"), attrs: { _i: 10 } },
-                        [_vm._v("巡查人：张三")]
+                        {
+                          staticClass: _vm._$g("12-" + $30, "sc"),
+                          attrs: { _i: "12-" + $30 }
+                        },
+                        [_vm._v("巡查人：" + _vm._$g("12-" + $30, "t0-0"))]
                       )
                     ],
                     1
                   ),
                   _c(
                     "v-uni-view",
-                    { staticClass: _vm._$g(11, "sc"), attrs: { _i: 11 } },
+                    {
+                      staticClass: _vm._$g("13-" + $30, "sc"),
+                      attrs: { _i: "13-" + $30 }
+                    },
                     [
                       _c(
                         "v-uni-text",
-                        { staticClass: _vm._$g(12, "sc"), attrs: { _i: 12 } },
+                        {
+                          staticClass: _vm._$g("14-" + $30, "sc"),
+                          attrs: { _i: "14-" + $30 }
+                        },
                         [
                           _vm._v("巡查结果："),
                           _c(
                             "v-uni-text",
                             {
-                              staticStyle: { color: "#2de17e" },
-                              attrs: { _i: 13 }
+                              style: _vm._$g("15-" + $30, "s"),
+                              attrs: { _i: "15-" + $30 }
                             },
-                            [_vm._v("开采中")]
+                            [_vm._v(_vm._$g("15-" + $30, "t0-0"))]
                           )
                         ],
                         1
                       ),
                       _c(
                         "v-uni-text",
-                        { staticClass: _vm._$g(14, "sc"), attrs: { _i: 14 } },
-                        [
-                          _vm._v("矿山状态："),
-                          _c("v-uni-text", { attrs: { _i: 15 } }, [
-                            _vm._v("无异常")
-                          ]),
-                          _c(
-                            "v-uni-text",
-                            {
-                              staticStyle: { "margin-left": "5px" },
-                              attrs: { _i: 16 }
-                            },
-                            [_vm._v("4照片")]
-                          )
-                        ],
-                        1
-                      )
-                    ],
-                    1
-                  ),
-                  _c(
-                    "v-uni-view",
-                    { staticClass: _vm._$g(17, "sc"), attrs: { _i: 17 } },
-                    [
-                      _c(
-                        "v-uni-text",
-                        { staticClass: _vm._$g(18, "sc"), attrs: { _i: 18 } },
-                        [_vm._v("备注：需场人填写备注")]
-                      )
-                    ],
-                    1
-                  )
-                ],
-                1
-              ),
-              _c(
-                "uni-list-item",
-                {
-                  attrs: { _i: 19 },
-                  on: {
-                    click: function($event) {
-                      return _vm.$handleViewEvent($event)
-                    }
-                  }
-                },
-                [
-                  _c(
-                    "v-uni-view",
-                    { staticClass: _vm._$g(20, "sc"), attrs: { _i: 20 } },
-                    [
-                      _c("v-uni-text", { attrs: { _i: 21 } }, [
-                        _vm._v("巫山矿山")
-                      ]),
-                      _c("uni-tag", { attrs: { _i: 22 } })
-                    ],
-                    1
-                  ),
-                  _c(
-                    "v-uni-view",
-                    { staticClass: _vm._$g(23, "sc"), attrs: { _i: 23 } },
-                    [
-                      _c(
-                        "v-uni-text",
-                        { staticClass: _vm._$g(24, "sc"), attrs: { _i: 24 } },
-                        [_vm._v("上次巡查：2019年12月10日 11:56")]
-                      ),
-                      _c(
-                        "v-uni-text",
-                        { staticClass: _vm._$g(25, "sc"), attrs: { _i: 25 } },
-                        [_vm._v("巡查人：张三")]
-                      )
-                    ],
-                    1
-                  ),
-                  _c(
-                    "v-uni-view",
-                    { staticClass: _vm._$g(26, "sc"), attrs: { _i: 26 } },
-                    [
-                      _c(
-                        "v-uni-text",
-                        { staticClass: _vm._$g(27, "sc"), attrs: { _i: 27 } },
-                        [
-                          _vm._v("巡查结果："),
-                          _c("v-uni-text", { attrs: { _i: 28 } }, [
-                            _vm._v("未开采")
-                          ])
-                        ],
-                        1
-                      ),
-                      _c(
-                        "v-uni-text",
-                        { staticClass: _vm._$g(29, "sc"), attrs: { _i: 29 } },
+                        {
+                          staticClass: _vm._$g("16-" + $30, "sc"),
+                          attrs: { _i: "16-" + $30 }
+                        },
                         [
                           _vm._v("矿山状态："),
                           _c(
                             "v-uni-text",
                             {
-                              staticStyle: { color: "#ee4c26" },
-                              attrs: { _i: 30 }
+                              style: _vm._$g("17-" + $30, "s"),
+                              attrs: { _i: "17-" + $30 }
                             },
-                            [_vm._v("有异常")]
+                            [_vm._v(_vm._$g("17-" + $30, "t0-0"))]
                           ),
                           _c(
                             "v-uni-text",
                             {
                               staticStyle: { "margin-left": "5px" },
-                              attrs: { _i: 31 }
+                              attrs: { _i: "18-" + $30 }
                             },
-                            [_vm._v("8照片")]
+                            [_vm._v(_vm._$g("18-" + $30, "t0-0") + "照片")]
                           )
                         ],
                         1
@@ -1324,112 +1268,18 @@ var render = function() {
                   ),
                   _c(
                     "v-uni-view",
-                    { staticClass: _vm._$g(32, "sc"), attrs: { _i: 32 } },
+                    {
+                      staticClass: _vm._$g("19-" + $30, "sc"),
+                      attrs: { _i: "19-" + $30 }
+                    },
                     [
                       _c(
                         "v-uni-text",
-                        { staticClass: _vm._$g(33, "sc"), attrs: { _i: 33 } },
-                        [_vm._v("备注：需场人填写备注")]
-                      )
-                    ],
-                    1
-                  )
-                ],
-                1
-              ),
-              _c(
-                "uni-list-item",
-                {
-                  attrs: { _i: 34 },
-                  on: {
-                    click: function($event) {
-                      return _vm.$handleViewEvent($event)
-                    }
-                  }
-                },
-                [
-                  _c(
-                    "v-uni-view",
-                    { staticClass: _vm._$g(35, "sc"), attrs: { _i: 35 } },
-                    [
-                      _c("v-uni-text", { attrs: { _i: 36 } }, [
-                        _vm._v("卢山矿山")
-                      ]),
-                      _c("uni-tag", { attrs: { _i: 37 } })
-                    ],
-                    1
-                  ),
-                  _c(
-                    "v-uni-view",
-                    { staticClass: _vm._$g(38, "sc"), attrs: { _i: 38 } },
-                    [
-                      _c(
-                        "v-uni-text",
-                        { staticClass: _vm._$g(39, "sc"), attrs: { _i: 39 } },
-                        [_vm._v("上次巡查：2019年12月10日 11:56")]
-                      ),
-                      _c(
-                        "v-uni-text",
-                        { staticClass: _vm._$g(40, "sc"), attrs: { _i: 40 } },
-                        [_vm._v("巡查人：张三")]
-                      )
-                    ],
-                    1
-                  ),
-                  _c(
-                    "v-uni-view",
-                    { staticClass: _vm._$g(41, "sc"), attrs: { _i: 41 } },
-                    [
-                      _c(
-                        "v-uni-text",
-                        { staticClass: _vm._$g(42, "sc"), attrs: { _i: 42 } },
-                        [
-                          _vm._v("巡查结果："),
-                          _c(
-                            "v-uni-text",
-                            {
-                              staticStyle: { color: "#2de17e" },
-                              attrs: { _i: 43 }
-                            },
-                            [_vm._v("开采中")]
-                          )
-                        ],
-                        1
-                      ),
-                      _c(
-                        "v-uni-text",
-                        { staticClass: _vm._$g(44, "sc"), attrs: { _i: 44 } },
-                        [
-                          _vm._v("矿山状态："),
-                          _c("v-uni-text", { attrs: { _i: 45 } }, [
-                            _vm._v("无异常")
-                          ]),
-                          _c(
-                            "v-uni-text",
-                            {
-                              staticStyle: { "margin-left": "5px" },
-                              attrs: { _i: 46 }
-                            },
-                            [_vm._v("5照片")]
-                          )
-                        ],
-                        1
-                      )
-                    ],
-                    1
-                  ),
-                  _c(
-                    "v-uni-view",
-                    { staticClass: _vm._$g(47, "sc"), attrs: { _i: 47 } },
-                    [
-                      _c(
-                        "v-uni-text",
-                        { staticClass: _vm._$g(48, "sc"), attrs: { _i: 48 } },
-                        [
-                          _vm._v(
-                            "备注：需场人填写备注，需场人填写备注，需场人填写备注，需场人填写备注，需场人填写备注。"
-                          )
-                        ]
+                        {
+                          staticClass: _vm._$g("20-" + $30, "sc"),
+                          attrs: { _i: "20-" + $30 }
+                        },
+                        [_vm._v("备注：" + _vm._$g("20-" + $30, "t0-0"))]
                       )
                     ],
                     1
@@ -1440,10 +1290,10 @@ var render = function() {
             ],
             1
           )
-        ],
+        }),
         1
       ),
-      _c("tabBar", { attrs: { _i: 49 } })
+      _c("tabBar", { attrs: { _i: 21 } })
     ],
     1
   )
@@ -2580,7 +2430,7 @@ if(false) {}
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ./node_modules/css-loader/dist/runtime/api.js */ 10);
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, "\n .uni-list-item__container:after{\n\t\theight: 0!important;\n}\n.uni-list-item__container{\n\t\tborder: 0!important;\n}\n.uni-list{\n\t\tbackground: #f5f5f5!important;\n}\n.uni-list-item{\n\t\tbackground: #fff;\n\t\tmargin-bottom: 7px;\n}\n.uni-tag--error{\n\t\tfloat: left;\n\t\tbackground: #f7e8e5!important;\n\t\tborder: 1px solid #f25b4a!important;\n\t\tpadding: 0 5px!important;\n\t\theight:20px!important;\n\t\tline-height: 19px!important;\n\t\t/* margin-left: 5px; */\n\t\t-webkit-transform: scale(0.70);\n\t\t        transform: scale(0.70);\n}\n .uni-tag--error .uni-tag-text{\n\t\tcolor: #f25b4a!important;\n\t\tfont-size: 12px;\n}\n.uni-tag--warning{\n\t\tfloat: left;\n\t\tbackground: #fdf5de!important;\n\t\tborder: 1px solid #f4bb52!important;\n\t\tpadding: 0 5px!important;\n\t\theight:20px!important;\n\t\tline-height: 19px!important;\n\t\t/* margin-left: 5px; */\n\t\t-webkit-transform: scale(0.70);\n\t\t        transform: scale(0.70);\n}\n .uni-tag--warning .uni-tag-text{\n\t\tcolor: #f4bb52!important;\n\t\tfont-size: 12px;\n}\n.leftBox{\n\t\twidth: 60%;\n\t\tfloat: left;\n}\n.rightBox{\n\t\twidth: 40%;\n\t\tfloat: left;\n}\n.listTitle{\n\t\tcolor: #000;\n\t\tmargin-bottom: 4px;\n}\n.listTitle uni-text{\n\t\tfloat: left;\n}\n.msgBox{\n\t\tcolor: #747474;\n\t\tfont-size: 12px;\n\t\tline-height: 20px;\n}\n.bzBox{\n\t\toverflow: hidden;\n\t\ttext-overflow:ellipsis;\n\t\twhite-space: nowrap;\n\t\tdisplay: block;\n\t\twidth: 100%;\n}\n.listBox{\n\t\tmargin-top: 30px;\n\t\twidth: 100%;\n}\n.warnTop{\n\t\tbackground: #ffcfc0;\n\t\theight: 30px;\n\t\tline-height: 30px;\n\t\tfont-size: 12px;\n\t\ttext-align: center;\n\t\tcolor: #f45619;\n\t\twidth: 100%;\n\t\tposition: fixed;\n\t\ttop: 0px;\n\t\tleft: 0;\n\t\tz-index: 99;\n}\n.header{\n\t\t    position: fixed;\n\t\t    left: 0;\n\t\t    top: 0;\n\t\t    width: 100%;\n\t\t    height: 44px;\n\t\t    height: calc(44px + constant(safe-area-inset-top));\n\t\t    height: calc(44px + env(safe-area-inset-top));\n\t\t    padding: 7px 10px;\n\t\t    padding-top: calc(7px + constant(safe-area-inset-top));\n\t\t    padding-top: calc(7px + env(safe-area-inset-top));\n\t\t    display: -webkit-box;\n\t\t    display: -webkit-flex;\n\t\t    display: flex;\n\t\t    overflow: hidden;\n\t\t    -webkit-box-pack: justify;\n\t\t    -webkit-justify-content: space-between;\n\t\t    justify-content: space-between;\n\t\t    box-sizing: border-box;\n\t\t    z-index: 998;\n\t\t    color: #fff;\n\t\t    background-color: rgb(23, 47, 135);\n\t\t    -webkit-transition-property: all;\n\t\t    transition-property: all;\n}\n.titleName{\n\t\tfont-size: 16px;\t\n        font-weight: 700;\n\t\tline-height: 30px;\n}\n.time{\n\t\tfont-size: 14px;\n\t\tmargin: 0 7px;\n\t\tfont-weight: 100;\n}\n", ""]);
+exports.push([module.i, "\n .uni-list-item__container:after{\n\t\theight: 0!important;\n}\n.uni-list-item__container{\n\t\tborder: 0!important;\n}\n.uni-list{\n\t\tbackground: #f5f5f5!important;\n}\n.uni-list-item{\n\t\tbackground: #fff;\n\t\tmargin-bottom: 7px;\n}\n.uni-tag--error{\n\t\tfloat: left;\n\t\tbackground: #f7e8e5!important;\n\t\tborder: 1px solid #f25b4a!important;\n\t\tpadding: 0 5px!important;\n\t\theight:20px!important;\n\t\tline-height: 19px!important;\n\t\t/* margin-left: 5px; */\n\t\t-webkit-transform: scale(0.70);\n\t\t        transform: scale(0.70);\n}\n .uni-tag--error .uni-tag-text{\n\t\tcolor: #f25b4a!important;\n\t\tfont-size: 12px;\n}\n.uni-tag--warning{\n\t\tfloat: left;\n\t\tbackground: #fdf5de!important;\n\t\tborder: 1px solid #f4bb52!important;\n\t\tpadding: 0 5px!important;\n\t\theight:20px!important;\n\t\tline-height: 19px!important;\n\t\t/* margin-left: 5px; */\n\t\t-webkit-transform: scale(0.70);\n\t\t        transform: scale(0.70);\n}\n .uni-tag--warning .uni-tag-text{\n\t\tcolor: #f4bb52!important;\n\t\tfont-size: 12px;\n}\n.leftBox{\n\t\twidth: 60%;\n\t\tfloat: left;\n}\n.rightBox{\n\t\twidth: 40%;\n\t\tfloat: left;\n}\n.listTitle{\n\t\tcolor: #000;\n\t\tmargin-bottom: 4px;\n}\n.listTitle uni-text{\n\t\tfloat: left;\n}\n.msgBox{\n\t\tcolor: #747474;\n\t\tfont-size: 12px;\n\t\tline-height: 20px;\n}\n.bzBox{\n\t\toverflow: hidden;\n\t\ttext-overflow:ellipsis;\n\t\twhite-space: nowrap;\n\t\tdisplay: block;\n\t\twidth: 100%;\n}\n.listBox{\n\t\tmargin-top: 30px;\n\t\tmargin-bottom: 50px;\n\t\twidth: 100%;\n}\n.warnTop{\n\t\tbackground: #ffcfc0;\n\t\theight: 30px;\n\t\tline-height: 30px;\n\t\tfont-size: 12px;\n\t\ttext-align: center;\n\t\tcolor: #f45619;\n\t\twidth: 100%;\n\t\tposition: fixed;\n\t\ttop: 0px;\n\t\tleft: 0;\n\t\tz-index: 99;\n}\n.header{\n\t\t    position: fixed;\n\t\t    left: 0;\n\t\t    top: 0;\n\t\t    width: 100%;\n\t\t    height: 44px;\n\t\t    height: calc(44px + constant(safe-area-inset-top));\n\t\t    height: calc(44px + env(safe-area-inset-top));\n\t\t    padding: 7px 10px;\n\t\t    padding-top: calc(7px + constant(safe-area-inset-top));\n\t\t    padding-top: calc(7px + env(safe-area-inset-top));\n\t\t    display: -webkit-box;\n\t\t    display: -webkit-flex;\n\t\t    display: flex;\n\t\t    overflow: hidden;\n\t\t    -webkit-box-pack: justify;\n\t\t    -webkit-justify-content: space-between;\n\t\t    justify-content: space-between;\n\t\t    box-sizing: border-box;\n\t\t    z-index: 998;\n\t\t    color: #fff;\n\t\t    background-color: rgb(23, 47, 135);\n\t\t    -webkit-transition-property: all;\n\t\t    transition-property: all;\n}\n.titleName{\n\t\tfont-size: 16px;\t\n        font-weight: 700;\n\t\tline-height: 30px;\n}\n.time{\n\t\tfont-size: 14px;\n\t\tmargin: 0 7px;\n\t\tfont-weight: 100;\n}\n", ""]);
 // Exports
 module.exports = exports;
 
@@ -3469,660 +3319,153 @@ var render = function() {
     "v-uni-view",
     { attrs: { _i: 0 } },
     [
-      _c(
-        "uni-list",
-        { attrs: { _i: 1 } },
-        [
-          _c(
-            "uni-list-item",
-            {
-              attrs: { _i: 2 },
-              on: {
-                click: function($event) {
-                  return _vm.$handleViewEvent($event)
-                }
-              }
-            },
-            [
-              _c(
-                "v-uni-view",
-                { staticClass: _vm._$g(3, "sc"), attrs: { _i: 3 } },
-                [
-                  _c("v-uni-text", { attrs: { _i: 4 } }, [
-                    _vm._v("2019年11月10日")
-                  ])
-                ],
-                1
-              ),
-              _c(
-                "v-uni-view",
-                { staticClass: _vm._$g(5, "sc"), attrs: { _i: 5 } },
-                [
-                  _c(
-                    "v-uni-text",
-                    { staticClass: _vm._$g(6, "sc"), attrs: { _i: 6 } },
-                    [_vm._v("巡查时间：10:22")]
-                  ),
-                  _c(
-                    "v-uni-text",
-                    { staticClass: _vm._$g(7, "sc"), attrs: { _i: 7 } },
-                    [_vm._v("巡查人：张三")]
-                  )
-                ],
-                1
-              ),
-              _c(
-                "v-uni-view",
-                { staticClass: _vm._$g(8, "sc"), attrs: { _i: 8 } },
-                [
-                  _c(
-                    "v-uni-text",
-                    { staticClass: _vm._$g(9, "sc"), attrs: { _i: 9 } },
-                    [
-                      _vm._v("巡查结果："),
-                      _c("v-uni-text", { attrs: { _i: 10 } }, [
-                        _vm._v("未开采")
-                      ])
-                    ],
-                    1
-                  ),
-                  _c(
-                    "v-uni-text",
-                    { staticClass: _vm._$g(11, "sc"), attrs: { _i: 11 } },
-                    [
-                      _vm._v("矿山状态："),
-                      _c("v-uni-text", { attrs: { _i: 12 } }, [
-                        _vm._v("无异常")
-                      ]),
-                      _c(
-                        "v-uni-text",
-                        {
-                          staticStyle: { "margin-left": "5px" },
-                          attrs: { _i: 13 }
-                        },
-                        [_vm._v("8照片")]
-                      )
-                    ],
-                    1
-                  )
-                ],
-                1
-              ),
-              _c(
-                "v-uni-view",
-                { staticClass: _vm._$g(14, "sc"), attrs: { _i: 14 } },
-                [
-                  _c(
-                    "v-uni-text",
-                    { staticClass: _vm._$g(15, "sc"), attrs: { _i: 15 } },
-                    [_vm._v("备注：需场人填写备注")]
-                  )
-                ],
-                1
-              )
-            ],
-            1
-          ),
-          _c(
-            "uni-list-item",
-            {
-              attrs: { _i: 16 },
-              on: {
-                click: function($event) {
-                  return _vm.$handleViewEvent($event)
-                }
-              }
-            },
-            [
-              _c(
-                "v-uni-view",
-                { staticClass: _vm._$g(17, "sc"), attrs: { _i: 17 } },
-                [
-                  _c("v-uni-text", { attrs: { _i: 18 } }, [
-                    _vm._v("2019年12月10日")
-                  ])
-                ],
-                1
-              ),
-              _c(
-                "v-uni-view",
-                { staticClass: _vm._$g(19, "sc"), attrs: { _i: 19 } },
-                [
-                  _c(
-                    "v-uni-text",
-                    { staticClass: _vm._$g(20, "sc"), attrs: { _i: 20 } },
-                    [_vm._v("巡查时间：11:56")]
-                  ),
-                  _c(
-                    "v-uni-text",
-                    { staticClass: _vm._$g(21, "sc"), attrs: { _i: 21 } },
-                    [_vm._v("巡查人：张三")]
-                  )
-                ],
-                1
-              ),
-              _c(
-                "v-uni-view",
-                { staticClass: _vm._$g(22, "sc"), attrs: { _i: 22 } },
-                [
-                  _c(
-                    "v-uni-text",
-                    { staticClass: _vm._$g(23, "sc"), attrs: { _i: 23 } },
-                    [
-                      _vm._v("巡查结果："),
-                      _c("v-uni-text", { attrs: { _i: 24 } }, [
-                        _vm._v("未开采")
-                      ])
-                    ],
-                    1
-                  ),
-                  _c(
-                    "v-uni-text",
-                    { staticClass: _vm._$g(25, "sc"), attrs: { _i: 25 } },
-                    [
-                      _vm._v("矿山状态："),
-                      _c(
-                        "v-uni-text",
-                        {
-                          staticStyle: { color: "#ee4c26" },
-                          attrs: { _i: 26 }
-                        },
-                        [_vm._v("有异常")]
-                      ),
-                      _c(
-                        "v-uni-text",
-                        {
-                          staticStyle: { "margin-left": "5px" },
-                          attrs: { _i: 27 }
-                        },
-                        [_vm._v("5照片")]
-                      )
-                    ],
-                    1
-                  )
-                ],
-                1
-              ),
-              _c(
-                "v-uni-view",
-                { staticClass: _vm._$g(28, "sc"), attrs: { _i: 28 } },
-                [
-                  _c(
-                    "v-uni-text",
-                    { staticClass: _vm._$g(29, "sc"), attrs: { _i: 29 } },
-                    [_vm._v("备注：需场人填写备注")]
-                  )
-                ],
-                1
-              )
-            ],
-            1
-          ),
-          _c(
-            "uni-list-item",
-            {
-              attrs: { _i: 30 },
-              on: {
-                click: function($event) {
-                  return _vm.$handleViewEvent($event)
-                }
-              }
-            },
-            [
-              _c(
-                "v-uni-view",
-                { staticClass: _vm._$g(31, "sc"), attrs: { _i: 31 } },
-                [
-                  _c("v-uni-text", { attrs: { _i: 32 } }, [
-                    _vm._v("2019年11月10日")
-                  ])
-                ],
-                1
-              ),
-              _c(
-                "v-uni-view",
-                { staticClass: _vm._$g(33, "sc"), attrs: { _i: 33 } },
-                [
-                  _c(
-                    "v-uni-text",
-                    { staticClass: _vm._$g(34, "sc"), attrs: { _i: 34 } },
-                    [_vm._v("巡查时间：10:22")]
-                  ),
-                  _c(
-                    "v-uni-text",
-                    { staticClass: _vm._$g(35, "sc"), attrs: { _i: 35 } },
-                    [_vm._v("巡查人：张三")]
-                  )
-                ],
-                1
-              ),
-              _c(
-                "v-uni-view",
-                { staticClass: _vm._$g(36, "sc"), attrs: { _i: 36 } },
-                [
-                  _c(
-                    "v-uni-text",
-                    { staticClass: _vm._$g(37, "sc"), attrs: { _i: 37 } },
-                    [
-                      _vm._v("巡查结果："),
-                      _c("v-uni-text", { attrs: { _i: 38 } }, [
-                        _vm._v("未开采")
-                      ])
-                    ],
-                    1
-                  ),
-                  _c(
-                    "v-uni-text",
-                    { staticClass: _vm._$g(39, "sc"), attrs: { _i: 39 } },
-                    [
-                      _vm._v("矿山状态："),
-                      _c("v-uni-text", { attrs: { _i: 40 } }, [
-                        _vm._v("无异常")
-                      ]),
-                      _c(
-                        "v-uni-text",
-                        {
-                          staticStyle: { "margin-left": "5px" },
-                          attrs: { _i: 41 }
-                        },
-                        [_vm._v("8照片")]
-                      )
-                    ],
-                    1
-                  )
-                ],
-                1
-              ),
-              _c(
-                "v-uni-view",
-                { staticClass: _vm._$g(42, "sc"), attrs: { _i: 42 } },
-                [
-                  _c(
-                    "v-uni-text",
-                    { staticClass: _vm._$g(43, "sc"), attrs: { _i: 43 } },
-                    [_vm._v("备注：需场人填写备注")]
-                  )
-                ],
-                1
-              )
-            ],
-            1
-          ),
-          _c(
-            "uni-list-item",
-            {
-              attrs: { _i: 44 },
-              on: {
-                click: function($event) {
-                  return _vm.$handleViewEvent($event)
-                }
-              }
-            },
-            [
-              _c(
-                "v-uni-view",
-                { staticClass: _vm._$g(45, "sc"), attrs: { _i: 45 } },
-                [
-                  _c("v-uni-text", { attrs: { _i: 46 } }, [
-                    _vm._v("2019年11月10日")
-                  ])
-                ],
-                1
-              ),
-              _c(
-                "v-uni-view",
-                { staticClass: _vm._$g(47, "sc"), attrs: { _i: 47 } },
-                [
-                  _c(
-                    "v-uni-text",
-                    { staticClass: _vm._$g(48, "sc"), attrs: { _i: 48 } },
-                    [_vm._v("巡查时间：10:22")]
-                  ),
-                  _c(
-                    "v-uni-text",
-                    { staticClass: _vm._$g(49, "sc"), attrs: { _i: 49 } },
-                    [_vm._v("巡查人：张三")]
-                  )
-                ],
-                1
-              ),
-              _c(
-                "v-uni-view",
-                { staticClass: _vm._$g(50, "sc"), attrs: { _i: 50 } },
-                [
-                  _c(
-                    "v-uni-text",
-                    { staticClass: _vm._$g(51, "sc"), attrs: { _i: 51 } },
-                    [
-                      _vm._v("巡查结果："),
-                      _c("v-uni-text", { attrs: { _i: 52 } }, [
-                        _vm._v("未开采")
-                      ])
-                    ],
-                    1
-                  ),
-                  _c(
-                    "v-uni-text",
-                    { staticClass: _vm._$g(53, "sc"), attrs: { _i: 53 } },
-                    [
-                      _vm._v("矿山状态："),
-                      _c("v-uni-text", { attrs: { _i: 54 } }, [
-                        _vm._v("无异常")
-                      ]),
-                      _c(
-                        "v-uni-text",
-                        {
-                          staticStyle: { "margin-left": "5px" },
-                          attrs: { _i: 55 }
-                        },
-                        [_vm._v("8照片")]
-                      )
-                    ],
-                    1
-                  )
-                ],
-                1
-              ),
-              _c(
-                "v-uni-view",
-                { staticClass: _vm._$g(56, "sc"), attrs: { _i: 56 } },
-                [
-                  _c(
-                    "v-uni-text",
-                    { staticClass: _vm._$g(57, "sc"), attrs: { _i: 57 } },
-                    [_vm._v("备注：需场人填写备注")]
-                  )
-                ],
-                1
-              )
-            ],
-            1
-          ),
-          _c(
-            "uni-list-item",
-            {
-              attrs: { _i: 58 },
-              on: {
-                click: function($event) {
-                  return _vm.$handleViewEvent($event)
-                }
-              }
-            },
-            [
-              _c(
-                "v-uni-view",
-                { staticClass: _vm._$g(59, "sc"), attrs: { _i: 59 } },
-                [
-                  _c("v-uni-text", { attrs: { _i: 60 } }, [
-                    _vm._v("2019年12月10日")
-                  ])
-                ],
-                1
-              ),
-              _c(
-                "v-uni-view",
-                { staticClass: _vm._$g(61, "sc"), attrs: { _i: 61 } },
-                [
-                  _c(
-                    "v-uni-text",
-                    { staticClass: _vm._$g(62, "sc"), attrs: { _i: 62 } },
-                    [_vm._v("巡查时间：11:56")]
-                  ),
-                  _c(
-                    "v-uni-text",
-                    { staticClass: _vm._$g(63, "sc"), attrs: { _i: 63 } },
-                    [_vm._v("巡查人：张三")]
-                  )
-                ],
-                1
-              ),
-              _c(
-                "v-uni-view",
-                { staticClass: _vm._$g(64, "sc"), attrs: { _i: 64 } },
-                [
-                  _c(
-                    "v-uni-text",
-                    { staticClass: _vm._$g(65, "sc"), attrs: { _i: 65 } },
-                    [
-                      _vm._v("巡查结果："),
-                      _c("v-uni-text", { attrs: { _i: 66 } }, [
-                        _vm._v("未开采")
-                      ])
-                    ],
-                    1
-                  ),
-                  _c(
-                    "v-uni-text",
-                    { staticClass: _vm._$g(67, "sc"), attrs: { _i: 67 } },
-                    [
-                      _vm._v("矿山状态："),
-                      _c(
-                        "v-uni-text",
-                        {
-                          staticStyle: { color: "#ee4c26" },
-                          attrs: { _i: 68 }
-                        },
-                        [_vm._v("有异常")]
-                      ),
-                      _c(
-                        "v-uni-text",
-                        {
-                          staticStyle: { "margin-left": "5px" },
-                          attrs: { _i: 69 }
-                        },
-                        [_vm._v("5照片")]
-                      )
-                    ],
-                    1
-                  )
-                ],
-                1
-              ),
-              _c(
-                "v-uni-view",
-                { staticClass: _vm._$g(70, "sc"), attrs: { _i: 70 } },
-                [
-                  _c(
-                    "v-uni-text",
-                    { staticClass: _vm._$g(71, "sc"), attrs: { _i: 71 } },
-                    [_vm._v("备注：需场人填写备注")]
-                  )
-                ],
-                1
-              )
-            ],
-            1
-          ),
-          _c(
-            "uni-list-item",
-            {
-              attrs: { _i: 72 },
-              on: {
-                click: function($event) {
-                  return _vm.$handleViewEvent($event)
-                }
-              }
-            },
-            [
-              _c(
-                "v-uni-view",
-                { staticClass: _vm._$g(73, "sc"), attrs: { _i: 73 } },
-                [
-                  _c("v-uni-text", { attrs: { _i: 74 } }, [
-                    _vm._v("2019年11月10日")
-                  ])
-                ],
-                1
-              ),
-              _c(
-                "v-uni-view",
-                { staticClass: _vm._$g(75, "sc"), attrs: { _i: 75 } },
-                [
-                  _c(
-                    "v-uni-text",
-                    { staticClass: _vm._$g(76, "sc"), attrs: { _i: 76 } },
-                    [_vm._v("巡查时间：10:22")]
-                  ),
-                  _c(
-                    "v-uni-text",
-                    { staticClass: _vm._$g(77, "sc"), attrs: { _i: 77 } },
-                    [_vm._v("巡查人：张三")]
-                  )
-                ],
-                1
-              ),
-              _c(
-                "v-uni-view",
-                { staticClass: _vm._$g(78, "sc"), attrs: { _i: 78 } },
-                [
-                  _c(
-                    "v-uni-text",
-                    { staticClass: _vm._$g(79, "sc"), attrs: { _i: 79 } },
-                    [
-                      _vm._v("巡查结果："),
-                      _c("v-uni-text", { attrs: { _i: 80 } }, [
-                        _vm._v("未开采")
-                      ])
-                    ],
-                    1
-                  ),
-                  _c(
-                    "v-uni-text",
-                    { staticClass: _vm._$g(81, "sc"), attrs: { _i: 81 } },
-                    [
-                      _vm._v("矿山状态："),
-                      _c("v-uni-text", { attrs: { _i: 82 } }, [
-                        _vm._v("无异常")
-                      ]),
-                      _c(
-                        "v-uni-text",
-                        {
-                          staticStyle: { "margin-left": "5px" },
-                          attrs: { _i: 83 }
-                        },
-                        [_vm._v("8照片")]
-                      )
-                    ],
-                    1
-                  )
-                ],
-                1
-              ),
-              _c(
-                "v-uni-view",
-                { staticClass: _vm._$g(84, "sc"), attrs: { _i: 84 } },
-                [
-                  _c(
-                    "v-uni-text",
-                    { staticClass: _vm._$g(85, "sc"), attrs: { _i: 85 } },
-                    [_vm._v("备注：需场人填写备注")]
-                  )
-                ],
-                1
-              )
-            ],
-            1
-          ),
-          _c(
-            "uni-list-item",
-            {
-              attrs: { _i: 86 },
-              on: {
-                click: function($event) {
-                  return _vm.$handleViewEvent($event)
-                }
-              }
-            },
-            [
-              _c(
-                "v-uni-view",
-                { staticClass: _vm._$g(87, "sc"), attrs: { _i: 87 } },
-                [
-                  _c("v-uni-text", { attrs: { _i: 88 } }, [
-                    _vm._v("2019年12月10日")
-                  ])
-                ],
-                1
-              ),
-              _c(
-                "v-uni-view",
-                { staticClass: _vm._$g(89, "sc"), attrs: { _i: 89 } },
-                [
-                  _c(
-                    "v-uni-text",
-                    { staticClass: _vm._$g(90, "sc"), attrs: { _i: 90 } },
-                    [_vm._v("巡查时间：11:56")]
-                  ),
-                  _c(
-                    "v-uni-text",
-                    { staticClass: _vm._$g(91, "sc"), attrs: { _i: 91 } },
-                    [_vm._v("巡查人：张三")]
-                  )
-                ],
-                1
-              ),
-              _c(
-                "v-uni-view",
-                { staticClass: _vm._$g(92, "sc"), attrs: { _i: 92 } },
-                [
-                  _c(
-                    "v-uni-text",
-                    { staticClass: _vm._$g(93, "sc"), attrs: { _i: 93 } },
-                    [
-                      _vm._v("巡查结果："),
-                      _c("v-uni-text", { attrs: { _i: 94 } }, [
-                        _vm._v("未开采")
-                      ])
-                    ],
-                    1
-                  ),
-                  _c(
-                    "v-uni-text",
-                    { staticClass: _vm._$g(95, "sc"), attrs: { _i: 95 } },
-                    [
-                      _vm._v("矿山状态："),
-                      _c(
-                        "v-uni-text",
-                        {
-                          staticStyle: { color: "#ee4c26" },
-                          attrs: { _i: 96 }
-                        },
-                        [_vm._v("有异常")]
-                      ),
-                      _c(
-                        "v-uni-text",
-                        {
-                          staticStyle: { "margin-left": "5px" },
-                          attrs: { _i: 97 }
-                        },
-                        [_vm._v("5照片")]
-                      )
-                    ],
-                    1
-                  )
-                ],
-                1
-              ),
-              _c(
-                "v-uni-view",
-                { staticClass: _vm._$g(98, "sc"), attrs: { _i: 98 } },
-                [
-                  _c(
-                    "v-uni-text",
-                    { staticClass: _vm._$g(99, "sc"), attrs: { _i: 99 } },
-                    [_vm._v("备注：需场人填写备注")]
-                  )
-                ],
-                1
-              )
-            ],
-            1
+      _vm._$g(1, "i")
+        ? _c(
+            "v-uni-view",
+            { staticClass: _vm._$g(1, "sc"), attrs: { _i: 1 } },
+            [_vm._v("暂无数据")]
           )
-        ],
-        1
-      )
+        : _vm._e(),
+      _vm._l(_vm._$g(2, "f"), function(item, index, $20, $30) {
+        return _vm._$g("2-" + $30, "i")
+          ? _c(
+              "uni-list",
+              { key: item, attrs: { _i: "2-" + $30 } },
+              [
+                _c(
+                  "uni-list-item",
+                  {
+                    attrs: { _i: "3-" + $30 },
+                    on: {
+                      click: function($event) {
+                        return _vm.$handleViewEvent($event)
+                      }
+                    }
+                  },
+                  [
+                    _c(
+                      "v-uni-view",
+                      {
+                        staticClass: _vm._$g("4-" + $30, "sc"),
+                        attrs: { _i: "4-" + $30 }
+                      },
+                      [
+                        _c("v-uni-text", { attrs: { _i: "5-" + $30 } }, [
+                          _vm._v(_vm._$g("5-" + $30, "t0-0"))
+                        ])
+                      ],
+                      1
+                    ),
+                    _c(
+                      "v-uni-view",
+                      {
+                        staticClass: _vm._$g("6-" + $30, "sc"),
+                        attrs: { _i: "6-" + $30 }
+                      },
+                      [
+                        _c(
+                          "v-uni-text",
+                          {
+                            staticClass: _vm._$g("7-" + $30, "sc"),
+                            attrs: { _i: "7-" + $30 }
+                          },
+                          [_vm._v("巡查时间：" + _vm._$g("7-" + $30, "t0-0"))]
+                        ),
+                        _c(
+                          "v-uni-text",
+                          {
+                            staticClass: _vm._$g("8-" + $30, "sc"),
+                            attrs: { _i: "8-" + $30 }
+                          },
+                          [_vm._v("巡查人：" + _vm._$g("8-" + $30, "t0-0"))]
+                        )
+                      ],
+                      1
+                    ),
+                    _c(
+                      "v-uni-view",
+                      {
+                        staticClass: _vm._$g("9-" + $30, "sc"),
+                        attrs: { _i: "9-" + $30 }
+                      },
+                      [
+                        _c(
+                          "v-uni-text",
+                          {
+                            staticClass: _vm._$g("10-" + $30, "sc"),
+                            attrs: { _i: "10-" + $30 }
+                          },
+                          [
+                            _vm._v("巡查结果："),
+                            _c(
+                              "v-uni-text",
+                              {
+                                style: _vm._$g("11-" + $30, "s"),
+                                attrs: { _i: "11-" + $30 }
+                              },
+                              [_vm._v(_vm._$g("11-" + $30, "t0-0"))]
+                            )
+                          ],
+                          1
+                        ),
+                        _c(
+                          "v-uni-text",
+                          {
+                            staticClass: _vm._$g("12-" + $30, "sc"),
+                            attrs: { _i: "12-" + $30 }
+                          },
+                          [
+                            _vm._v("矿山状态："),
+                            _c(
+                              "v-uni-text",
+                              {
+                                style: _vm._$g("13-" + $30, "s"),
+                                attrs: { _i: "13-" + $30 }
+                              },
+                              [_vm._v(_vm._$g("13-" + $30, "t0-0"))]
+                            ),
+                            _c(
+                              "v-uni-text",
+                              {
+                                staticStyle: { "margin-left": "5px" },
+                                attrs: { _i: "14-" + $30 }
+                              },
+                              [_vm._v(_vm._$g("14-" + $30, "t0-0") + "照片")]
+                            )
+                          ],
+                          1
+                        )
+                      ],
+                      1
+                    ),
+                    _c(
+                      "v-uni-view",
+                      {
+                        staticClass: _vm._$g("15-" + $30, "sc"),
+                        attrs: { _i: "15-" + $30 }
+                      },
+                      [
+                        _c(
+                          "v-uni-text",
+                          {
+                            staticClass: _vm._$g("16-" + $30, "sc"),
+                            attrs: { _i: "16-" + $30 }
+                          },
+                          [_vm._v("备注：" + _vm._$g("16-" + $30, "t0-0"))]
+                        )
+                      ],
+                      1
+                    )
+                  ],
+                  1
+                )
+              ],
+              1
+            )
+          : _vm._e()
+      })
     ],
-    1
+    2
   )
 }
 var recyclableRender = false
@@ -4213,7 +3556,7 @@ if(false) {}
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ./node_modules/css-loader/dist/runtime/api.js */ 10);
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, "\n.uni-list-item__container[data-v-73a68aba]{\n\tborder: 0!important;\n}\n.timeBtn[data-v-73a68aba]{\n\tcolor: #2f67d5;\n\tposition: absolute;\n\ttop: 0px;\n\tright: 15px;\n}\n.timeSearch[data-v-73a68aba]{\n\theight: 40px;\n\tline-height: 40px;\n\tfont-size: 14px;\n\tcolor: #666;\n\tmargin-left: 15px;\n\tposition: relative;\n}\n.boxList[data-v-73a68aba]{\n\tbackground: #fff;\n\twidth: 100%;\n\tmargin-bottom: 80px;\n}\n.boxTop[data-v-73a68aba]{\n\tbackground: #fff;\n\twidth: 92%;\n\theight: auto;\n\toverflow: hidden;\n\tpadding: 10px 4%;\n\tmargin-bottom: 7px;\n}\n.name[data-v-73a68aba]{\n\tborder-bottom: 1px solid #f4f4f4;\n\theight: 36px;\n\tline-height: 30px;\n\tmargin-bottom: 10px;\n}\n.address[data-v-73a68aba]{\n\tfont-size: 14px;\n\tcolor: #666;\n\tline-height: 22px;\n}\n[data-v-73a68aba] .uni-list-item__container:after{\n\theight: 1px!important;\n}\n.uni-list-item__container[data-v-73a68aba]{\n\tborder: 1px!important;\n}\n.leftBox[data-v-73a68aba]{\n\twidth: 50%;\n\tfloat: left;\n}\n.rightBox[data-v-73a68aba]{\n\twidth: 50%;\n\tfloat: left;\n}\n.listTitle[data-v-73a68aba]{\n\tcolor: #000;\n\tmargin-bottom: 4px;\n}\n.listTitle uni-text[data-v-73a68aba]{\n\tfloat: left;\n}\n.msgBox[data-v-73a68aba]{\n\tcolor: #747474;\n\tfont-size: 12px;\n\tline-height: 20px;\n}\n.buttonBox[data-v-73a68aba]{\n\tposition: fixed;\n\tbottom: 15px;\n\twidth: 96%;\n\tleft: 0;\n\tpadding: 0 2%;\n}\n.buttonBox uni-button[data-v-73a68aba]{\n\twidth: 46%;\n\tfloat: left;\n\tmargin: 0 2%;\n\tborder-radius: 50px;\n}\n", ""]);
+exports.push([module.i, "\n.noList[data-v-73a68aba]{\n\ttext-align: center;\n\tfont-size: 14px;\n\tcolor: #999;\n\theight: 50px;\n\tline-height: 50px;\n}\n.uni-list-item__container[data-v-73a68aba]{\n\tborder: 0!important;\n}\n.timeBtn[data-v-73a68aba]{\n\tcolor: #2f67d5;\n\tposition: absolute;\n\ttop: 0px;\n\tright: 15px;\n}\n.timeSearch[data-v-73a68aba]{\n\theight: 40px;\n\tline-height: 40px;\n\tfont-size: 14px;\n\tcolor: #666;\n\tmargin-left: 15px;\n\tposition: relative;\n}\n.boxList[data-v-73a68aba]{\n\tbackground: #fff;\n\twidth: 100%;\n\tmargin-bottom: 80px;\n}\n.boxTop[data-v-73a68aba]{\n\tbackground: #fff;\n\twidth: 92%;\n\theight: auto;\n\toverflow: hidden;\n\tpadding: 10px 4%;\n\tmargin-bottom: 7px;\n}\n.name[data-v-73a68aba]{\n\tborder-bottom: 1px solid #f4f4f4;\n\theight: 36px;\n\tline-height: 30px;\n\tmargin-bottom: 10px;\n}\n.address[data-v-73a68aba]{\n\tfont-size: 14px;\n\tcolor: #666;\n\tline-height: 22px;\n}\n[data-v-73a68aba] .uni-list-item__container:after{\n\theight: 1px!important;\n}\n.uni-list-item__container[data-v-73a68aba]{\n\tborder: 1px!important;\n}\n.leftBox[data-v-73a68aba]{\n\twidth: 50%;\n\tfloat: left;\n}\n.rightBox[data-v-73a68aba]{\n\twidth: 50%;\n\tfloat: left;\n}\n.listTitle[data-v-73a68aba]{\n\tcolor: #000;\n\tmargin-bottom: 4px;\n}\n.listTitle uni-text[data-v-73a68aba]{\n\tfloat: left;\n}\n.msgBox[data-v-73a68aba]{\n\tcolor: #747474;\n\tfont-size: 12px;\n\tline-height: 20px;\n}\n.buttonBox[data-v-73a68aba]{\n\tposition: fixed;\n\tbottom: 15px;\n\twidth: 96%;\n\tleft: 0;\n\tpadding: 0 2%;\n}\n.buttonBox uni-button[data-v-73a68aba]{\n\twidth: 46%;\n\tfloat: left;\n\tmargin: 0 2%;\n\tborder-radius: 50px;\n}\n", ""]);
 // Exports
 module.exports = exports;
 
@@ -4312,57 +3655,71 @@ var render = function() {
           _c(
             "uni-list",
             { attrs: { _i: 2 } },
-            [
-              _c(
+            _vm._l(_vm._$g(3, "f"), function(item, index, $20, $30) {
+              return _c(
                 "uni-list-item",
                 {
-                  attrs: { _i: 3 },
+                  key: item,
+                  attrs: { _i: "3-" + $30 },
                   on: {
                     click: function($event) {
                       return _vm.$handleViewEvent($event)
                     }
                   },
-                  scopedSlots: _vm._u([
-                    {
-                      key: "right",
-                      fn: function(_empty_, _svm, _si) {
-                        return [
-                          _c("v-uni-image", {
-                            staticStyle: { width: "30px", height: "30px" },
-                            attrs: {
-                              src: "/static/phone.png",
-                              mode: "widthFix",
-                              _i: "15-" + _si
-                            },
-                            on: {
-                              click: function($event) {
-                                return _vm.$handleViewEvent($event)
+                  scopedSlots: _vm._u(
+                    [
+                      {
+                        key: "right",
+                        fn: function(_empty_, _svm, _si) {
+                          return [
+                            _c("v-uni-image", {
+                              staticStyle: { width: "30px", height: "30px" },
+                              attrs: {
+                                src: "/static/phone.png",
+                                mode: "widthFix",
+                                _i: "15-" + $30 + "-" + _si
+                              },
+                              on: {
+                                click: function($event) {
+                                  return _vm.$handleViewEvent($event)
+                                }
                               }
-                            }
-                          })
-                        ]
+                            })
+                          ]
+                        }
                       }
-                    }
-                  ])
+                    ],
+                    null,
+                    true
+                  )
                 },
                 [
                   _c(
                     "v-uni-view",
-                    { staticClass: _vm._$g(4, "sc"), attrs: { _i: 4 } },
+                    {
+                      staticClass: _vm._$g("4-" + $30, "sc"),
+                      attrs: { _i: "4-" + $30 }
+                    },
                     [
-                      _c("v-uni-text", { attrs: { _i: 5 } }, [
-                        _vm._v("黑山矿山")
+                      _c("v-uni-text", { attrs: { _i: "5-" + $30 } }, [
+                        _vm._v(_vm._$g("5-" + $30, "t0-0"))
                       ])
                     ],
                     1
                   ),
                   _c(
                     "v-uni-view",
-                    { staticClass: _vm._$g(6, "sc"), attrs: { _i: 6 } },
+                    {
+                      staticClass: _vm._$g("6-" + $30, "sc"),
+                      attrs: { _i: "6-" + $30 }
+                    },
                     [
                       _c(
                         "v-uni-text",
-                        { staticClass: _vm._$g(7, "sc"), attrs: { _i: 7 } },
+                        {
+                          staticClass: _vm._$g("7-" + $30, "sc"),
+                          attrs: { _i: "7-" + $30 }
+                        },
                         [_vm._v("矿山地址：黑龙江省鸡西市黑山")]
                       )
                     ],
@@ -4370,11 +3727,17 @@ var render = function() {
                   ),
                   _c(
                     "v-uni-view",
-                    { staticClass: _vm._$g(8, "sc"), attrs: { _i: 8 } },
+                    {
+                      staticClass: _vm._$g("8-" + $30, "sc"),
+                      attrs: { _i: "8-" + $30 }
+                    },
                     [
                       _c(
                         "v-uni-text",
-                        { staticClass: _vm._$g(9, "sc"), attrs: { _i: 9 } },
+                        {
+                          staticClass: _vm._$g("9-" + $30, "sc"),
+                          attrs: { _i: "9-" + $30 }
+                        },
                         [_vm._v("被委托人：李菲菲")]
                       )
                     ],
@@ -4382,611 +3745,32 @@ var render = function() {
                   ),
                   _c(
                     "v-uni-view",
-                    { staticClass: _vm._$g(10, "sc"), attrs: { _i: 10 } },
+                    {
+                      staticClass: _vm._$g("10-" + $30, "sc"),
+                      attrs: { _i: "10-" + $30 }
+                    },
                     [
                       _c(
                         "v-uni-text",
-                        { staticClass: _vm._$g(11, "sc"), attrs: { _i: 11 } },
+                        {
+                          staticClass: _vm._$g("11-" + $30, "sc"),
+                          attrs: { _i: "11-" + $30 }
+                        },
                         [_vm._v("委托时间：2019-12-29")]
                       ),
                       _c(
                         "v-uni-text",
-                        { staticClass: _vm._$g(12, "sc"), attrs: { _i: 12 } },
+                        {
+                          staticClass: _vm._$g("12-" + $30, "sc"),
+                          attrs: { _i: "12-" + $30 }
+                        },
                         [
                           _vm._v("委托状态："),
                           _c(
                             "v-uni-text",
                             {
                               staticStyle: { color: "#F9A936" },
-                              attrs: { _i: 13 }
-                            },
-                            [_vm._v("待接受")]
-                          )
-                        ],
-                        1
-                      )
-                    ],
-                    1
-                  )
-                ],
-                1
-              ),
-              _c(
-                "uni-list-item",
-                {
-                  attrs: { _i: 16 },
-                  on: {
-                    click: function($event) {
-                      return _vm.$handleViewEvent($event)
-                    }
-                  },
-                  scopedSlots: _vm._u([
-                    {
-                      key: "right",
-                      fn: function(_empty_, _svm, _si) {
-                        return [
-                          _c("v-uni-image", {
-                            staticStyle: { width: "30px", height: "30px" },
-                            attrs: {
-                              src: "/static/phone.png",
-                              mode: "widthFix",
-                              _i: "28-" + _si
-                            },
-                            on: {
-                              click: function($event) {
-                                return _vm.$handleViewEvent($event)
-                              }
-                            }
-                          })
-                        ]
-                      }
-                    }
-                  ])
-                },
-                [
-                  _c(
-                    "v-uni-view",
-                    { staticClass: _vm._$g(17, "sc"), attrs: { _i: 17 } },
-                    [
-                      _c("v-uni-text", { attrs: { _i: 18 } }, [
-                        _vm._v("黑山矿山")
-                      ])
-                    ],
-                    1
-                  ),
-                  _c(
-                    "v-uni-view",
-                    { staticClass: _vm._$g(19, "sc"), attrs: { _i: 19 } },
-                    [
-                      _c(
-                        "v-uni-text",
-                        { staticClass: _vm._$g(20, "sc"), attrs: { _i: 20 } },
-                        [_vm._v("矿山地址：黑龙江省鸡西市黑山")]
-                      )
-                    ],
-                    1
-                  ),
-                  _c(
-                    "v-uni-view",
-                    { staticClass: _vm._$g(21, "sc"), attrs: { _i: 21 } },
-                    [
-                      _c(
-                        "v-uni-text",
-                        { staticClass: _vm._$g(22, "sc"), attrs: { _i: 22 } },
-                        [_vm._v("被委托人：李菲菲")]
-                      )
-                    ],
-                    1
-                  ),
-                  _c(
-                    "v-uni-view",
-                    { staticClass: _vm._$g(23, "sc"), attrs: { _i: 23 } },
-                    [
-                      _c(
-                        "v-uni-text",
-                        { staticClass: _vm._$g(24, "sc"), attrs: { _i: 24 } },
-                        [_vm._v("委托时间：2019-12-29")]
-                      ),
-                      _c(
-                        "v-uni-text",
-                        { staticClass: _vm._$g(25, "sc"), attrs: { _i: 25 } },
-                        [
-                          _vm._v("委托状态："),
-                          _c(
-                            "v-uni-text",
-                            {
-                              staticStyle: { color: "#29B6FF" },
-                              attrs: { _i: 26 }
-                            },
-                            [_vm._v("已接受")]
-                          )
-                        ],
-                        1
-                      )
-                    ],
-                    1
-                  )
-                ],
-                1
-              ),
-              _c(
-                "uni-list-item",
-                {
-                  attrs: { _i: 29 },
-                  on: {
-                    click: function($event) {
-                      return _vm.$handleViewEvent($event)
-                    }
-                  },
-                  scopedSlots: _vm._u([
-                    {
-                      key: "right",
-                      fn: function(_empty_, _svm, _si) {
-                        return [
-                          _c("v-uni-image", {
-                            staticStyle: { width: "30px", height: "30px" },
-                            attrs: {
-                              src: "/static/phone.png",
-                              mode: "widthFix",
-                              _i: "41-" + _si
-                            },
-                            on: {
-                              click: function($event) {
-                                return _vm.$handleViewEvent($event)
-                              }
-                            }
-                          })
-                        ]
-                      }
-                    }
-                  ])
-                },
-                [
-                  _c(
-                    "v-uni-view",
-                    { staticClass: _vm._$g(30, "sc"), attrs: { _i: 30 } },
-                    [
-                      _c("v-uni-text", { attrs: { _i: 31 } }, [
-                        _vm._v("黑山矿山")
-                      ])
-                    ],
-                    1
-                  ),
-                  _c(
-                    "v-uni-view",
-                    { staticClass: _vm._$g(32, "sc"), attrs: { _i: 32 } },
-                    [
-                      _c(
-                        "v-uni-text",
-                        { staticClass: _vm._$g(33, "sc"), attrs: { _i: 33 } },
-                        [_vm._v("矿山地址：黑龙江省鸡西市黑山")]
-                      )
-                    ],
-                    1
-                  ),
-                  _c(
-                    "v-uni-view",
-                    { staticClass: _vm._$g(34, "sc"), attrs: { _i: 34 } },
-                    [
-                      _c(
-                        "v-uni-text",
-                        { staticClass: _vm._$g(35, "sc"), attrs: { _i: 35 } },
-                        [_vm._v("被委托人：李菲菲")]
-                      )
-                    ],
-                    1
-                  ),
-                  _c(
-                    "v-uni-view",
-                    { staticClass: _vm._$g(36, "sc"), attrs: { _i: 36 } },
-                    [
-                      _c(
-                        "v-uni-text",
-                        { staticClass: _vm._$g(37, "sc"), attrs: { _i: 37 } },
-                        [_vm._v("委托时间：2019-12-29")]
-                      ),
-                      _c(
-                        "v-uni-text",
-                        { staticClass: _vm._$g(38, "sc"), attrs: { _i: 38 } },
-                        [
-                          _vm._v("委托状态："),
-                          _c(
-                            "v-uni-text",
-                            {
-                              staticStyle: { color: "#999999" },
-                              attrs: { _i: 39 }
-                            },
-                            [_vm._v("已拒绝")]
-                          )
-                        ],
-                        1
-                      )
-                    ],
-                    1
-                  )
-                ],
-                1
-              ),
-              _c(
-                "uni-list-item",
-                {
-                  attrs: { _i: 42 },
-                  on: {
-                    click: function($event) {
-                      return _vm.$handleViewEvent($event)
-                    }
-                  },
-                  scopedSlots: _vm._u([
-                    {
-                      key: "right",
-                      fn: function(_empty_, _svm, _si) {
-                        return [
-                          _c("v-uni-image", {
-                            staticStyle: { width: "30px", height: "30px" },
-                            attrs: {
-                              src: "/static/phone.png",
-                              mode: "widthFix",
-                              _i: "54-" + _si
-                            },
-                            on: {
-                              click: function($event) {
-                                return _vm.$handleViewEvent($event)
-                              }
-                            }
-                          })
-                        ]
-                      }
-                    }
-                  ])
-                },
-                [
-                  _c(
-                    "v-uni-view",
-                    { staticClass: _vm._$g(43, "sc"), attrs: { _i: 43 } },
-                    [
-                      _c("v-uni-text", { attrs: { _i: 44 } }, [
-                        _vm._v("黑山矿山")
-                      ])
-                    ],
-                    1
-                  ),
-                  _c(
-                    "v-uni-view",
-                    { staticClass: _vm._$g(45, "sc"), attrs: { _i: 45 } },
-                    [
-                      _c(
-                        "v-uni-text",
-                        { staticClass: _vm._$g(46, "sc"), attrs: { _i: 46 } },
-                        [_vm._v("矿山地址：黑龙江省鸡西市黑山")]
-                      )
-                    ],
-                    1
-                  ),
-                  _c(
-                    "v-uni-view",
-                    { staticClass: _vm._$g(47, "sc"), attrs: { _i: 47 } },
-                    [
-                      _c(
-                        "v-uni-text",
-                        { staticClass: _vm._$g(48, "sc"), attrs: { _i: 48 } },
-                        [_vm._v("被委托人：李菲菲")]
-                      )
-                    ],
-                    1
-                  ),
-                  _c(
-                    "v-uni-view",
-                    { staticClass: _vm._$g(49, "sc"), attrs: { _i: 49 } },
-                    [
-                      _c(
-                        "v-uni-text",
-                        { staticClass: _vm._$g(50, "sc"), attrs: { _i: 50 } },
-                        [_vm._v("委托时间：2019-12-29")]
-                      ),
-                      _c(
-                        "v-uni-text",
-                        { staticClass: _vm._$g(51, "sc"), attrs: { _i: 51 } },
-                        [
-                          _vm._v("委托状态："),
-                          _c(
-                            "v-uni-text",
-                            {
-                              staticStyle: { color: "#3CE84C" },
-                              attrs: { _i: 52 }
-                            },
-                            [_vm._v("已巡检")]
-                          )
-                        ],
-                        1
-                      )
-                    ],
-                    1
-                  )
-                ],
-                1
-              ),
-              _c(
-                "uni-list-item",
-                {
-                  attrs: { _i: 55 },
-                  on: {
-                    click: function($event) {
-                      return _vm.$handleViewEvent($event)
-                    }
-                  },
-                  scopedSlots: _vm._u([
-                    {
-                      key: "right",
-                      fn: function(_empty_, _svm, _si) {
-                        return [
-                          _c("v-uni-image", {
-                            staticStyle: { width: "30px", height: "30px" },
-                            attrs: {
-                              src: "/static/phone.png",
-                              mode: "widthFix",
-                              _i: "67-" + _si
-                            },
-                            on: {
-                              click: function($event) {
-                                return _vm.$handleViewEvent($event)
-                              }
-                            }
-                          })
-                        ]
-                      }
-                    }
-                  ])
-                },
-                [
-                  _c(
-                    "v-uni-view",
-                    { staticClass: _vm._$g(56, "sc"), attrs: { _i: 56 } },
-                    [
-                      _c("v-uni-text", { attrs: { _i: 57 } }, [
-                        _vm._v("黑山矿山")
-                      ])
-                    ],
-                    1
-                  ),
-                  _c(
-                    "v-uni-view",
-                    { staticClass: _vm._$g(58, "sc"), attrs: { _i: 58 } },
-                    [
-                      _c(
-                        "v-uni-text",
-                        { staticClass: _vm._$g(59, "sc"), attrs: { _i: 59 } },
-                        [_vm._v("矿山地址：黑龙江省鸡西市黑山")]
-                      )
-                    ],
-                    1
-                  ),
-                  _c(
-                    "v-uni-view",
-                    { staticClass: _vm._$g(60, "sc"), attrs: { _i: 60 } },
-                    [
-                      _c(
-                        "v-uni-text",
-                        { staticClass: _vm._$g(61, "sc"), attrs: { _i: 61 } },
-                        [_vm._v("被委托人：李菲菲")]
-                      )
-                    ],
-                    1
-                  ),
-                  _c(
-                    "v-uni-view",
-                    { staticClass: _vm._$g(62, "sc"), attrs: { _i: 62 } },
-                    [
-                      _c(
-                        "v-uni-text",
-                        { staticClass: _vm._$g(63, "sc"), attrs: { _i: 63 } },
-                        [_vm._v("委托时间：2019-12-29")]
-                      ),
-                      _c(
-                        "v-uni-text",
-                        { staticClass: _vm._$g(64, "sc"), attrs: { _i: 64 } },
-                        [
-                          _vm._v("委托状态："),
-                          _c(
-                            "v-uni-text",
-                            {
-                              staticStyle: { color: "#F9A936" },
-                              attrs: { _i: 65 }
-                            },
-                            [_vm._v("待接受")]
-                          )
-                        ],
-                        1
-                      )
-                    ],
-                    1
-                  )
-                ],
-                1
-              ),
-              _c(
-                "uni-list-item",
-                {
-                  attrs: { _i: 68 },
-                  on: {
-                    click: function($event) {
-                      return _vm.$handleViewEvent($event)
-                    }
-                  },
-                  scopedSlots: _vm._u([
-                    {
-                      key: "right",
-                      fn: function(_empty_, _svm, _si) {
-                        return [
-                          _c("v-uni-image", {
-                            staticStyle: { width: "30px", height: "30px" },
-                            attrs: {
-                              src: "/static/phone.png",
-                              mode: "widthFix",
-                              _i: "80-" + _si
-                            },
-                            on: {
-                              click: function($event) {
-                                return _vm.$handleViewEvent($event)
-                              }
-                            }
-                          })
-                        ]
-                      }
-                    }
-                  ])
-                },
-                [
-                  _c(
-                    "v-uni-view",
-                    { staticClass: _vm._$g(69, "sc"), attrs: { _i: 69 } },
-                    [
-                      _c("v-uni-text", { attrs: { _i: 70 } }, [
-                        _vm._v("黑山矿山")
-                      ])
-                    ],
-                    1
-                  ),
-                  _c(
-                    "v-uni-view",
-                    { staticClass: _vm._$g(71, "sc"), attrs: { _i: 71 } },
-                    [
-                      _c(
-                        "v-uni-text",
-                        { staticClass: _vm._$g(72, "sc"), attrs: { _i: 72 } },
-                        [_vm._v("矿山地址：黑龙江省鸡西市黑山")]
-                      )
-                    ],
-                    1
-                  ),
-                  _c(
-                    "v-uni-view",
-                    { staticClass: _vm._$g(73, "sc"), attrs: { _i: 73 } },
-                    [
-                      _c(
-                        "v-uni-text",
-                        { staticClass: _vm._$g(74, "sc"), attrs: { _i: 74 } },
-                        [_vm._v("被委托人：李菲菲")]
-                      )
-                    ],
-                    1
-                  ),
-                  _c(
-                    "v-uni-view",
-                    { staticClass: _vm._$g(75, "sc"), attrs: { _i: 75 } },
-                    [
-                      _c(
-                        "v-uni-text",
-                        { staticClass: _vm._$g(76, "sc"), attrs: { _i: 76 } },
-                        [_vm._v("委托时间：2019-12-29")]
-                      ),
-                      _c(
-                        "v-uni-text",
-                        { staticClass: _vm._$g(77, "sc"), attrs: { _i: 77 } },
-                        [
-                          _vm._v("委托状态："),
-                          _c(
-                            "v-uni-text",
-                            {
-                              staticStyle: { color: "#F9A936" },
-                              attrs: { _i: 78 }
-                            },
-                            [_vm._v("待接受")]
-                          )
-                        ],
-                        1
-                      )
-                    ],
-                    1
-                  )
-                ],
-                1
-              ),
-              _c(
-                "uni-list-item",
-                {
-                  attrs: { _i: 81 },
-                  on: {
-                    click: function($event) {
-                      return _vm.$handleViewEvent($event)
-                    }
-                  },
-                  scopedSlots: _vm._u([
-                    {
-                      key: "right",
-                      fn: function(_empty_, _svm, _si) {
-                        return [
-                          _c("v-uni-image", {
-                            staticStyle: { width: "30px", height: "30px" },
-                            attrs: {
-                              src: "/static/phone.png",
-                              mode: "widthFix",
-                              _i: "93-" + _si
-                            },
-                            on: {
-                              click: function($event) {
-                                return _vm.$handleViewEvent($event)
-                              }
-                            }
-                          })
-                        ]
-                      }
-                    }
-                  ])
-                },
-                [
-                  _c(
-                    "v-uni-view",
-                    { staticClass: _vm._$g(82, "sc"), attrs: { _i: 82 } },
-                    [
-                      _c("v-uni-text", { attrs: { _i: 83 } }, [
-                        _vm._v("黑山矿山")
-                      ])
-                    ],
-                    1
-                  ),
-                  _c(
-                    "v-uni-view",
-                    { staticClass: _vm._$g(84, "sc"), attrs: { _i: 84 } },
-                    [
-                      _c(
-                        "v-uni-text",
-                        { staticClass: _vm._$g(85, "sc"), attrs: { _i: 85 } },
-                        [_vm._v("矿山地址：黑龙江省鸡西市黑山")]
-                      )
-                    ],
-                    1
-                  ),
-                  _c(
-                    "v-uni-view",
-                    { staticClass: _vm._$g(86, "sc"), attrs: { _i: 86 } },
-                    [
-                      _c(
-                        "v-uni-text",
-                        { staticClass: _vm._$g(87, "sc"), attrs: { _i: 87 } },
-                        [_vm._v("被委托人：李菲菲")]
-                      )
-                    ],
-                    1
-                  ),
-                  _c(
-                    "v-uni-view",
-                    { staticClass: _vm._$g(88, "sc"), attrs: { _i: 88 } },
-                    [
-                      _c(
-                        "v-uni-text",
-                        { staticClass: _vm._$g(89, "sc"), attrs: { _i: 89 } },
-                        [_vm._v("委托时间：2019-12-29")]
-                      ),
-                      _c(
-                        "v-uni-text",
-                        { staticClass: _vm._$g(90, "sc"), attrs: { _i: 90 } },
-                        [
-                          _vm._v("委托状态："),
-                          _c(
-                            "v-uni-text",
-                            {
-                              staticStyle: { color: "#F9A936" },
-                              attrs: { _i: 91 }
+                              attrs: { _i: "13-" + $30 }
                             },
                             [_vm._v("待接受")]
                           )
@@ -4999,7 +3783,7 @@ var render = function() {
                 ],
                 1
               )
-            ],
+            }),
             1
           )
         ],
@@ -5007,13 +3791,13 @@ var render = function() {
       ),
       _c(
         "v-uni-view",
-        { staticClass: _vm._$g(94, "sc"), attrs: { _i: 94 } },
+        { staticClass: _vm._$g(16, "sc"), attrs: { _i: 16 } },
         [
           _c(
             "v-uni-button",
             {
               staticStyle: { background: "#00b7f0" },
-              attrs: { type: "primary", _i: 95 },
+              attrs: { type: "primary", _i: 17 },
               on: {
                 click: function($event) {
                   return _vm.$handleViewEvent($event)
@@ -5026,7 +3810,7 @@ var render = function() {
             "v-uni-button",
             {
               staticStyle: { background: "#f19049" },
-              attrs: { type: "primary", _i: 96 },
+              attrs: { type: "primary", _i: 18 },
               on: {
                 click: function($event) {
                   return _vm.$handleViewEvent($event)
@@ -5038,7 +3822,7 @@ var render = function() {
         ],
         1
       ),
-      _c("tabBar", { attrs: { _i: 97 } })
+      _c("tabBar", { attrs: { _i: 19 } })
     ],
     1
   )
@@ -5235,16 +4019,12 @@ var render = function() {
           _c(
             "v-uni-view",
             { staticClass: _vm._$g(3, "sc"), attrs: { _i: 3 } },
-            [_vm._v("矿山地址：鸡西市XX县XX乡黑山")]
+            [_vm._v("矿山地址：" + _vm._$g(3, "t0-0"))]
           ),
           _c(
             "v-uni-view",
             { staticClass: _vm._$g(4, "sc"), attrs: { _i: 4 } },
-            [
-              _vm._v(
-                "矿山说明：说明矿山，说明矿山说明矿山说明矿山说明矿山说明矿山。"
-              )
-            ]
+            [_vm._v("矿山说明：" + _vm._$g(4, "t0-0"))]
           )
         ],
         1
@@ -5261,7 +4041,7 @@ var render = function() {
                 _vm._v("历史巡查列表（当前日期：" + _vm._$g(7, "t0-0") + "）")
               ]),
               _c(
-                "v-uni-text",
+                "v-uni-view",
                 {
                   staticClass: _vm._$g(8, "sc"),
                   attrs: { _i: 8 },
@@ -5558,7 +4338,7 @@ var render = function() {
           _c(
             "v-uni-view",
             { staticClass: _vm._$g(6, "sc"), attrs: { _i: 6 } },
-            [_vm._v("共5条记录")]
+            [_vm._v("共" + _vm._$g(6, "t0-0") + "条记录")]
           )
         ],
         1
@@ -5754,660 +4534,153 @@ var render = function() {
     "v-uni-view",
     { attrs: { _i: 0 } },
     [
-      _c(
-        "uni-list",
-        { attrs: { _i: 1 } },
-        [
-          _c(
-            "uni-list-item",
-            {
-              attrs: { _i: 2 },
-              on: {
-                click: function($event) {
-                  return _vm.$handleViewEvent($event)
-                }
-              }
-            },
-            [
-              _c(
-                "v-uni-view",
-                { staticClass: _vm._$g(3, "sc"), attrs: { _i: 3 } },
-                [
-                  _c("v-uni-text", { attrs: { _i: 4 } }, [
-                    _vm._v("2019年11月10日")
-                  ])
-                ],
-                1
-              ),
-              _c(
-                "v-uni-view",
-                { staticClass: _vm._$g(5, "sc"), attrs: { _i: 5 } },
-                [
-                  _c(
-                    "v-uni-text",
-                    { staticClass: _vm._$g(6, "sc"), attrs: { _i: 6 } },
-                    [_vm._v("巡查时间：10:22")]
-                  ),
-                  _c(
-                    "v-uni-text",
-                    { staticClass: _vm._$g(7, "sc"), attrs: { _i: 7 } },
-                    [_vm._v("巡查人：张三")]
-                  )
-                ],
-                1
-              ),
-              _c(
-                "v-uni-view",
-                { staticClass: _vm._$g(8, "sc"), attrs: { _i: 8 } },
-                [
-                  _c(
-                    "v-uni-text",
-                    { staticClass: _vm._$g(9, "sc"), attrs: { _i: 9 } },
-                    [
-                      _vm._v("巡查结果："),
-                      _c("v-uni-text", { attrs: { _i: 10 } }, [
-                        _vm._v("未开采")
-                      ])
-                    ],
-                    1
-                  ),
-                  _c(
-                    "v-uni-text",
-                    { staticClass: _vm._$g(11, "sc"), attrs: { _i: 11 } },
-                    [
-                      _vm._v("矿山状态："),
-                      _c("v-uni-text", { attrs: { _i: 12 } }, [
-                        _vm._v("无异常")
-                      ]),
-                      _c(
-                        "v-uni-text",
-                        {
-                          staticStyle: { "margin-left": "5px" },
-                          attrs: { _i: 13 }
-                        },
-                        [_vm._v("8照片")]
-                      )
-                    ],
-                    1
-                  )
-                ],
-                1
-              ),
-              _c(
-                "v-uni-view",
-                { staticClass: _vm._$g(14, "sc"), attrs: { _i: 14 } },
-                [
-                  _c(
-                    "v-uni-text",
-                    { staticClass: _vm._$g(15, "sc"), attrs: { _i: 15 } },
-                    [_vm._v("备注：需场人填写备注")]
-                  )
-                ],
-                1
-              )
-            ],
-            1
-          ),
-          _c(
-            "uni-list-item",
-            {
-              attrs: { _i: 16 },
-              on: {
-                click: function($event) {
-                  return _vm.$handleViewEvent($event)
-                }
-              }
-            },
-            [
-              _c(
-                "v-uni-view",
-                { staticClass: _vm._$g(17, "sc"), attrs: { _i: 17 } },
-                [
-                  _c("v-uni-text", { attrs: { _i: 18 } }, [
-                    _vm._v("2019年12月10日")
-                  ])
-                ],
-                1
-              ),
-              _c(
-                "v-uni-view",
-                { staticClass: _vm._$g(19, "sc"), attrs: { _i: 19 } },
-                [
-                  _c(
-                    "v-uni-text",
-                    { staticClass: _vm._$g(20, "sc"), attrs: { _i: 20 } },
-                    [_vm._v("巡查时间：11:56")]
-                  ),
-                  _c(
-                    "v-uni-text",
-                    { staticClass: _vm._$g(21, "sc"), attrs: { _i: 21 } },
-                    [_vm._v("巡查人：张三")]
-                  )
-                ],
-                1
-              ),
-              _c(
-                "v-uni-view",
-                { staticClass: _vm._$g(22, "sc"), attrs: { _i: 22 } },
-                [
-                  _c(
-                    "v-uni-text",
-                    { staticClass: _vm._$g(23, "sc"), attrs: { _i: 23 } },
-                    [
-                      _vm._v("巡查结果："),
-                      _c("v-uni-text", { attrs: { _i: 24 } }, [
-                        _vm._v("未开采")
-                      ])
-                    ],
-                    1
-                  ),
-                  _c(
-                    "v-uni-text",
-                    { staticClass: _vm._$g(25, "sc"), attrs: { _i: 25 } },
-                    [
-                      _vm._v("矿山状态："),
-                      _c(
-                        "v-uni-text",
-                        {
-                          staticStyle: { color: "#ee4c26" },
-                          attrs: { _i: 26 }
-                        },
-                        [_vm._v("有异常")]
-                      ),
-                      _c(
-                        "v-uni-text",
-                        {
-                          staticStyle: { "margin-left": "5px" },
-                          attrs: { _i: 27 }
-                        },
-                        [_vm._v("5照片")]
-                      )
-                    ],
-                    1
-                  )
-                ],
-                1
-              ),
-              _c(
-                "v-uni-view",
-                { staticClass: _vm._$g(28, "sc"), attrs: { _i: 28 } },
-                [
-                  _c(
-                    "v-uni-text",
-                    { staticClass: _vm._$g(29, "sc"), attrs: { _i: 29 } },
-                    [_vm._v("备注：需场人填写备注")]
-                  )
-                ],
-                1
-              )
-            ],
-            1
-          ),
-          _c(
-            "uni-list-item",
-            {
-              attrs: { _i: 30 },
-              on: {
-                click: function($event) {
-                  return _vm.$handleViewEvent($event)
-                }
-              }
-            },
-            [
-              _c(
-                "v-uni-view",
-                { staticClass: _vm._$g(31, "sc"), attrs: { _i: 31 } },
-                [
-                  _c("v-uni-text", { attrs: { _i: 32 } }, [
-                    _vm._v("2019年11月10日")
-                  ])
-                ],
-                1
-              ),
-              _c(
-                "v-uni-view",
-                { staticClass: _vm._$g(33, "sc"), attrs: { _i: 33 } },
-                [
-                  _c(
-                    "v-uni-text",
-                    { staticClass: _vm._$g(34, "sc"), attrs: { _i: 34 } },
-                    [_vm._v("巡查时间：10:22")]
-                  ),
-                  _c(
-                    "v-uni-text",
-                    { staticClass: _vm._$g(35, "sc"), attrs: { _i: 35 } },
-                    [_vm._v("巡查人：张三")]
-                  )
-                ],
-                1
-              ),
-              _c(
-                "v-uni-view",
-                { staticClass: _vm._$g(36, "sc"), attrs: { _i: 36 } },
-                [
-                  _c(
-                    "v-uni-text",
-                    { staticClass: _vm._$g(37, "sc"), attrs: { _i: 37 } },
-                    [
-                      _vm._v("巡查结果："),
-                      _c("v-uni-text", { attrs: { _i: 38 } }, [
-                        _vm._v("未开采")
-                      ])
-                    ],
-                    1
-                  ),
-                  _c(
-                    "v-uni-text",
-                    { staticClass: _vm._$g(39, "sc"), attrs: { _i: 39 } },
-                    [
-                      _vm._v("矿山状态："),
-                      _c("v-uni-text", { attrs: { _i: 40 } }, [
-                        _vm._v("无异常")
-                      ]),
-                      _c(
-                        "v-uni-text",
-                        {
-                          staticStyle: { "margin-left": "5px" },
-                          attrs: { _i: 41 }
-                        },
-                        [_vm._v("8照片")]
-                      )
-                    ],
-                    1
-                  )
-                ],
-                1
-              ),
-              _c(
-                "v-uni-view",
-                { staticClass: _vm._$g(42, "sc"), attrs: { _i: 42 } },
-                [
-                  _c(
-                    "v-uni-text",
-                    { staticClass: _vm._$g(43, "sc"), attrs: { _i: 43 } },
-                    [_vm._v("备注：需场人填写备注")]
-                  )
-                ],
-                1
-              )
-            ],
-            1
-          ),
-          _c(
-            "uni-list-item",
-            {
-              attrs: { _i: 44 },
-              on: {
-                click: function($event) {
-                  return _vm.$handleViewEvent($event)
-                }
-              }
-            },
-            [
-              _c(
-                "v-uni-view",
-                { staticClass: _vm._$g(45, "sc"), attrs: { _i: 45 } },
-                [
-                  _c("v-uni-text", { attrs: { _i: 46 } }, [
-                    _vm._v("2019年11月10日")
-                  ])
-                ],
-                1
-              ),
-              _c(
-                "v-uni-view",
-                { staticClass: _vm._$g(47, "sc"), attrs: { _i: 47 } },
-                [
-                  _c(
-                    "v-uni-text",
-                    { staticClass: _vm._$g(48, "sc"), attrs: { _i: 48 } },
-                    [_vm._v("巡查时间：10:22")]
-                  ),
-                  _c(
-                    "v-uni-text",
-                    { staticClass: _vm._$g(49, "sc"), attrs: { _i: 49 } },
-                    [_vm._v("巡查人：张三")]
-                  )
-                ],
-                1
-              ),
-              _c(
-                "v-uni-view",
-                { staticClass: _vm._$g(50, "sc"), attrs: { _i: 50 } },
-                [
-                  _c(
-                    "v-uni-text",
-                    { staticClass: _vm._$g(51, "sc"), attrs: { _i: 51 } },
-                    [
-                      _vm._v("巡查结果："),
-                      _c("v-uni-text", { attrs: { _i: 52 } }, [
-                        _vm._v("未开采")
-                      ])
-                    ],
-                    1
-                  ),
-                  _c(
-                    "v-uni-text",
-                    { staticClass: _vm._$g(53, "sc"), attrs: { _i: 53 } },
-                    [
-                      _vm._v("矿山状态："),
-                      _c("v-uni-text", { attrs: { _i: 54 } }, [
-                        _vm._v("无异常")
-                      ]),
-                      _c(
-                        "v-uni-text",
-                        {
-                          staticStyle: { "margin-left": "5px" },
-                          attrs: { _i: 55 }
-                        },
-                        [_vm._v("8照片")]
-                      )
-                    ],
-                    1
-                  )
-                ],
-                1
-              ),
-              _c(
-                "v-uni-view",
-                { staticClass: _vm._$g(56, "sc"), attrs: { _i: 56 } },
-                [
-                  _c(
-                    "v-uni-text",
-                    { staticClass: _vm._$g(57, "sc"), attrs: { _i: 57 } },
-                    [_vm._v("备注：需场人填写备注")]
-                  )
-                ],
-                1
-              )
-            ],
-            1
-          ),
-          _c(
-            "uni-list-item",
-            {
-              attrs: { _i: 58 },
-              on: {
-                click: function($event) {
-                  return _vm.$handleViewEvent($event)
-                }
-              }
-            },
-            [
-              _c(
-                "v-uni-view",
-                { staticClass: _vm._$g(59, "sc"), attrs: { _i: 59 } },
-                [
-                  _c("v-uni-text", { attrs: { _i: 60 } }, [
-                    _vm._v("2019年12月10日")
-                  ])
-                ],
-                1
-              ),
-              _c(
-                "v-uni-view",
-                { staticClass: _vm._$g(61, "sc"), attrs: { _i: 61 } },
-                [
-                  _c(
-                    "v-uni-text",
-                    { staticClass: _vm._$g(62, "sc"), attrs: { _i: 62 } },
-                    [_vm._v("巡查时间：11:56")]
-                  ),
-                  _c(
-                    "v-uni-text",
-                    { staticClass: _vm._$g(63, "sc"), attrs: { _i: 63 } },
-                    [_vm._v("巡查人：张三")]
-                  )
-                ],
-                1
-              ),
-              _c(
-                "v-uni-view",
-                { staticClass: _vm._$g(64, "sc"), attrs: { _i: 64 } },
-                [
-                  _c(
-                    "v-uni-text",
-                    { staticClass: _vm._$g(65, "sc"), attrs: { _i: 65 } },
-                    [
-                      _vm._v("巡查结果："),
-                      _c("v-uni-text", { attrs: { _i: 66 } }, [
-                        _vm._v("未开采")
-                      ])
-                    ],
-                    1
-                  ),
-                  _c(
-                    "v-uni-text",
-                    { staticClass: _vm._$g(67, "sc"), attrs: { _i: 67 } },
-                    [
-                      _vm._v("矿山状态："),
-                      _c(
-                        "v-uni-text",
-                        {
-                          staticStyle: { color: "#ee4c26" },
-                          attrs: { _i: 68 }
-                        },
-                        [_vm._v("有异常")]
-                      ),
-                      _c(
-                        "v-uni-text",
-                        {
-                          staticStyle: { "margin-left": "5px" },
-                          attrs: { _i: 69 }
-                        },
-                        [_vm._v("5照片")]
-                      )
-                    ],
-                    1
-                  )
-                ],
-                1
-              ),
-              _c(
-                "v-uni-view",
-                { staticClass: _vm._$g(70, "sc"), attrs: { _i: 70 } },
-                [
-                  _c(
-                    "v-uni-text",
-                    { staticClass: _vm._$g(71, "sc"), attrs: { _i: 71 } },
-                    [_vm._v("备注：需场人填写备注")]
-                  )
-                ],
-                1
-              )
-            ],
-            1
-          ),
-          _c(
-            "uni-list-item",
-            {
-              attrs: { _i: 72 },
-              on: {
-                click: function($event) {
-                  return _vm.$handleViewEvent($event)
-                }
-              }
-            },
-            [
-              _c(
-                "v-uni-view",
-                { staticClass: _vm._$g(73, "sc"), attrs: { _i: 73 } },
-                [
-                  _c("v-uni-text", { attrs: { _i: 74 } }, [
-                    _vm._v("2019年11月10日")
-                  ])
-                ],
-                1
-              ),
-              _c(
-                "v-uni-view",
-                { staticClass: _vm._$g(75, "sc"), attrs: { _i: 75 } },
-                [
-                  _c(
-                    "v-uni-text",
-                    { staticClass: _vm._$g(76, "sc"), attrs: { _i: 76 } },
-                    [_vm._v("巡查时间：10:22")]
-                  ),
-                  _c(
-                    "v-uni-text",
-                    { staticClass: _vm._$g(77, "sc"), attrs: { _i: 77 } },
-                    [_vm._v("巡查人：张三")]
-                  )
-                ],
-                1
-              ),
-              _c(
-                "v-uni-view",
-                { staticClass: _vm._$g(78, "sc"), attrs: { _i: 78 } },
-                [
-                  _c(
-                    "v-uni-text",
-                    { staticClass: _vm._$g(79, "sc"), attrs: { _i: 79 } },
-                    [
-                      _vm._v("巡查结果："),
-                      _c("v-uni-text", { attrs: { _i: 80 } }, [
-                        _vm._v("未开采")
-                      ])
-                    ],
-                    1
-                  ),
-                  _c(
-                    "v-uni-text",
-                    { staticClass: _vm._$g(81, "sc"), attrs: { _i: 81 } },
-                    [
-                      _vm._v("矿山状态："),
-                      _c("v-uni-text", { attrs: { _i: 82 } }, [
-                        _vm._v("无异常")
-                      ]),
-                      _c(
-                        "v-uni-text",
-                        {
-                          staticStyle: { "margin-left": "5px" },
-                          attrs: { _i: 83 }
-                        },
-                        [_vm._v("8照片")]
-                      )
-                    ],
-                    1
-                  )
-                ],
-                1
-              ),
-              _c(
-                "v-uni-view",
-                { staticClass: _vm._$g(84, "sc"), attrs: { _i: 84 } },
-                [
-                  _c(
-                    "v-uni-text",
-                    { staticClass: _vm._$g(85, "sc"), attrs: { _i: 85 } },
-                    [_vm._v("备注：需场人填写备注")]
-                  )
-                ],
-                1
-              )
-            ],
-            1
-          ),
-          _c(
-            "uni-list-item",
-            {
-              attrs: { _i: 86 },
-              on: {
-                click: function($event) {
-                  return _vm.$handleViewEvent($event)
-                }
-              }
-            },
-            [
-              _c(
-                "v-uni-view",
-                { staticClass: _vm._$g(87, "sc"), attrs: { _i: 87 } },
-                [
-                  _c("v-uni-text", { attrs: { _i: 88 } }, [
-                    _vm._v("2019年12月10日")
-                  ])
-                ],
-                1
-              ),
-              _c(
-                "v-uni-view",
-                { staticClass: _vm._$g(89, "sc"), attrs: { _i: 89 } },
-                [
-                  _c(
-                    "v-uni-text",
-                    { staticClass: _vm._$g(90, "sc"), attrs: { _i: 90 } },
-                    [_vm._v("巡查时间：11:56")]
-                  ),
-                  _c(
-                    "v-uni-text",
-                    { staticClass: _vm._$g(91, "sc"), attrs: { _i: 91 } },
-                    [_vm._v("巡查人：张三")]
-                  )
-                ],
-                1
-              ),
-              _c(
-                "v-uni-view",
-                { staticClass: _vm._$g(92, "sc"), attrs: { _i: 92 } },
-                [
-                  _c(
-                    "v-uni-text",
-                    { staticClass: _vm._$g(93, "sc"), attrs: { _i: 93 } },
-                    [
-                      _vm._v("巡查结果："),
-                      _c("v-uni-text", { attrs: { _i: 94 } }, [
-                        _vm._v("未开采")
-                      ])
-                    ],
-                    1
-                  ),
-                  _c(
-                    "v-uni-text",
-                    { staticClass: _vm._$g(95, "sc"), attrs: { _i: 95 } },
-                    [
-                      _vm._v("矿山状态："),
-                      _c(
-                        "v-uni-text",
-                        {
-                          staticStyle: { color: "#ee4c26" },
-                          attrs: { _i: 96 }
-                        },
-                        [_vm._v("有异常")]
-                      ),
-                      _c(
-                        "v-uni-text",
-                        {
-                          staticStyle: { "margin-left": "5px" },
-                          attrs: { _i: 97 }
-                        },
-                        [_vm._v("5照片")]
-                      )
-                    ],
-                    1
-                  )
-                ],
-                1
-              ),
-              _c(
-                "v-uni-view",
-                { staticClass: _vm._$g(98, "sc"), attrs: { _i: 98 } },
-                [
-                  _c(
-                    "v-uni-text",
-                    { staticClass: _vm._$g(99, "sc"), attrs: { _i: 99 } },
-                    [_vm._v("备注：需场人填写备注")]
-                  )
-                ],
-                1
-              )
-            ],
-            1
+      _vm._$g(1, "i")
+        ? _c(
+            "v-uni-view",
+            { staticClass: _vm._$g(1, "sc"), attrs: { _i: 1 } },
+            [_vm._v("暂无数据")]
           )
-        ],
-        1
-      )
+        : _vm._e(),
+      _vm._l(_vm._$g(2, "f"), function(item, index, $20, $30) {
+        return _vm._$g("2-" + $30, "i")
+          ? _c(
+              "uni-list",
+              { key: item, attrs: { _i: "2-" + $30 } },
+              [
+                _c(
+                  "uni-list-item",
+                  {
+                    attrs: { _i: "3-" + $30 },
+                    on: {
+                      click: function($event) {
+                        return _vm.$handleViewEvent($event)
+                      }
+                    }
+                  },
+                  [
+                    _c(
+                      "v-uni-view",
+                      {
+                        staticClass: _vm._$g("4-" + $30, "sc"),
+                        attrs: { _i: "4-" + $30 }
+                      },
+                      [
+                        _c("v-uni-text", { attrs: { _i: "5-" + $30 } }, [
+                          _vm._v(_vm._$g("5-" + $30, "t0-0"))
+                        ])
+                      ],
+                      1
+                    ),
+                    _c(
+                      "v-uni-view",
+                      {
+                        staticClass: _vm._$g("6-" + $30, "sc"),
+                        attrs: { _i: "6-" + $30 }
+                      },
+                      [
+                        _c(
+                          "v-uni-text",
+                          {
+                            staticClass: _vm._$g("7-" + $30, "sc"),
+                            attrs: { _i: "7-" + $30 }
+                          },
+                          [_vm._v("巡查时间：" + _vm._$g("7-" + $30, "t0-0"))]
+                        ),
+                        _c(
+                          "v-uni-text",
+                          {
+                            staticClass: _vm._$g("8-" + $30, "sc"),
+                            attrs: { _i: "8-" + $30 }
+                          },
+                          [_vm._v("巡查人：" + _vm._$g("8-" + $30, "t0-0"))]
+                        )
+                      ],
+                      1
+                    ),
+                    _c(
+                      "v-uni-view",
+                      {
+                        staticClass: _vm._$g("9-" + $30, "sc"),
+                        attrs: { _i: "9-" + $30 }
+                      },
+                      [
+                        _c(
+                          "v-uni-text",
+                          {
+                            staticClass: _vm._$g("10-" + $30, "sc"),
+                            attrs: { _i: "10-" + $30 }
+                          },
+                          [
+                            _vm._v("巡查结果："),
+                            _c(
+                              "v-uni-text",
+                              {
+                                style: _vm._$g("11-" + $30, "s"),
+                                attrs: { _i: "11-" + $30 }
+                              },
+                              [_vm._v(_vm._$g("11-" + $30, "t0-0"))]
+                            )
+                          ],
+                          1
+                        ),
+                        _c(
+                          "v-uni-text",
+                          {
+                            staticClass: _vm._$g("12-" + $30, "sc"),
+                            attrs: { _i: "12-" + $30 }
+                          },
+                          [
+                            _vm._v("矿山状态："),
+                            _c(
+                              "v-uni-text",
+                              {
+                                style: _vm._$g("13-" + $30, "s"),
+                                attrs: { _i: "13-" + $30 }
+                              },
+                              [_vm._v(_vm._$g("13-" + $30, "t0-0"))]
+                            ),
+                            _c(
+                              "v-uni-text",
+                              {
+                                staticStyle: { "margin-left": "5px" },
+                                attrs: { _i: "14-" + $30 }
+                              },
+                              [_vm._v(_vm._$g("14-" + $30, "t0-0") + "照片")]
+                            )
+                          ],
+                          1
+                        )
+                      ],
+                      1
+                    ),
+                    _c(
+                      "v-uni-view",
+                      {
+                        staticClass: _vm._$g("15-" + $30, "sc"),
+                        attrs: { _i: "15-" + $30 }
+                      },
+                      [
+                        _c(
+                          "v-uni-text",
+                          {
+                            staticClass: _vm._$g("16-" + $30, "sc"),
+                            attrs: { _i: "16-" + $30 }
+                          },
+                          [_vm._v("备注：" + _vm._$g("16-" + $30, "t0-0"))]
+                        )
+                      ],
+                      1
+                    )
+                  ],
+                  1
+                )
+              ],
+              1
+            )
+          : _vm._e()
+      })
     ],
-    1
+    2
   )
 }
 var recyclableRender = false
@@ -6498,7 +4771,7 @@ if(false) {}
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ./node_modules/css-loader/dist/runtime/api.js */ 10);
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, "\n.uni-list-item__container{\n\tborder: 0!important;\n}\n.timeBtn{\n\tcolor: #2f67d5;\n\tposition: absolute;\n\ttop: 0px;\n\tright: 15px;\n}\n.timeSearch{\n\theight: 40px;\n\tline-height: 40px;\n\tfont-size: 14px;\n\tcolor: #666;\n\tmargin-left: 15px;\n\tposition: relative;\n}\n.boxList{\n\tbackground: #fff;\n\twidth: 100%;\n\tmargin-bottom: 80px;\n}\n.boxTop{\n\tbackground: #fff;\n\twidth: 92%;\n\theight: auto;\n\toverflow: hidden;\n\tpadding: 10px 4%;\n\tmargin-bottom: 7px;\n}\n.name{\n\tborder-bottom: 1px solid #f4f4f4;\n\theight: 36px;\n\tline-height: 30px;\n\tmargin-bottom: 10px;\n}\n.address{\n\tfont-size: 14px;\n\tcolor: #666;\n\tline-height: 22px;\n}\n .uni-list-item__container:after{\n\theight: 1px!important;\n}\n.uni-list-item__container{\n\tborder: 1px!important;\n}\n.leftBox{\n\twidth: 50%;\n\tfloat: left;\n}\n.rightBox{\n\twidth: 50%;\n\tfloat: left;\n}\n.listTitle{\n\tcolor: #000;\n\tmargin-bottom: 4px;\n}\n.listTitle uni-text{\n\tfloat: left;\n}\n.msgBox{\n\tcolor: #747474;\n\tfont-size: 12px;\n\tline-height: 20px;\n}\n.buttonBox{\n\tposition: fixed;\n\tbottom: 15px;\n\twidth: 96%;\n\tleft: 0;\n\tpadding: 0 2%;\n}\n.buttonBox uni-button{\n\twidth: 46%;\n\tfloat: left;\n\tmargin: 0 2%;\n\tborder-radius: 50px;\n}\n", ""]);
+exports.push([module.i, "\n.noList{\n\ttext-align: center;\n\tfont-size: 14px;\n\tcolor: #999;\n\theight: 50px;\n\tline-height: 50px;\n}\n.uni-list-item__container{\n\tborder: 0!important;\n}\n.timeBtn{\n\tcolor: #2f67d5;\n\tposition: absolute;\n\ttop: 0px;\n\tright: 15px;\n}\n.timeSearch{\n\theight: 40px;\n\tline-height: 40px;\n\tfont-size: 14px;\n\tcolor: #666;\n\tmargin-left: 15px;\n\tposition: relative;\n}\n.boxList{\n\tbackground: #fff;\n\twidth: 100%;\n\tmargin-bottom: 80px;\n}\n.boxTop{\n\tbackground: #fff;\n\twidth: 92%;\n\theight: auto;\n\toverflow: hidden;\n\tpadding: 10px 4%;\n\tmargin-bottom: 7px;\n}\n.name{\n\tborder-bottom: 1px solid #f4f4f4;\n\theight: 36px;\n\tline-height: 30px;\n\tmargin-bottom: 10px;\n}\n.address{\n\tfont-size: 14px;\n\tcolor: #666;\n\tline-height: 22px;\n}\n .uni-list-item__container:after{\n\theight: 1px!important;\n}\n.uni-list-item__container{\n\tborder: 1px!important;\n}\n.leftBox{\n\twidth: 50%;\n\tfloat: left;\n}\n.rightBox{\n\twidth: 50%;\n\tfloat: left;\n}\n.listTitle{\n\tcolor: #000;\n\tmargin-bottom: 4px;\n}\n.listTitle uni-text{\n\tfloat: left;\n}\n.msgBox{\n\tcolor: #747474;\n\tfont-size: 12px;\n\tline-height: 20px;\n}\n.buttonBox{\n\tposition: fixed;\n\tbottom: 15px;\n\twidth: 96%;\n\tleft: 0;\n\tpadding: 0 2%;\n}\n.buttonBox uni-button{\n\twidth: 46%;\n\tfloat: left;\n\tmargin: 0 2%;\n\tborder-radius: 50px;\n}\n", ""]);
 // Exports
 module.exports = exports;
 
@@ -6602,7 +4875,7 @@ var render = function() {
           _c(
             "v-uni-view",
             { staticClass: _vm._$g(3, "sc"), attrs: { _i: 3 } },
-            [_vm._v("卢展")]
+            [_vm._v(_vm._$g(3, "t0-0"))]
           )
         ],
         1
@@ -7322,16 +5595,12 @@ var render = function() {
           _c(
             "v-uni-view",
             { staticClass: _vm._$g(3, "sc"), attrs: { _i: 3 } },
-            [_vm._v("矿山地址：鸡西市XX县XX乡黑山")]
+            [_vm._v("矿山地址：" + _vm._$g(3, "t0-0"))]
           ),
           _c(
             "v-uni-view",
             { staticClass: _vm._$g(4, "sc"), attrs: { _i: 4 } },
-            [
-              _vm._v(
-                "矿山说明：说明矿山，说明矿山说明矿山说明矿山说明矿山说明矿山。"
-              )
-            ]
+            [_vm._v("矿山说明：" + _vm._$g(4, "t0-0"))]
           )
         ],
         1
@@ -7371,7 +5640,7 @@ var render = function() {
                               [
                                 _c("v-uni-radio", {
                                   attrs: {
-                                    value: "0",
+                                    value: "01",
                                     checked: _svm._$g("11-" + _si, "a-checked"),
                                     _i: "11-" + _si
                                   }
@@ -7389,7 +5658,7 @@ var render = function() {
                               [
                                 _c("v-uni-radio", {
                                   attrs: {
-                                    value: "1",
+                                    value: "02",
                                     checked: _svm._$g("13-" + _si, "a-checked"),
                                     _i: "13-" + _si
                                   }
@@ -7440,7 +5709,7 @@ var render = function() {
                               [
                                 _c("v-uni-radio", {
                                   attrs: {
-                                    value: "0",
+                                    value: "01",
                                     checked: _svm._$g("19-" + _si, "a-checked"),
                                     _i: "19-" + _si
                                   }
@@ -7458,7 +5727,7 @@ var render = function() {
                               [
                                 _c("v-uni-radio", {
                                   attrs: {
-                                    value: "1",
+                                    value: "02",
                                     checked: _svm._$g("21-" + _si, "a-checked"),
                                     _i: "21-" + _si
                                   }
@@ -7502,6 +5771,11 @@ var render = function() {
                       placeholder: "请输入异常说明或备注",
                       "placeholder-style": "color:#ccc",
                       _i: 26
+                    },
+                    on: {
+                      input: function($event) {
+                        return _vm.$handleViewEvent($event)
+                      }
                     }
                   })
                 ],
@@ -7674,6 +5948,11 @@ var render = function() {
                 type: "primary",
                 disabled: _vm._$g(44, "a-disabled"),
                 _i: 44
+              },
+              on: {
+                click: function($event) {
+                  return _vm.$handleViewEvent($event)
+                }
               }
             },
             [_vm._v("提交")]
@@ -7877,7 +6156,7 @@ var render = function() {
               _c(
                 "v-uni-view",
                 { staticClass: _vm._$g(3, "sc"), attrs: { _i: 3 } },
-                [_vm._v("2019年12月10日")]
+                [_vm._v(_vm._$g(3, "t0-0"))]
               )
             ],
             1
@@ -7893,7 +6172,7 @@ var render = function() {
                   _c(
                     "v-uni-text",
                     { staticStyle: { float: "left" }, attrs: { _i: 6 } },
-                    [_vm._v("巡查时间：08:04:15")]
+                    [_vm._v("巡查时间：" + _vm._$g(6, "t0-0"))]
                   ),
                   _c("uni-tag", { attrs: { _i: 7 } })
                 ],
@@ -7910,7 +6189,7 @@ var render = function() {
                       staticStyle: { width: "50%", float: "left" },
                       attrs: { _i: 9 }
                     },
-                    [_vm._v("责任人：张三")]
+                    [_vm._v("责任人：" + _vm._$g(9, "t0-0"))]
                   ),
                   _c(
                     "v-uni-text",
@@ -7919,7 +6198,7 @@ var render = function() {
                       staticStyle: { width: "50%", float: "left" },
                       attrs: { _i: 10 }
                     },
-                    [_vm._v("执行人：李四")]
+                    [_vm._v("执行人：" + _vm._$g(10, "t0-0"))]
                   )
                 ],
                 1
@@ -7938,8 +6217,8 @@ var render = function() {
                   _vm._v("巡查结果："),
                   _c(
                     "v-uni-text",
-                    { staticStyle: { color: "#2de17e" }, attrs: { _i: 13 } },
-                    [_vm._v("开采中")]
+                    { style: _vm._$g(13, "s"), attrs: { _i: 13 } },
+                    [_vm._v(_vm._$g(13, "t0-0"))]
                   )
                 ],
                 1
@@ -7947,57 +6226,56 @@ var render = function() {
               _c(
                 "v-uni-view",
                 { staticClass: _vm._$g(14, "sc"), attrs: { _i: 14 } },
-                [_vm._v("异常说明：无异常")]
+                [
+                  _vm._v("异常说明："),
+                  _c(
+                    "v-uni-text",
+                    { style: _vm._$g(15, "s"), attrs: { _i: 15 } },
+                    [_vm._v(_vm._$g(15, "t0-0"))]
+                  )
+                ],
+                1
               )
             ],
             1
           ),
           _c(
             "uni-list-item",
-            { attrs: { _i: 15 } },
+            { attrs: { _i: 16 } },
             [
               _c(
                 "v-uni-view",
-                { staticClass: _vm._$g(16, "sc"), attrs: { _i: 16 } },
-                [
-                  _vm._v(
-                    "备注说明：备注说明备注说明备注说明备注说明，备注说明备注说明备注说明，备注说明备注说明。"
-                  )
-                ]
+                { staticClass: _vm._$g(17, "sc"), attrs: { _i: 17 } },
+                [_vm._v("备注说明：" + _vm._$g(17, "t0-0"))]
               )
             ],
             1
           ),
           _c(
             "uni-list-item",
-            { attrs: { _i: 17 } },
+            { attrs: { _i: 18 } },
             [
-              _c("v-uni-view", { attrs: { _i: 18 } }, [
-                _vm._v("远景照片：2张")
+              _c("v-uni-view", { attrs: { _i: 19 } }, [
+                _vm._v("远景照片：" + _vm._$g(19, "t0-0") + "张")
               ]),
               _c(
                 "v-uni-view",
-                { staticClass: _vm._$g(19, "sc"), attrs: { _i: 19 } },
-                [
-                  _c("v-uni-image", {
-                    staticClass: _vm._$g(20, "sc"),
-                    attrs: { src: _vm._$g(20, "a-src"), _i: 20 },
-                    on: {
-                      click: function($event) {
-                        return _vm.$handleViewEvent($event)
-                      }
-                    }
-                  }),
-                  _c("v-uni-image", {
-                    staticClass: _vm._$g(21, "sc"),
-                    attrs: { src: _vm._$g(21, "a-src"), _i: 21 },
+                { staticClass: _vm._$g(20, "sc"), attrs: { _i: 20 } },
+                _vm._l(_vm._$g(21, "f"), function(item, index, $20, $30) {
+                  return _c("v-uni-image", {
+                    key: item,
+                    staticClass: _vm._$g("21-" + $30, "sc"),
+                    attrs: {
+                      src: _vm._$g("21-" + $30, "a-src"),
+                      _i: "21-" + $30
+                    },
                     on: {
                       click: function($event) {
                         return _vm.$handleViewEvent($event)
                       }
                     }
                   })
-                ],
+                }),
                 1
               )
             ],
@@ -8008,40 +6286,26 @@ var render = function() {
             { attrs: { _i: 22 } },
             [
               _c("v-uni-view", { attrs: { _i: 23 } }, [
-                _vm._v("近景照片：3张")
+                _vm._v("近景照片：" + _vm._$g(23, "t0-0") + "张")
               ]),
               _c(
                 "v-uni-view",
                 { staticClass: _vm._$g(24, "sc"), attrs: { _i: 24 } },
-                [
-                  _c("v-uni-image", {
-                    staticClass: _vm._$g(25, "sc"),
-                    attrs: { src: _vm._$g(25, "a-src"), _i: 25 },
-                    on: {
-                      click: function($event) {
-                        return _vm.$handleViewEvent($event)
-                      }
-                    }
-                  }),
-                  _c("v-uni-image", {
-                    staticClass: _vm._$g(26, "sc"),
-                    attrs: { src: _vm._$g(26, "a-src"), _i: 26 },
-                    on: {
-                      click: function($event) {
-                        return _vm.$handleViewEvent($event)
-                      }
-                    }
-                  }),
-                  _c("v-uni-image", {
-                    staticClass: _vm._$g(27, "sc"),
-                    attrs: { src: _vm._$g(27, "a-src"), _i: 27 },
+                _vm._l(_vm._$g(25, "f"), function(item, index, $21, $31) {
+                  return _c("v-uni-image", {
+                    key: item,
+                    staticClass: _vm._$g("25-" + $31, "sc"),
+                    attrs: {
+                      src: _vm._$g("25-" + $31, "a-src"),
+                      _i: "25-" + $31
+                    },
                     on: {
                       click: function($event) {
                         return _vm.$handleViewEvent($event)
                       }
                     }
                   })
-                ],
+                }),
                 1
               )
             ],
@@ -8142,7 +6406,7 @@ if(false) {}
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ./node_modules/css-loader/dist/runtime/api.js */ 10);
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, "\n.uni-tag--primary{\n\t\tfloat: left;\n\t\tbackground: #41BEF9!important;\n\t\tborder: 1px solid #41BEF9!important;\n\t\tpadding: 0 5px!important;\n\t\theight:20px!important;\n\t\tline-height: 19px!important;\n\t\t-webkit-transform: scale(0.70);\n\t\t        transform: scale(0.70);\n}\n .uni-tag--primary .uni-tag-text{\n\t\tfont-size: 12px;\n}\n.threeImg{\n\tfloat: left;\n}\n.imgItem{\n\twidth: 60px;\n\theight: 60px;\n\tmargin-right:8px;\n}\n.btnBox{\n\twidth: 90%;\n\tmargin: 20px 5%;\n}\n.btnBox uni-button{\n\tbackground: #108EE9;\n}\n.uni-label-pointer{\n\tfont-size: 14px;\n}\n .uni-radio-input{\n\tmargin-left: 10px;\n}\n .uni-radio-input-checked{\n\tbackground-color: #108EE9!important;\n\tborder-color: #108EE9!important;\n}\n.uni-list-item--hover{\n\tbackground: #fff!important;\n}\n.boxTop{\n\t\tbackground: #fff;\n\t\twidth: 92%;\n\t\theight: auto;\n\t\toverflow: hidden;\n\t\tpadding: 10px 4%;\n}\n.name{\n\t\tcolor: #000000;\n}\n.address{\n\t\tfont-size: 14px;\n\t\tcolor: #666;\n\t\tline-height: 22px;\n}\n.img-list{\n\t\tmargin-top: 10px;\n}\n", ""]);
+exports.push([module.i, "\n.uni-tag--primary{\n\t\tfloat: left;\n\t\tbackground: #41BEF9!important;\n\t\tborder: 1px solid #41BEF9!important;\n\t\tpadding: 0 5px!important;\n\t\theight:20px!important;\n\t\tline-height: 19px!important;\n\t\t-webkit-transform: scale(0.70);\n\t\t        transform: scale(0.70);\n}\n .uni-tag--primary .uni-tag-text{\n\t\tfont-size: 12px;\n}\n.threeImg{\n\tfloat: left;\n}\n.imgItem{\n\twidth: 60px;\n\theight: 60px;\n\tmargin-right:8px;\n\tfloat: left;\n}\n.btnBox{\n\twidth: 90%;\n\tmargin: 20px 5%;\n}\n.btnBox uni-button{\n\tbackground: #108EE9;\n}\n.uni-label-pointer{\n\tfont-size: 14px;\n}\n .uni-radio-input{\n\tmargin-left: 10px;\n}\n .uni-radio-input-checked{\n\tbackground-color: #108EE9!important;\n\tborder-color: #108EE9!important;\n}\n.uni-list-item--hover{\n\tbackground: #fff!important;\n}\n.boxTop{\n\t\tbackground: #fff;\n\t\twidth: 92%;\n\t\theight: auto;\n\t\toverflow: hidden;\n\t\tpadding: 10px 4%;\n}\n.name{\n\t\tcolor: #000000;\n}\n.address{\n\t\tfont-size: 14px;\n\t\tcolor: #666;\n\t\tline-height: 22px;\n}\n.img-list{\n\t\tmargin-top: 10px;\n}\n", ""]);
 // Exports
 module.exports = exports;
 
@@ -8235,169 +6499,55 @@ var render = function() {
     "v-uni-view",
     { attrs: { _i: 0 } },
     [
-      _c(
-        "uni-list",
-        { attrs: { _i: 1 } },
-        [
-          _c("uni-list-item", {
-            attrs: { _i: 2 },
-            on: {
-              click: function($event) {
-                return _vm.$handleViewEvent($event)
-              }
-            },
-            scopedSlots: _vm._u([
-              {
-                key: "right",
-                fn: function(_empty_, _svm, _si) {
-                  return [
-                    _c("v-uni-image", {
-                      staticStyle: { width: "30px", height: "30px" },
-                      attrs: {
-                        src: "/static/phone.png",
-                        mode: "widthFix",
-                        _i: "4-" + _si
-                      },
-                      on: {
-                        click: function($event) {
-                          return _vm.$handleViewEvent($event)
-                        }
-                      }
-                    })
-                  ]
+      _vm._l(_vm._$g(1, "f"), function(item, index, $20, $30) {
+        return _c(
+          "uni-list",
+          { key: item, attrs: { _i: "1-" + $30 } },
+          [
+            _c("uni-list-item", {
+              attrs: { _i: "2-" + $30 },
+              on: {
+                click: function($event) {
+                  return _vm.$handleViewEvent($event)
                 }
-              }
-            ])
-          }),
-          _c("uni-list-item", {
-            attrs: { _i: 5 },
-            on: {
-              click: function($event) {
-                return _vm.$handleViewEvent($event)
-              }
-            },
-            scopedSlots: _vm._u([
-              {
-                key: "right",
-                fn: function(_empty_, _svm, _si) {
-                  return [
-                    _c("v-uni-image", {
-                      staticStyle: { width: "30px", height: "30px" },
-                      attrs: {
-                        src: "/static/phone.png",
-                        mode: "widthFix",
-                        _i: "7-" + _si
-                      },
-                      on: {
-                        click: function($event) {
-                          return _vm.$handleViewEvent($event)
-                        }
-                      }
-                    })
-                  ]
-                }
-              }
-            ])
-          }),
-          _c("uni-list-item", {
-            attrs: { _i: 8 },
-            on: {
-              click: function($event) {
-                return _vm.$handleViewEvent($event)
-              }
-            },
-            scopedSlots: _vm._u([
-              {
-                key: "right",
-                fn: function(_empty_, _svm, _si) {
-                  return [
-                    _c("v-uni-image", {
-                      staticStyle: { width: "30px", height: "30px" },
-                      attrs: {
-                        src: "/static/phone.png",
-                        mode: "widthFix",
-                        _i: "10-" + _si
-                      },
-                      on: {
-                        click: function($event) {
-                          return _vm.$handleViewEvent($event)
-                        }
-                      }
-                    })
-                  ]
-                }
-              }
-            ])
-          }),
-          _c("uni-list-item", {
-            attrs: { _i: 11 },
-            on: {
-              click: function($event) {
-                return _vm.$handleViewEvent($event)
-              }
-            },
-            scopedSlots: _vm._u([
-              {
-                key: "right",
-                fn: function(_empty_, _svm, _si) {
-                  return [
-                    _c("v-uni-image", {
-                      staticStyle: { width: "30px", height: "30px" },
-                      attrs: {
-                        src: "/static/phone.png",
-                        mode: "widthFix",
-                        _i: "13-" + _si
-                      },
-                      on: {
-                        click: function($event) {
-                          return _vm.$handleViewEvent($event)
-                        }
-                      }
-                    })
-                  ]
-                }
-              }
-            ])
-          }),
-          _c("uni-list-item", {
-            attrs: { _i: 14 },
-            on: {
-              click: function($event) {
-                return _vm.$handleViewEvent($event)
-              }
-            },
-            scopedSlots: _vm._u([
-              {
-                key: "right",
-                fn: function(_empty_, _svm, _si) {
-                  return [
-                    _c("v-uni-image", {
-                      staticStyle: { width: "30px", height: "30px" },
-                      attrs: {
-                        src: "/static/phone.png",
-                        mode: "widthFix",
-                        _i: "16-" + _si
-                      },
-                      on: {
-                        click: function($event) {
-                          return _vm.$handleViewEvent($event)
-                        }
-                      }
-                    })
-                  ]
-                }
-              }
-            ])
-          })
-        ],
-        1
-      ),
+              },
+              scopedSlots: _vm._u(
+                [
+                  {
+                    key: "right",
+                    fn: function(_empty_, _svm, _si) {
+                      return [
+                        _c("v-uni-image", {
+                          staticStyle: { width: "30px", height: "30px" },
+                          attrs: {
+                            src: "/static/phone.png",
+                            mode: "widthFix",
+                            _i: "4-" + $30 + "-" + _si
+                          },
+                          on: {
+                            click: function($event) {
+                              return _vm.$handleViewEvent($event)
+                            }
+                          }
+                        })
+                      ]
+                    }
+                  }
+                ],
+                null,
+                true
+              )
+            })
+          ],
+          1
+        )
+      }),
       _c(
         "uni-popup",
-        { ref: "popup", attrs: { _i: 17 } },
+        { ref: "popup", attrs: { _i: 5 } },
         [
           _c("uni-popup-dialog", {
-            attrs: { _i: 18 },
+            attrs: { _i: 6 },
             on: {
               close: function($event) {
                 return _vm.$handleViewEvent($event)
@@ -8411,7 +6561,7 @@ var render = function() {
         1
       )
     ],
-    1
+    2
   )
 }
 var recyclableRender = false
@@ -11708,7 +9858,7 @@ if(false) {}
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ./node_modules/css-loader/dist/runtime/api.js */ 10);
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, "\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n/* 解决头条小程序组件内引入字体不生效的问题 */\nbody {\r\n\t      background-color: #f5f5f5;\n}\r\n", ""]);
+exports.push([module.i, "\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n/* 解决头条小程序组件内引入字体不生效的问题 */\nbody {\r\n\t      background-color: #f5f5f5;\n}\r\n", ""]);
 // Exports
 module.exports = exports;
 
