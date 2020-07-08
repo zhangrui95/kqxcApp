@@ -147,6 +147,8 @@
 									console.log(value.username === res.data.lxdh  && value.password === res.data.mm);
 									console.log(value.username,res.data.lxdh,value.password,res.data.mm);
 									if(value.username === JSON.parse(res.data).lxdh  && value.password === JSON.parse(res.data).mm){
+										getApp().globalData.is_admin = JSON.parse(res.data).is_admin;
+										getApp().globalData.uid = JSON.parse(res.data).id;
 										uni.redirectTo({
 										    url: '../index/index'
 										});

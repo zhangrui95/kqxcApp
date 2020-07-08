@@ -2,118 +2,22 @@
 	<view>
 		<view class="boxList">
 			<uni-list>
-					<uni-list-item :show-arrow="false" @click="goDetail(item)" v-for="(item,index) in list">
-						<view class="listTitle"><text>{{item.ks_id}}</text></view>
+					<uni-list-item :show-arrow="false" v-for="(item,index) in list">
+						<view class="listTitle"><text>{{item.mc}}</text></view>
 						<view class="msgBox">
-							<text class="bzBox">矿山地址：黑龙江省鸡西市黑山</text>
+							<text class="bzBox">矿山地址：{{item.dz}}</text>
 						</view>
 						<view class="msgBox">
-							<text class="bzBox">被委托人：李菲菲</text>
+							<text class="bzBox">被委托人：{{item.bwtr_xm}}</text>
 						</view>
 						<view class="msgBox">
-							<text class="leftBox">委托时间：2019-12-29</text>
-							<text class="rightBox">委托状态：<text style="color: #F9A936;">待接受</text></text> 
+							<text class="leftBox">委托时间：{{item.wt_sj}}</text>
+							<text class="rightBox">委托状态：<text :style="{color: item.wtzt_dm == '01' ? '#F9A936' : item.wtzt_dm == '02' ? '#29B6FF': item.wtzt_dm == '03' ? '#999999': item.wtzt_dm == '04' ? '#3CE84C' : '#999999'}">{{item.wtzt_mc}}</text></text> 
 						</view>
 						<template v-slot:right="">
-						           <image style="width: 30px;height: 30px;" src="/static/phone.png" mode="widthFix" @click="makePhone"></image>
+						           <image style="width: 30px;height: 30px;" src="/static/phone.png" mode="widthFix" @click="makePhone(item.bwtr_lxdh)"></image>
 						       </template>
 					</uni-list-item>
-				<!-- 	<uni-list-item :show-arrow="false" @click="goDetail('巫山矿山')">
-						<view class="listTitle"><text>黑山矿山</text></view>
-						<view class="msgBox">
-							<text class="bzBox">矿山地址：黑龙江省鸡西市黑山</text>
-						</view>
-						<view class="msgBox">
-							<text class="bzBox">被委托人：李菲菲</text>
-						</view>
-						<view class="msgBox">
-							<text class="leftBox">委托时间：2019-12-29</text>
-							<text class="rightBox">委托状态：<text style="color: #29B6FF;">已接受</text></text> 
-						</view>
-						<template v-slot:right="">
-						           <image style="width: 30px;height: 30px;" src="/static/phone.png" mode="widthFix" @click="makePhone"></image>
-						       </template>
-					</uni-list-item>
-					<uni-list-item :show-arrow="false" @click="goDetail('巫山矿山')">
-						<view class="listTitle"><text>黑山矿山</text></view>
-						<view class="msgBox">
-							<text class="bzBox">矿山地址：黑龙江省鸡西市黑山</text>
-						</view>
-						<view class="msgBox">
-							<text class="bzBox">被委托人：李菲菲</text>
-						</view>
-						<view class="msgBox">
-							<text class="leftBox">委托时间：2019-12-29</text>
-							<text class="rightBox">委托状态：<text style="color: #999999;">已拒绝</text></text> 
-						</view>
-						<template v-slot:right="">
-						           <image style="width: 30px;height: 30px;" src="/static/phone.png" mode="widthFix" @click="makePhone"></image>
-						       </template>
-					</uni-list-item>
-					<uni-list-item :show-arrow="false" @click="goDetail('巫山矿山')">
-						<view class="listTitle"><text>黑山矿山</text></view>
-						<view class="msgBox">
-							<text class="bzBox">矿山地址：黑龙江省鸡西市黑山</text>
-						</view>
-						<view class="msgBox">
-							<text class="bzBox">被委托人：李菲菲</text>
-						</view>
-						<view class="msgBox">
-							<text class="leftBox">委托时间：2019-12-29</text>
-							<text class="rightBox">委托状态：<text style="color: #3CE84C;">已巡检</text></text> 
-						</view>
-						<template v-slot:right="">
-						           <image style="width: 30px;height: 30px;" src="/static/phone.png" mode="widthFix" @click="makePhone"></image>
-						       </template>
-					</uni-list-item>
-					<uni-list-item :show-arrow="false" @click="goDetail('巫山矿山')">
-						<view class="listTitle"><text>黑山矿山</text></view>
-						<view class="msgBox">
-							<text class="bzBox">矿山地址：黑龙江省鸡西市黑山</text>
-						</view>
-						<view class="msgBox">
-							<text class="bzBox">被委托人：李菲菲</text>
-						</view>
-						<view class="msgBox">
-							<text class="leftBox">委托时间：2019-12-29</text>
-							<text class="rightBox">委托状态：<text style="color: #F9A936;">待接受</text></text> 
-						</view>
-						<template v-slot:right="">
-						           <image style="width: 30px;height: 30px;" src="/static/phone.png" mode="widthFix" @click="makePhone"></image>
-						       </template>
-					</uni-list-item>
-					<uni-list-item :show-arrow="false" @click="goDetail('巫山矿山')">
-						<view class="listTitle"><text>黑山矿山</text></view>
-						<view class="msgBox">
-							<text class="bzBox">矿山地址：黑龙江省鸡西市黑山</text>
-						</view>
-						<view class="msgBox">
-							<text class="bzBox">被委托人：李菲菲</text>
-						</view>
-						<view class="msgBox">
-							<text class="leftBox">委托时间：2019-12-29</text>
-							<text class="rightBox">委托状态：<text style="color: #F9A936;">待接受</text></text> 
-						</view>
-						<template v-slot:right="">
-						           <image style="width: 30px;height: 30px;" src="/static/phone.png" mode="widthFix" @click="makePhone"></image>
-						       </template>
-					</uni-list-item>
-					<uni-list-item :show-arrow="false" @click="goDetail('巫山矿山')">
-						<view class="listTitle"><text>黑山矿山</text></view>
-						<view class="msgBox">
-							<text class="bzBox">矿山地址：黑龙江省鸡西市黑山</text>
-						</view>
-						<view class="msgBox">
-							<text class="bzBox">被委托人：李菲菲</text>
-						</view>
-						<view class="msgBox">
-							<text class="leftBox">委托时间：2019-12-29</text>
-							<text class="rightBox">委托状态：<text style="color: #F9A936;">待接受</text></text> 
-						</view>
-						<template v-slot:right="">
-						           <image style="width: 30px;height: 30px;" src="/static/phone.png" mode="widthFix" @click="makePhone"></image>
-						       </template>
-					</uni-list-item>  -->
 				</uni-list>
 		</view>
 		<view class="buttonBox">
@@ -139,9 +43,12 @@
 		components: {
 			detailList,
 		},
-	  onLoad: function () { //option为object类型，会序列化上个页面传递的参数
+	  onShow: function () { //option为object类型，会序列化上个页面传递的参数
 	        console.log('--------------执行------------')
-			getWtData('select * from wtData',(data)=>{
+			getWtData(`SELECT A.*, B.dz,B.mc, C.xm as bwtr_xm, C.lxdh as bwtr_lxdh FROM wtData A
+ LEFT JOIN ksData B ON A.ks_id = B.id
+ LEFT JOIN usersData C ON A.bwtr_id = C.id
+ WHERE A.fqr_id = '${getApp().globalData.uid}'`,(data)=>{
 				console.log('委托',data);
 				 this.list = data;
 			});
@@ -157,14 +64,14 @@
 				    url: '../commissionReceived/commissionReceived'
 				});
 			},
-			entrustColleague:function(){
+			entrustColleague:function(item){
 				uni.navigateTo({
-				    url: '../choiceKs/choiceKs'
+				    url: '../entrustColleague/entrustColleague'
 				});
 			},
-			makePhone:function(){
+			makePhone:function(phone){
 				uni.makePhoneCall({
-				    phoneNumber: '10086' //仅为示例
+				    phoneNumber: phone //仅为示例
 				});
 			}
 		}
@@ -220,11 +127,11 @@
 		border: 0px!important;
 	}
 	.leftBox{
-		width: 50%;
+		width: 60%;
 		float: left;
 	}
 	.rightBox{
-		width: 50%;
+		width: 40%;
 		float: left;
 	}
 	.listTitle{
