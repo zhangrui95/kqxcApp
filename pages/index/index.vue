@@ -38,7 +38,7 @@
 	import uniListItem from "@/components/uni-list-item/uni-list-item.vue"
 	import uniTag from "@/components/uni-tag/uni-tag.vue"
 	import uniNoticeBar from '@/components/uni-notice-bar/uni-notice-bar.vue'
-	import {getKsData,setKsData,getConfig,getXjData,setXjData,getWtData,setWtData,getUsersData,setUsersData,setKsAllData,setXjAllData} from '../common/env.js'
+	import {deleteUpLoad,getXjDataUpLoad,getKsData,setKsData,getConfig,getXjData,setXjData,getWtData,setWtData,getUsersData,setUsersData,setKsAllData,setXjAllData} from '../common/env.js'
 	export default {
 		data() {
 			return {
@@ -52,6 +52,8 @@
 				wtList:[],
 				yhList:[],
 				xjList:[],
+				imgsNet:[],
+				imgsJNet:[],
 				errorNum:0,
 				warnNum:0,
 				today:moment().format('YYYY-MM-DD'),
@@ -60,7 +62,7 @@
 				xj_zq:'7',//周期
 			}
 		},
-		onLoad(){
+		onLoad:function ancsy(){
 			getConfig('select * from config',(data)=>{
 				if(data && data[0] && data[0].xj_jzrq){
 					let startTime = data[0].xj_jzrq;
@@ -83,16 +85,17 @@
 			uni.getNetworkType({
 			    success: function (res) {
 					if(res.networkType !== 'none'){
-						that.network = true;
-						that.getXj();
-						that.getAllXj();
-						that.getWt();
-						that.getYh();
-						that.getKs();
-						that.getKsAll();
+						await that.network = true;
+						await that.getUpload();
+						await that.getXj();
+						await that.getAllXj();
+						await that.getWt();
+						await that.getYh();
+						await that.getKs();
+						await that.getKsAll();
 					}else{
 						that.network = false; 
-						that.getListKs();
+						await that.getListKs();
 						// that.getListXj();
 					}
 			    }
@@ -114,6 +117,83 @@
 			});
 		},
 		methods: {
+			getUpload:function(){
+				getXjDataUpLoad(`SELECT A.*, B.xm, C.mc FROM xjDataUpLoad A LEFT JOIN usersData B ON A.users_id = B.id LEFT JOIN ksData C ON A.ks_id = C.id  WHERE A.users_id = '${getApp().globalData.uid}' ORDER BY dk_sj DESC`,(data)=>{
+					console.log('待上传======================callback====================>',data)
+					if(data.length > 0){
+						uni.showLoading({
+						    title: '数据上传中…',
+							mask:true
+						});
+						 data.map((item)=>{
+							 console.log('------------图【item.yj_zp】------------',item.yj_zp);
+							 console.log('------------图【item.jj_zp】------------',item.jj_zp);
+							 item.yj_zp.split('#').map((e)=>{
+							 	uni.uploadFile({
+							 		url: getApp().globalData.weedIp, //仅为示例，非真实的接口地址
+							 		filePath: e,
+							 		name: 'file',
+							 		formData: {
+							 		    'user': 'test'
+							 		},
+							 		success: (uploadFileRes) => {
+							 			console.log('uploadFileRes.data',uploadFileRes.data,JSON.parse(uploadFileRes.data).fileUrl);
+										let imgsNet = that.imgsNet;
+										console.log('======图一转行【JSON.parse(uploadFileRes.data).fileUrl】======',JSON.parse(uploadFileRes.data).fileUrl)
+							 			imgsNet.push(JSON.parse(uploadFileRes.data).fileUrl);
+							 			that.imgsNet = imgsNet;
+							 		}
+							 	});
+							 });
+							item.jj_zp.split('#').map((e)=>{
+							 	uni.uploadFile({
+							 		url: getApp().globalData.weedIp, //仅为示例，非真实的接口地址
+							 		filePath: e,
+							 		name: 'file',
+							 		formData: {
+							 		    'user': 'test'
+							 		},
+							 		success: (uploadFileRes) => {
+										let imgsJNet = that.imgsJNet;
+										console.log('======图二转行【JSON.parse(uploadFileRes.data).fileUrl】======',JSON.parse(uploadFileRes.data).fileUrl)
+							 			imgsJNet.push(JSON.parse(uploadFileRes.data).fileUrl);
+							 			that.imgsJNet = imgsJNet;
+							 		}
+							 	});
+							 }); 
+							 setTimeout(()=>{
+								 item.jj_zp_net = that.imgsNet.join('#');
+								 item.yj_zp_net = that.imgsJNet.join('#');
+								 console.log('item.jj_zp_net,item.yj_zp_net',item.jj_zp_net,item.yj_zp_net);
+								 console.log('item==========>',item);
+								 let {users_id, ...dataItem} = item;
+								 dataItem.uid = getApp().globalData.uid;
+								 uni.request({
+								     url: getApp().globalData.ip + '/saveXjData',
+								     data: dataItem,
+								 	method:'POST',
+								     success: (res) => {
+										 console.log('待上传上传',res.data);
+										 if(res.data.data && !res.data.error){
+											 setTimeout(()=>{
+											 	uni.hideLoading();
+											 },500)
+											 setXjAllData([dataItem],(res)=>{});
+											 setXjData([dataItem],(res)=>{});
+											 deleteUpLoad(`DELETE FROM xjDataUpLoad WHERE id = '${item.id}'`,(res)=>{
+											 	console.log('删除待上传成功',res.error);
+											 });
+											 console.log('巡查成功',res.data);
+										}else{
+												uni.hideLoading();
+										}
+									}
+								 }); 
+							 },500)
+						 });
+					}
+				});
+			},
 			goDetail: function(e) {
 				uni.navigateTo({
 				    url: '../detailKs/detailKs?record=' + JSON.stringify(e)
@@ -133,7 +213,9 @@
 							setKsData(res.data.data,(res)=>{//存矿山
 								this.getListKs();
 							});
-							uni.hideLoading();
+							setTimeout(()=>{
+								uni.hideLoading();
+							},500);
 						} 
 				    }
 				});
@@ -150,7 +232,9 @@
 				    success: (res) => {
 						if(res.data.data && !res.data.error){
 							setKsAllData(res.data.data,(res)=>{});
-							uni.hideLoading();
+							setTimeout(()=>{
+								uni.hideLoading();
+							},500);
 						} 
 				    }
 				});
@@ -162,6 +246,7 @@
 				 A.jd,
 				 A.wd,
 				 A.mc,
+				 D.xm as fzr_xm,
 				 C.xm,
 				 B.dk_sj,
 				 B.kczt_dm,
@@ -173,6 +258,7 @@
 				 ksData A 
 				 LEFT JOIN (SELECT * FROM xjData WHERE users_id = '${getApp().globalData.uid}' AND dk_sj >= '${this.oldStart} 00:00:00' ORDER BY dk_sj DESC) B ON A.id = B.ks_id
 				 LEFT JOIN usersData C ON B.users_id = C.id
+				 LEFT JOIN usersData D ON A.fzr_id = D.id
 				ORDER BY A.id,B.dk_sj desc`,(data)=>{
 	                let data1 = data;
 					let hash = {}; 
@@ -186,11 +272,12 @@
 						let oldList = data1.filter(item=> (item.id === event.id) && (item.dk_sj < this.oldEnd + '23:59:59'));
 						let nowList = data1.filter(item=> (item.id === event.id) && (item.dk_sj > this.start + '00:00:00'));
 						let day = moment(this.end).diff(moment(event.dk_sj),'day');
+						console.log('nowList',nowList);
 						if(nowList&&nowList.length > 0){
 							if(day < (parseInt(this.xj_jg) + 1)){
 								event.zt = 'error';
 								this.errorNum = this.errorNum + 1;
-							}else if(day < (parseInt(this.xj_zq) - parseInt(this.xj_jg))){
+							}else if(day < (parseInt(this.xj_zq) - parseInt(this.xj_jg)*parseInt(this.xj_pc))){
 								event.zt = 'warning';
 								this.warnNum = this.warnNum + 1;
 							}else{
@@ -199,7 +286,7 @@
 						}else{
 							if(oldList.length >= this.xj_pc){
 								event.zt = '';
-							}else if(day < (parseInt(this.xj_zq) - parseInt(this.xj_jg)*parseInt(this.xj_pc))){
+							}else if(day < (parseInt(this.xj_zq) - parseInt(this.xj_jg)) ){
 								event.zt = 'warning';
 								this.warnNum = this.warnNum + 1;
 							}else{
@@ -209,19 +296,25 @@
 						}
 					})
 					this.list = data2;
-					uni.hideLoading(); 
+					setTimeout(()=>{
+						uni.hideLoading();
+					},500);
 				});
 			},
 			getListYh:function(){
 				getUsersData('select * from usersData',(data)=>{
 					this.yhList = data;
-					uni.hideLoading();
+					setTimeout(()=>{
+						uni.hideLoading();
+					},500);
 				});
 			},	
 			getListWt:function(){
 				getWtData('select * from wtData',(data)=>{
 					this.wtList = data;
-					uni.hideLoading();
+					setTimeout(()=>{
+						uni.hideLoading();
+					},500);
 				});
 			},
 			getXj:function(){
@@ -237,7 +330,9 @@
 						if(res.data.data && !res.data.error){
 							setXjData(res.data.data,(res)=>{//存巡检记录
 							});
-							uni.hideLoading();
+							setTimeout(()=>{
+								uni.hideLoading();
+							},500);
 						} 
 				    }
 				});
@@ -255,7 +350,9 @@
 						if(res.data.data && !res.data.error){
 							setXjAllData(res.data.data,(res)=>{//存巡检记录
 							});
-							uni.hideLoading();
+							setTimeout(()=>{
+								uni.hideLoading();
+							},500);
 						} 
 				    }
 				});
@@ -274,7 +371,9 @@
 						  setWtData(res.data.data,(res)=>{//存委托
 						  	this.getListWt();
 						  });
-						  uni.hideLoading();
+						  setTimeout(()=>{
+						  	uni.hideLoading();
+						  },500);
 						} 
 				    }
 				});
@@ -293,7 +392,9 @@
 						 setUsersData(res.data.data,(res)=>{//存用户
 						 	this.getListYh();
 						 });
-						 uni.hideLoading();
+						 setTimeout(()=>{
+						 	uni.hideLoading();
+						 },500);
 						} 
 				    }
 				});

@@ -1,7 +1,8 @@
 <template>
 	<view>
 		<view class="boxList">
-			<uni-list>
+			<view class="noList" v-if="list.length == 0">暂无数据</view>
+			<uni-list  v-if="list.length > 0">
 					<uni-list-item :show-arrow="false" v-for="(item,index) in list">
 						<view class="listTitle"><text>{{item.mc}}</text></view>
 						<view class="msgBox">
@@ -48,7 +49,7 @@
 			getWtData(`SELECT A.*, B.dz,B.mc, C.xm as bwtr_xm, C.lxdh as bwtr_lxdh FROM wtData A
  LEFT JOIN ksData B ON A.ks_id = B.id
  LEFT JOIN usersData C ON A.bwtr_id = C.id
- WHERE A.fqr_id = '${getApp().globalData.uid}'`,(data)=>{
+ WHERE A.fqr_id = '${getApp().globalData.uid}' ORDER BY A.wt_sj DESC`,(data)=>{
 				console.log('委托',data);
 				 this.list = data;
 			});
@@ -79,6 +80,13 @@
 </script>
 
 <style>
+	.noList{
+		text-align: center;
+		font-size: 14px;
+		color: #999;
+		height: 50px;
+		line-height: 50px;
+	}
 	.uni-list-item--hover{
 		background: #fff!important;
 	}

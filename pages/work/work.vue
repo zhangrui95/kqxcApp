@@ -2,7 +2,7 @@
     <view>
         <view class="pageBody">
 			<view class="page-section page-section-gap">
-			     <map :style="{height:height+ 'px'}" style="width: 100%; position: relative;" :latitude="latitude" :longitude="longitude" :markers="covers" @markertap='listShow' @labeltap='listShow'>
+			     <map :style="{height:height+ 'px'}" scale="10" style="width: 100%; position: relative;" :latitude="latitude" :longitude="longitude" :markers="covers" @markertap='listShow' @labeltap='listShow'>
 					 <cover-view class="kdNumberBoxAll"></cover-view>
 					 <cover-view class="kdNumberBox"> 当前矿点：{{kdNum}}个</cover-view>
 					 <cover-view class="kdNumberBox1">正常矿点：{{kdNum - ycNum}}个</cover-view>
@@ -81,7 +81,7 @@
 					}
 				})
 			});
-			getKsAllData('select * from ksAllData',(data)=>{
+			getKsAllData('select A.*, B.xm as fzr_xm from ksAllData A LEFT JOIN usersData B ON A.fzr_id = B.id',(data)=>{
 				console.log('ksAllData=====>',data,this.ycId);
 				let latitude = 0;
 				let longitude = 0;

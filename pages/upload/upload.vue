@@ -15,7 +15,7 @@
 			};
 		},
 		onLoad: function (option) { //option为object类型，会序列化上个页面传递的参数
-			getXjDataUpLoad(`select * from xjDataUpLoad`,(data)=>{
+			getXjDataUpLoad(`SELECT A.*, B.xm, C.mc FROM xjDataUpLoad A LEFT JOIN usersData B ON A.users_id = B.id LEFT JOIN ksData C ON A.ks_id = C.id  WHERE A.users_id = '${getApp().globalData.uid}' ORDER BY dk_sj DESC`,(data)=>{
 				console.log('待上传======================callback====================>',data)
 				this.list = data;
 			});
