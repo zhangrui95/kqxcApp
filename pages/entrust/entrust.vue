@@ -45,12 +45,12 @@
 			detailList,
 		},
 	  onShow: function () { //option为object类型，会序列化上个页面传递的参数
-	        console.log('--------------执行------------')
+	        // console.log('--------------执行------------')
 			getWtData(`SELECT A.*, B.dz,B.mc, C.xm as bwtr_xm, C.lxdh as bwtr_lxdh FROM wtData A
  LEFT JOIN ksData B ON A.ks_id = B.id
  LEFT JOIN usersData C ON A.bwtr_id = C.id
  WHERE A.fqr_id = '${getApp().globalData.uid}' ORDER BY A.wt_sj DESC`,(data)=>{
-				console.log('委托',data);
+				// console.log('委托',data);
 				 this.list = data;
 			});
 		}, 

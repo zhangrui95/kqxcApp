@@ -28,7 +28,19 @@
         ,{
             "path" : "pages/upload/upload",
             "style" : {
-				"navigationBarTitleText": "待上传"
+				"navigationBarTitleText": "待上传",
+				"app-plus": {
+							 "titleNView": {
+								 "buttons": [
+												{
+													 "color": "#fff",
+													 "fontSize": "14px",
+													 "text": "上传",
+													 "width": "50px"
+												}
+											] 
+							 }
+				}
 			}
         }
         ,{

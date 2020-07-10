@@ -5,7 +5,8 @@ export default {
 	   is_admin:'0',
 	   uid:'',
 	   weedIp:'',
-	   httpImg:''
+	   httpImg:'',
+	   version:'1.0.0'
 	},  
 	onLaunch: function() {
 		console.log('App Launch');

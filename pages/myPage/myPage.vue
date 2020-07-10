@@ -5,7 +5,7 @@
 			<view class="name">{{name}}</view>
 		</view>
 		<uni-list style="margin-top:10px;">
-		    <uni-list-item thumb="../../static/bbjc.png" title="检查版本"></uni-list-item>
+		    <uni-list-item thumb="../../static/bbjc.png" title="检测版本" @click="getUpdate"></uni-list-item>
 			<!-- <uni-list-item thumb="../../static/rjxy.png" title="软件许可协议"></uni-list-item> -->
 		</uni-list>
        <!-- <uni-list style="margin-top:80px;">
@@ -70,6 +70,62 @@
 				 uni.reLaunch({
 				     url: '../login/index'
 				 });
+			},
+			getUpdate:function(){
+				uni.getNetworkType({
+				    success: function (res) {
+						if(res.networkType !== 'none'){
+							uni.showLoading({
+							    title: '版本检测中…',
+								mask: true
+							});
+							uni.request({
+							    url: getApp().globalData.ip + '/getConfig', 
+							    data: {},
+								method:'POST',
+							    success: (res) => {
+									// console.log('getConfig===========>',res.data);
+									if(res.data.data && !res.data.error){
+										if(getApp().globalData.version !== res.data.data.last_version){
+											uni.hideLoading();
+											uni.showModal({
+											    title: '检测到最新版本,是否确认更新？',
+											    success: function (res) {
+											        if (res.confirm) {
+											            // console.log('用户点击确定');
+														uni.downloadFile({
+														    url: res.data.data.app_down,
+														    success: (res) => {
+														        if (res.statusCode === 200) {
+														            // console.log('下载成功');
+														        }
+														    }
+														});
+											        } else if (res.cancel) {
+											            // console.log('用户点击取消');
+											        }
+											    }
+											});
+										}else{
+											uni.hideLoading();
+											uni.showToast({
+											    title: '当前版本已是最新版本',
+											    duration: 2000,
+												icon:'none' 
+											});
+										}
+									}
+							    } 
+							});
+						}else{
+							uni.showToast({
+							    title: '请连接互联网检测版本',
+							    duration: 2000,
+								icon:'none'
+							});
+						}
+					}
+				});
 			}
 		}
 	}

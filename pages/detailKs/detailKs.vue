@@ -10,10 +10,10 @@
 				<text>历史巡查列表（当前日期：{{time}}）</text>
 				<view class="timeBtn" @click="timeSearch">时间筛选 <uni-icons type="search" size="16" color="#2f67d5"></uni-icons></view>
 			</view>
-			<detailList :list="list"></detailList>
+			<detailList :list="list" :record="record"></detailList>
 		</view>
 		<view class="buttonBox">
-			 <button type="primary" style="background: #00b7f0;" @click="entrustColleague()">委托同事</button>
+			 <button type="primary" :style="{background: wtList.length > 0 ? '#c7c7c7' : '#00b7f0'}" @click="entrustColleague()">委托同事</button>
 			 <button type="primary" style="background: #f19049;" @click="goXc()">马上巡查</button>
 		</view>
 	</view>
@@ -23,27 +23,60 @@
 	import moment from 'moment';
 	import uniIcons from "@/components/uni-icons/uni-icons.vue"
 	import detailList from "@/components/detail-list/detail-list.vue"
-	import {getXjData} from '../common/env.js'
+	import {getXjData,getWtData,getConfig} from '../common/env.js'
 	export default {
 		data() {
 			return {
 				record:{},
 				time: moment().format('YYYY.MM.DD'),
 				list:[],
+				start:'',
+				end:'',
+				oldStart:'',
+				oldEnd:'',
+				wtList:[],
 			}
 		},
 		components: {
 			detailList,
 		},
 	    onLoad: function (option) { //option为object类型，会序列化上个页面传递的参数
-			console.log(option.record); //打印出上个页面传递的参数。
+			// console.log(option.record); //打印出上个页面传递的参数。
 			this.record = JSON.parse(option.record);
 			let id = JSON.parse(option.record).id;
-			console.log('id',id)
+			getConfig('select * from config',(data)=>{
+				if(data && data[0] && data[0].xj_jzrq){
+					let startTime = data[0].xj_jzrq;
+					let today = moment().format('YYYY-MM-DD');
+					let daysNum = Math.ceil((moment(today).diff(startTime, 'days') + 1) / (data[0].xj_zq ? data[0].xj_zq : 7)) - 1; 
+					let start =  moment(startTime).add(daysNum*(data[0].xj_zq ? data[0].xj_zq : 7),'day').format('YYYY-MM-DD');
+					let end =  moment(start).add(data[0].xj_zq-1,'day').format('YYYY-MM-DD');
+					let oldStart = moment(startTime).add((daysNum - 1)*(data[0].xj_zq ? data[0].xj_zq : 7),'day').format('YYYY-MM-DD');
+					let oldEnd =  moment(oldStart).add(data[0].xj_zq ? data[0].xj_zq - 1 : 6,'day').format('YYYY-MM-DD');
+					this.start = start;
+					this.end = end;
+					this.oldStart = oldStart;
+					this.oldEnd = oldEnd;
+				}
+			});
+			// console.log('id',id)
 			getXjData(`SELECT A.*, B.xm, C.mc FROM xjData A LEFT JOIN usersData B ON A.users_id = B.id LEFT JOIN ksData C ON A.ks_id = C.id WHERE A.ks_id = '${id}' AND A.users_id = '${getApp().globalData.uid}' ORDER BY dk_sj DESC`,(data)=>{
-				console.log('巡检记录======================callback====================>',data)
+				// console.log('巡检记录======================callback====================>',data)
 				this.list = data;
 			});
+			getWtData(`SELECT A.*, B.dz,B.mc, C.xm as bwtr_xm, C.lxdh as bwtr_lxdh FROM wtData A
+			LEFT JOIN ksData B ON A.ks_id = B.id
+			LEFT JOIN usersData C ON A.bwtr_id = C.id
+			WHERE A.fqr_id = '${getApp().globalData.uid}' AND A.ks_id='${id}'  ORDER BY A.wt_sj DESC`,(data)=>{
+							console.log('委托',data);
+							let wtList = [];
+							data.map((item)=>{
+								if((moment(item.wt_sj) >= moment(this.start)) && (moment(item.wt_sj) <= moment(this.end)) && (item.wtzt_dm === '01' || item.wtzt_dm === '02')){
+									wtList.push(item);
+								}
+								this.wtList = wtList;
+							})
+						});
 		}, 
 		onShow:function(){
 			getXjData(`SELECT A.*, B.xm, C.mc FROM xjData A LEFT JOIN usersData B ON A.users_id = B.id LEFT JOIN ksData C ON A.ks_id = C.id WHERE A.ks_id = '${this.record.id}' AND A.users_id = '${getApp().globalData.uid}' ORDER BY dk_sj DESC`,(data)=>{
@@ -57,15 +90,23 @@
 				});
 			},
 			goXc:function(e){
-				console.log('e', e);
+				// console.log('e', e);
 				uni.navigateTo({
 				    url: '../inspection/inspection?record=' + JSON.stringify(this.record),
 				});
 			},
 			entrustColleague:function(){
-				uni.navigateTo({
-				    url: '../entrustColleague/entrustColleague?record=' + JSON.stringify(this.record),
-				});
+				if(this.wtList.length > 0){
+					uni.showToast({
+						title: '当前周期内该矿山处于委托状态，暂不支持委托他人',
+						icon: 'none',
+						duration: 5000,
+					}); 
+				}else{
+					uni.navigateTo({
+					    url: '../entrustColleague/entrustColleague?record=' + JSON.stringify(this.record),
+					});
+				}
 			}
 		}
 	}

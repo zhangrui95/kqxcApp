@@ -2,7 +2,7 @@
 	<view>
 		<view class="noList" v-if="list.length == 0">暂无数据</view>
 		<uni-list v-if="list.length > 0">
-				<uni-list-item :show-arrow="true" @click="goDetail(item)" v-for="(item,index) in list">
+				<uni-list-item :show-arrow="true" @click="goDetail(item,record)" v-for="(item,index) in list">
 					<view class="listTitle"><text>{{item.dk_sj.substring(0,10)}}</text></view>
 					<view class="msgBox">
 						<text class="leftBox">巡查时间：{{item.dk_sj.substring(11,19)}}</text>
@@ -26,6 +26,7 @@
 		name:'detailList',
 		props:{
 			list: Array,
+			record: Object,
 		},
 		data() {
 			return {
@@ -33,9 +34,9 @@
 			}
 		},
 		methods: {
-			goDetail:function(item){
+			goDetail:function(item,record){ 
 				uni.navigateTo({
-				    url: '../../pages/inspectionDetail/inspectionDetail?detail='+JSON.stringify(item)
+				    url: '../../pages/inspectionDetail/inspectionDetail?detail='+JSON.stringify(item) + '&record=' + JSON.stringify(record)
 				});
 			}
 		}

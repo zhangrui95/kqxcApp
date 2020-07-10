@@ -39,11 +39,11 @@
 			}
 		},
 		onShow(){
-			console.log('========================================================')
+			// console.log('========================================================')
 			let that = this;
 			uni.getNetworkType({
 			    success: function (res) {
-			        console.log('网络状态',res.networkType);
+			        // console.log('网络状态',res.networkType);
 					that.isOpenDB(res.networkType);  
 					if(res.networkType !== 'none'){
 						that.network = true
@@ -71,15 +71,15 @@
 		},
 		methods: {
 			 isOpenDB(network) {  
-					console.log('是否打开数据库');  
+					// console.log('是否打开数据库');  
 					var isOpen = plus.sqlite.isOpenDatabase({  
 						name: 'kqxj', //数据库的名字  
 						path: '_doc/kqxjList.db' //地址  
 					});  
-					console.log(!isOpen);  
+					// console.log(!isOpen);  
 	
 					if (!isOpen) {  
-						console.log('Unoepned:' + isOpen);  
+						// console.log('Unoepned:' + isOpen);  
 						// plus.nativeUI.alert('Unopened!');  
 						this.openDB(); //打開DB  
 					} else {  
@@ -91,19 +91,19 @@
 			openDB() {  
 				//SQLite      
 				openComDB('kqxj', '_doc/kqxjList.db', res => {   
-					console.log('打开数据库');  
+					// console.log('打开数据库');  
 					this.isNet();  
 				});  
 			},  
 			isNet(network){  
 				if (network == 'wifi' || network == '4g') {  
-					console.log('-------------网络正常------------')
+					// console.log('-------------网络正常------------')
 				} else {  
-					  console.log('-------------无网------------')
+					  // console.log('-------------无网------------')
 				}
 			},  		
 			formSubmit: function(e) {
-				console.log('e.detail.value',e.detail.value);
+				// console.log('e.detail.value',e.detail.value);
 				let value = e.detail.value;
 				if(value.username && value.password){
 					if(this.network){
@@ -112,7 +112,7 @@
 						    data: {"user":value.username,"password":value.password},
 							method:'POST',
 						    success: (res) => {
-								console.log('res.data',res.data);
+								// console.log('res.data',res.data);
 								if(res.data.data && !res.data.error){
 									getApp().globalData.is_admin = res.data.data.is_admin;
 									getApp().globalData.uid = res.data.data.id;
@@ -142,10 +142,10 @@
 						uni.getStorage({
 						    key: 'user',
 						    success: function (res) {
-						        console.log(res.data);
+						        // console.log(res.data);
 								if(res.data){
-									console.log(value.username === res.data.lxdh  && value.password === res.data.mm);
-									console.log(value.username,res.data.lxdh,value.password,res.data.mm);
+									// console.log(value.username === res.data.lxdh  && value.password === res.data.mm);
+									// console.log(value.username,res.data.lxdh,value.password,res.data.mm);
 									if(value.username === JSON.parse(res.data).lxdh  && value.password === JSON.parse(res.data).mm){
 										getApp().globalData.is_admin = JSON.parse(res.data).is_admin;
 										getApp().globalData.uid = JSON.parse(res.data).id;

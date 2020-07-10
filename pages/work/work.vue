@@ -64,7 +64,7 @@
 				}
 			});
 			getKsAllData(`SELECT id, '00' as zt_dm FROM ksData UNION ALL SELECT id, '02' as zt_dm FROM ( SELECT A.id, A.dz, A.jd, A.mc, A.ms, A.wd, B.dk_sj FROM ksData A LEFT JOIN ( SELECT * FROM xjData WHERE dk_sj > '${this.start} 00:00:00' AND yczt_dm = '02' ) B ON A.id = B.ks_id ) WHERE dk_sj IS NOT NULL GROUP BY id UNION ALL SELECT id, '03' as zt_dm FROM ( SELECT A.id, A.dz, A.jd, A.mc, A.ms, A.wd, B.dk_sj FROM ksData A LEFT JOIN ( SELECT * FROM xjData WHERE dk_sj > '${this.start} 00:00:00' AND yczt_dm = '02' ) B ON A.id = B.ks_id ) WHERE dk_sj IS NULL GROUP BY id`,(data)=>{
-				console.log('data 数量汇总是总数',data);
+				// console.log('data 数量汇总是总数',data);
 				this.kdNum = 0;
 				this.ycNum = 0;
 				this.zwsjNum = 0;
@@ -82,14 +82,14 @@
 				})
 			});
 			getKsAllData('select A.*, B.xm as fzr_xm from ksAllData A LEFT JOIN usersData B ON A.fzr_id = B.id',(data)=>{
-				console.log('ksAllData=====>',data,this.ycId);
+				// console.log('ksAllData=====>',data,this.ycId);
 				let latitude = 0;
 				let longitude = 0;
 				let covers = [];
 				data.map((item,index)=>{
 					latitude = latitude + parseFloat(item.wd);
 					longitude = longitude + parseFloat(item.jd);
-					console.log('latitude',latitude,longitude);
+					// console.log('latitude',latitude,longitude);
 					this.ycId.map((event)=>{
 						if(event === item.id){
 							item.zt_dm = '02';
@@ -110,7 +110,7 @@
 		},
 		methods: {
 			listShow:function(e){
-				console.log('e:',e,e.detail.markerId);
+				// console.log('e:',e,e.detail.markerId);
 				let index = this.covers.findIndex((item)=>{
 					return item.id === e.detail.markerId
 				})

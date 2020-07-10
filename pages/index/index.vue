@@ -62,7 +62,7 @@
 				xj_zq:'7',//周期
 			}
 		},
-		onLoad:function ancsy(){
+		onLoad(){
 			getConfig('select * from config',(data)=>{
 				if(data && data[0] && data[0].xj_jzrq){
 					let startTime = data[0].xj_jzrq;
@@ -85,17 +85,18 @@
 			uni.getNetworkType({
 			    success: function (res) {
 					if(res.networkType !== 'none'){
-						await that.network = true;
-						await that.getUpload();
-						await that.getXj();
-						await that.getAllXj();
-						await that.getWt();
-						await that.getYh();
-						await that.getKs();
-						await that.getKsAll();
+						that.network = true;
+						that.getUpload(()=>{
+							that.getXj();
+							that.getAllXj();
+							that.getWt();
+							that.getYh();
+							that.getKs();
+							that.getKsAll();
+						});
 					}else{
 						that.network = false; 
-						await that.getListKs();
+						that.getListKs();
 						// that.getListXj();
 					}
 			    }
@@ -117,17 +118,20 @@
 			});
 		},
 		methods: {
-			getUpload:function(){
-				getXjDataUpLoad(`SELECT A.*, B.xm, C.mc FROM xjDataUpLoad A LEFT JOIN usersData B ON A.users_id = B.id LEFT JOIN ksData C ON A.ks_id = C.id  WHERE A.users_id = '${getApp().globalData.uid}' ORDER BY dk_sj DESC`,(data)=>{
-					console.log('待上传======================callback====================>',data)
+			getUpload:function(callback){
+				let that = this;
+				getXjDataUpLoad(`SELECT A.*, B.xm, C.mc FROM xjDataUpLoad A LEFT JOIN usersData B ON A.users_id = B.id LEFT JOIN ksData C ON A.ks_id = C.id ORDER BY dk_sj DESC`,(data)=>{
+					// console.log('待上传======================callback====================>',data)
 					if(data.length > 0){
 						uni.showLoading({
 						    title: '数据上传中…',
-							mask:true
+							mask:true 
 						});
 						 data.map((item)=>{
-							 console.log('------------图【item.yj_zp】------------',item.yj_zp);
-							 console.log('------------图【item.jj_zp】------------',item.jj_zp);
+							 let imgsJNet = []; 
+							 let imgsNet = [];
+							 // console.log('------------图【item.yj_zp】------------',item.yj_zp,item.yj_zp.split('#'));
+							 // console.log('------------图【item.jj_zp】------------',item.jj_zp,item.jj_zp.split('#'));
 							 item.yj_zp.split('#').map((e)=>{
 							 	uni.uploadFile({
 							 		url: getApp().globalData.weedIp, //仅为示例，非真实的接口地址
@@ -137,9 +141,8 @@
 							 		    'user': 'test'
 							 		},
 							 		success: (uploadFileRes) => {
-							 			console.log('uploadFileRes.data',uploadFileRes.data,JSON.parse(uploadFileRes.data).fileUrl);
-										let imgsNet = that.imgsNet;
-										console.log('======图一转行【JSON.parse(uploadFileRes.data).fileUrl】======',JSON.parse(uploadFileRes.data).fileUrl)
+							 			// console.log('uploadFileRes.data',uploadFileRes.data,JSON.parse(uploadFileRes.data).fileUrl);
+										// console.log('======图一转行【JSON.parse(uploadFileRes.data).fileUrl】======',JSON.parse(uploadFileRes.data).fileUrl)
 							 			imgsNet.push(JSON.parse(uploadFileRes.data).fileUrl);
 							 			that.imgsNet = imgsNet;
 							 		}
@@ -154,8 +157,7 @@
 							 		    'user': 'test'
 							 		},
 							 		success: (uploadFileRes) => {
-										let imgsJNet = that.imgsJNet;
-										console.log('======图二转行【JSON.parse(uploadFileRes.data).fileUrl】======',JSON.parse(uploadFileRes.data).fileUrl)
+										// console.log('======图二转行【JSON.parse(uploadFileRes.data).fileUrl】======',JSON.parse(uploadFileRes.data).fileUrl)
 							 			imgsJNet.push(JSON.parse(uploadFileRes.data).fileUrl);
 							 			that.imgsJNet = imgsJNet;
 							 		}
@@ -164,10 +166,11 @@
 							 setTimeout(()=>{
 								 item.jj_zp_net = that.imgsNet.join('#');
 								 item.yj_zp_net = that.imgsJNet.join('#');
-								 console.log('item.jj_zp_net,item.yj_zp_net',item.jj_zp_net,item.yj_zp_net);
-								 console.log('item==========>',item);
+								 // console.log('item.jj_zp_net,item.yj_zp_net',item.jj_zp_net,item.yj_zp_net);
+								 // console.log('item==========>',item);
+								 let uidId = item.users_id;
 								 let {users_id, ...dataItem} = item;
-								 dataItem.uid = getApp().globalData.uid;
+								 dataItem.uid = uidId;
 								 uni.request({
 								     url: getApp().globalData.ip + '/saveXjData',
 								     data: dataItem,
@@ -181,16 +184,36 @@
 											 setXjAllData([dataItem],(res)=>{});
 											 setXjData([dataItem],(res)=>{});
 											 deleteUpLoad(`DELETE FROM xjDataUpLoad WHERE id = '${item.id}'`,(res)=>{
-											 	console.log('删除待上传成功',res.error);
+											 	// console.log('删除待上传成功',res.error);
 											 });
-											 console.log('巡查成功',res.data);
+											 let idx = that.wtList.findIndex((event)=>{
+											 	return event.ks_id === item.ks_id;
+											 });
+											 if(idx > -1 && that.wtList[idx].wtzt_dm === '02'){
+												 uni.request({
+												     url: getApp().globalData.ip + '/updateWtData',
+												     data: {"wt_id":that.wtList[idx].id,"wtzt_dm":'04'},
+												 	method:'POST',
+												     success: (res) => {
+												 		// console.log('修改委托记录状态',res.data);
+												 		if(res.data.data && !res.data.error){
+												 				let dataItem = {"id":that.wtList[idx].id,"ks_id":that.wtList[idx].ks_id,"wt_sj":moment().format('YYYY-MM-DD HH:mm:ss'),"fqr_id":that.wtList[idx].fqr_id,"bwtr_id":that.wtList[idx].bwtr_id,"wtzt_dm":'04',"wtzt_mc":'已巡检'};
+																setWtData([dataItem],(res)=>{});
+												 		} 
+												     }
+												 });
+											 }
+											 // console.log('巡查成功',res.data);
 										}else{
 												uni.hideLoading();
 										}
+										callback({error:null});
 									}
 								 }); 
-							 },500)
+							 },1000)
 						 });
+					}else{
+						callback({error:null});
 					}
 				});
 			},
@@ -272,7 +295,7 @@
 						let oldList = data1.filter(item=> (item.id === event.id) && (item.dk_sj < this.oldEnd + '23:59:59'));
 						let nowList = data1.filter(item=> (item.id === event.id) && (item.dk_sj > this.start + '00:00:00'));
 						let day = moment(this.end).diff(moment(event.dk_sj),'day');
-						console.log('nowList',nowList);
+						// console.log('nowList',nowList);
 						if(nowList&&nowList.length > 0){
 							if(day < (parseInt(this.xj_jg) + 1)){
 								event.zt = 'error';
