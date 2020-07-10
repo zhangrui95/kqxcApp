@@ -24,7 +24,18 @@
 		},
 		methods:{
 			getUploadList:function(){
-				getXjDataUpLoad(`SELECT A.*, B.xm, C.mc FROM xjDataUpLoad A LEFT JOIN usersData B ON A.users_id = B.id LEFT JOIN ksData C ON A.ks_id = C.id ORDER BY dk_sj DESC`,(data)=>{
+				getXjDataUpLoad(`SELECT
+				 A.*,
+				 B.xm,
+				 C.mc,
+				 D.xm as fzr_xm
+				FROM
+				 xjDataUpLoad A
+				 LEFT JOIN usersData B ON A.users_id = B.id
+				 LEFT JOIN ksData C ON A.ks_id = C.id
+				 LEFT JOIN usersData D ON C.fzr_id = D.id
+				ORDER BY
+				 dk_sj DESC`,(data)=>{
 						// console.log('待上传======================callback====================>',data)
 						this.list = data;
 						if(data.length === 0){

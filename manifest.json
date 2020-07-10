@@ -12,7 +12,8 @@
             "Maps" : {},
             "Speech" : {},
             "Webview-x5" : {},
-            "SQLite" : {}
+            "SQLite" : {},
+            "OAuth" : {}
         },
         "distribute" : {
             "android" : {

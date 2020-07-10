@@ -35,9 +35,15 @@
 		},
 		methods: {
 			goDetail:function(item,record){ 
-				uni.navigateTo({
-				    url: '../../pages/inspectionDetail/inspectionDetail?detail='+JSON.stringify(item) + '&record=' + JSON.stringify(record)
-				});
+				if(record&&JSON.stringify(record)){
+					uni.navigateTo({
+					    url: '../../pages/inspectionDetail/inspectionDetail?detail='+JSON.stringify(item) + '&record=' + JSON.stringify(record)
+					});
+				}else{
+					uni.navigateTo({
+					    url: '../../pages/inspectionDetail/inspectionDetail?detail='+JSON.stringify(item)
+					});
+				}
 			}
 		}
 	}
