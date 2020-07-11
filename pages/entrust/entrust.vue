@@ -13,7 +13,7 @@
 						</view>
 						<view class="msgBox">
 							<text class="leftBox">委托时间：{{item.wt_sj}}</text>
-							<text class="rightBox">委托状态：<text :style="{color: item.wtzt_dm == '01' ? '#F9A936' : item.wtzt_dm == '02' ? '#29B6FF': item.wtzt_dm == '03' ? '#999999': item.wtzt_dm == '04' ? '#3CE84C' : '#999999'}">{{item.wtzt_mc}}</text></text> 
+							<text class="rightBox">委托状态：<text :style="{color: item.wtzt_dm == '01' ? '#F9A936' : item.wtzt_dm == '02' ? '#29B6FF': item.wtzt_dm == '03' ? '#999999': item.wtzt_dm == '04' ? '#3CE84C' : '#bbb'}">{{item.wtzt_mc}}</text></text> 
 						</view>
 						<template v-slot:right="">
 						           <image style="width: 30px;height: 30px;" src="/static/phone.png" mode="widthFix" @click="makePhone(item.bwtr_lxdh)"></image>

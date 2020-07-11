@@ -2,7 +2,7 @@
     <view>
         <view class="pageBody">
 			<view class="page-section page-section-gap">
-			     <map :style="{height:height+ 'px'}" scale="10" style="width: 100%; position: relative;" :latitude="latitude" :longitude="longitude" :markers="covers" @markertap='listShow' @labeltap='listShow'>
+			     <map :style="{height:height+ 'px'}" scale="11" style="width: 100%; position: relative;" :latitude="latitude" :longitude="longitude" :markers="covers" @markertap='listShow' @labeltap='listShow'>
 					 <cover-view class="kdNumberBoxAll"></cover-view>
 					 <cover-view class="kdNumberBox"> 当前矿点：{{kdNum}}个</cover-view>
 					 <cover-view class="kdNumberBox1">正常矿点：{{kdNum - ycNum}}个</cover-view>
@@ -63,7 +63,7 @@
 					this.oldEnd = oldEnd;
 				}
 			});
-			getKsAllData(`SELECT id, '00' as zt_dm FROM ksData UNION ALL SELECT id, '02' as zt_dm FROM ( SELECT A.id, A.dz, A.jd, A.mc, A.ms, A.wd, B.dk_sj FROM ksData A LEFT JOIN ( SELECT * FROM xjData WHERE dk_sj > '${this.start} 00:00:00' AND yczt_dm = '02' ) B ON A.id = B.ks_id ) WHERE dk_sj IS NOT NULL GROUP BY id UNION ALL SELECT id, '03' as zt_dm FROM ( SELECT A.id, A.dz, A.jd, A.mc, A.ms, A.wd, B.dk_sj FROM ksData A LEFT JOIN ( SELECT * FROM xjData WHERE dk_sj > '${this.start} 00:00:00' AND yczt_dm = '02' ) B ON A.id = B.ks_id ) WHERE dk_sj IS NULL GROUP BY id`,(data)=>{
+			getKsAllData(`SELECT id, '00' AS zt_dm FROM ksAllData UNION ALL SELECT id, '02' AS zt_dm FROM ( SELECT A.id, A.dz, A.jd, A.mc, A.ms, A.wd, B.dk_sj FROM ksAllData A LEFT JOIN ( SELECT * FROM xjAllData WHERE dk_sj > '${this.start} 00:00:00' AND yczt_dm = '01' ) B ON A.id = B.ks_id ) WHERE dk_sj IS NOT NULL GROUP BY id UNION ALL SELECT id, '03' AS zt_dm FROM ( SELECT A.id, A.dz, A.jd, A.mc, A.ms, A.wd, B.dk_sj FROM ksAllData A LEFT JOIN ( SELECT * FROM xjAllData WHERE dk_sj > '${this.start} 00:00:00' AND yczt_dm = '01' ) B ON A.id = B.ks_id ) WHERE dk_sj IS NULL GROUP BY id`,(data)=>{
 				// console.log('data 数量汇总是总数',data);
 				this.kdNum = 0;
 				this.ycNum = 0;

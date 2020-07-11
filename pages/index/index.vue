@@ -1,9 +1,11 @@
 <template>
 	<view class="box">
-		<view class="warnTop">
-			提示：<text>有{{errorNum}}个矿区巡检逾期</text><text>，{{warnNum}}个矿区需要2日内巡检</text>。 
+		<view class="warnTop" v-if="errorNum > 0 || warnNum > 0">
+			提示：<text v-if="errorNum > 0">有{{errorNum}}个矿区巡检逾期</text>
+			<text v-if="errorNum > 0 && warnNum > 0">，</text>
+			<text v-if="warnNum > 0">{{warnNum}}个矿区需要2日内巡检</text>。 
 		</view>
-		<view class="listBox">
+		<view class="listBox" :style="{marginTop:errorNum > 0 || warnNum > 0 ? '30' : '0' + 'px'}">
 			<uni-list v-for="(item,index) in list">
 			    <uni-list-item :show-arrow="false" @click="goDetail(item)">
 					<view class="listTitle"><text>{{item.mc}}</text>

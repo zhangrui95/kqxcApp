@@ -13,7 +13,7 @@
 			<detailList :list="list" :record="record"></detailList>
 		</view>
 		<view class="buttonBox">
-			 <button type="primary" :style="{background: wtList.length > 0 ? '#c7c7c7' : '#00b7f0'}" @click="entrustColleague()">委托同事</button>
+			 <button type="primary" :style="{background:'#00b7f0'}" @click="entrustColleague()">委托同事</button>
 			 <button type="primary" style="background: #f19049;" @click="goXc()">马上巡查</button>
 		</view>
 	</view>
@@ -34,7 +34,6 @@
 				end:'',
 				oldStart:'',
 				oldEnd:'',
-				wtList:[],
 			}
 		},
 		components: {
@@ -64,19 +63,6 @@
 				// console.log('巡检记录======================callback====================>',data)
 				this.list = data;
 			});
-			getWtData(`SELECT A.*, B.dz,B.mc, C.xm as bwtr_xm, C.lxdh as bwtr_lxdh FROM wtData A
-			LEFT JOIN ksData B ON A.ks_id = B.id
-			LEFT JOIN usersData C ON A.bwtr_id = C.id
-			WHERE A.fqr_id = '${getApp().globalData.uid}' AND A.ks_id='${id}'  ORDER BY A.wt_sj DESC`,(data)=>{
-							console.log('委托',data);
-							let wtList = [];
-							data.map((item)=>{
-								if((moment(item.wt_sj) >= moment(this.start)) && (moment(item.wt_sj) <= moment(this.end)) && (item.wtzt_dm === '01' || item.wtzt_dm === '02')){
-									wtList.push(item);
-								}
-								this.wtList = wtList;
-							})
-						});
 		}, 
 		onShow:function(){
 			getXjData(`SELECT A.*, B.xm, C.mc FROM xjData A LEFT JOIN usersData B ON A.users_id = B.id LEFT JOIN ksData C ON A.ks_id = C.id WHERE A.ks_id = '${this.record.id}' AND A.users_id = '${getApp().globalData.uid}' ORDER BY dk_sj DESC`,(data)=>{
@@ -96,17 +82,9 @@
 				});
 			},
 			entrustColleague:function(){
-				if(this.wtList.length > 0){
-					uni.showToast({
-						title: '当前周期内该矿山处于委托状态，暂不支持委托他人',
-						icon: 'none',
-						duration: 5000,
-					}); 
-				}else{
-					uni.navigateTo({
-					    url: '../entrustColleague/entrustColleague?record=' + JSON.stringify(this.record),
-					});
-				}
+				uni.navigateTo({
+					url: '../entrustColleague/entrustColleague?record=' + JSON.stringify(this.record),
+				});
 			}
 		}
 	}
