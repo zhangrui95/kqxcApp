@@ -6,7 +6,9 @@ export default {
 	   uid:'',
 	   weedIp:'',
 	   httpImg:'',
-	   version:'1.0.0'
+	   version:'1.0.0',
+	   isLogin:false,
+	   is_zz:'0'
 	},  
 	onLaunch: function() {
 		console.log('App Launch');

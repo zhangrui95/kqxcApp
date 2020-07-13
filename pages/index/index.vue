@@ -1,13 +1,14 @@
 <template>
 	<view class="box">
-		<view class="warnTop">
-			<uni-notice-bar v-if="text&&text.length > 0" :speed="speed" scrollable="true" single="true" :text="text" backgroundColor="#ffcfc0" color="#f45619"></uni-notice-bar>
+		<view class="warnTop" v-if="text || textZz">
+			<uni-notice-bar v-if="text && is_zz!='1'" :speed="speed" scrollable="true" single="true" :text="text" backgroundColor="#ffcfc0" color="#f45619"></uni-notice-bar>
+			<uni-notice-bar v-if="textZz && is_zz=='1'" :speed="speed" scrollable="true" single="true" :text="textZz" :backgroundColor="this.isOk ? '#d1ffd9' : 'rgb(255, 251, 232)'" :color="this.isOk ? '#0bc62b' : 'rgb(222, 140, 23)'"></uni-notice-bar>
 		</view>
-		<view class="listBox" :style="{marginTop:errorNum > 0 || warnNum > 0 ? '30px' : '0px'}">
+		<view class="listBox" :style="{marginTop:text || textZz ? '30px' : '0px'}">
 			<uni-list v-for="(item,index) in list">
 			    <uni-list-item :show-arrow="false" @click="goDetail(item)">
 					<view class="listTitle"><text>{{item.mc}}</text>
-					<uni-tag v-if="item.zt" :text="item.zt === 'error' ? '巡检逾期' : item.zt === 'warning' ? '2日内巡检' : ''" :type="item.zt"></uni-tag>
+					<uni-tag v-if="item.zt && is_zz!='1'" :text="item.zt === 'error' ? '巡检逾期' : item.zt === 'warning' ? '2日内巡检' : ''" :type="item.zt"></uni-tag>
 				</view>
 					<view class="msgBox"> 
 						<text class="leftBox">上次巡查：{{item && item.dk_sj ? item.dk_sj : '暂无'}}</text>
@@ -59,19 +60,26 @@
 				xj_jg:'2',//时间间隔
 				xj_pc:'2',//打卡次数
 				xj_zq:'7',//周期
+				xj_jg_zz:'2',//时间间隔(组长)
+				xj_pc_zz:'2',//打卡次数(组长)
+				xj_zq_zz:'30',//周期(组长)
 				num:0,
 				text:'',
-				speed: 50
+				speed: 30,
+				is_zz:getApp().globalData.is_zz,
+				textZz:'',
+				isOk:false,
 			}
 		},
 		onLoad(){
 			getConfig('select * from config',(data)=>{
 				if(data && data[0] && data[0].xj_jzrq){
 					let startTime = data[0].xj_jzrq;
+					console.log('data[0].xj_zq_zz',data[0].xj_zq_zz)
 					let today = moment().format('YYYY-MM-DD');
-					let daysNum = Math.ceil((moment(today).diff(startTime, 'days') + 1) / (data[0].xj_zq ? data[0].xj_zq : 7)) - 1; 
-					let start =  moment(startTime).add(daysNum*(data[0].xj_zq ? data[0].xj_zq : 7),'day').format('YYYY-MM-DD');
-					let end =  moment(start).add(data[0].xj_zq-1,'day').format('YYYY-MM-DD');
+					let daysNum = this.is_zz == '1' ? Math.ceil((moment(today).diff(startTime, 'days') + 1) / (data[0].xj_zq_zz ? data[0].xj_zq_zz : 30)) - 1 : Math.ceil((moment(today).diff(startTime, 'days') + 1) / (data[0].xj_zq ? data[0].xj_zq : 7)) - 1; 
+					let start =  this.is_zz == '1' ? moment(startTime).add(daysNum*(data[0].xj_zq_zz ? data[0].xj_zq_zz : 30),'day').format('YYYY-MM-DD') : moment(startTime).add(daysNum*(data[0].xj_zq ? data[0].xj_zq : 7),'day').format('YYYY-MM-DD');
+					let end =  this.is_zz == '1' ? moment(start).add(data[0].xj_zq_zz-1,'day').format('YYYY-MM-DD') : moment(start).add(data[0].xj_zq-1,'day').format('YYYY-MM-DD');
 					let oldStart = moment(startTime).add((daysNum - 1)*(data[0].xj_zq ? data[0].xj_zq : 7),'day').format('YYYY-MM-DD');
 					let oldEnd =  moment(oldStart).add(data[0].xj_zq ? data[0].xj_zq - 1 : 6,'day').format('YYYY-MM-DD');
 					this.start = start;
@@ -81,38 +89,68 @@
 					this.xj_jg = data[0].xj_jg;
 					this.xj_pc = data[0].xj_pc;
 					this.xj_zq = data[0].xj_zq;
+					this.xj_jg_zz = data[0].xj_jg_zz;
+					this.xj_pc_zz = data[0].xj_pc_zz;
+					this.xj_zq_zz = data[0].xj_zq_zz;
+					console.log('start',start,end);
+					if(data[0].must_update === '1'){
+						uni.showModal({
+						    title: '检测到新版本,确认更新？',
+							showCancel:false,
+						    success: function (res) {
+						        if (res.confirm) {
+						            // console.log('用户点击确定');
+									uni.downloadFile({
+									    url: data[0].app_down,
+									    success: (res) => {
+									        if (res.statusCode === 200) {
+									            // console.log('下载成功');
+									        }
+									    }
+									});
+						        } else if (res.cancel) {
+						            // console.log('用户点击取消');
+						        }
+						    }
+						});
+					}
 				}
 			});
-			let that = this;
-			uni.getNetworkType({
-			    success: function (res) {
-					if(res.networkType !== 'none'){
-						that.network = true;
-						that.getUpload(()=>{
-							that.getXj();
-							that.getAllXj();
-							that.getWt();
-							that.getYh();
-							that.getKs();
-							that.getKsAll();
-						});
-					}else{
-						that.network = false; 
-						that.getListKs();
-						// that.getListXj();
-					}
-			    }
-			});
-			uni.onNetworkStatusChange(function (res) {
-				uni.setStorage({
-				    key: 'network', 
-				    data: res.isConnected,
-				    success: function () {}
+			if(!getApp().globalData.isLogin){
+				getApp().globalData.isLogin = true;
+				let that = this;
+				uni.getNetworkType({
+				    success: function (res) {
+						if(res.networkType !== 'none'){
+							that.network = true;
+							that.getUpload(()=>{
+								that.getListYh();
+								that.getXj();
+								that.getAllXj();
+								that.getWt();
+								that.getKs();
+								that.getKsAll();
+							});
+						}else{
+							that.network = false; 
+							that.getListKs();
+							that.getListXj();
+						}
+				    }
 				});
-			});
+				uni.onNetworkStatusChange(function (res) {
+					uni.setStorage({
+					    key: 'network', 
+					    data: res.isConnected,
+					    success: function () {}
+					});
+				});
+			}else{
+				this.getListKs();
+				this.getListXj();
+			}
 		},
 		onShow() {
-			this.getListKs();
 			getWtData(` SELECT A.*, B.dz, B.mc, C.xm as wtr_xm, C.lxdh as wtr_lxdh FROM wtData A
 			LEFT JOIN ksData B ON A.ks_id = B.id
 			LEFT JOIN usersData C ON A.fqr_id = C.id
@@ -259,6 +297,7 @@
 					method:'POST',
 				    success: (res) => {
 						if(res.data.data && !res.data.error){
+							getKsData(`DELETE FROM ksData`,(res)=>{});
 							setKsData(res.data.data,(res)=>{//存矿山
 								this.getListKs();
 							});
@@ -321,7 +360,7 @@
 						let oldList = data1.filter(item=> (item.id === event.id) && (item.dk_sj < this.oldEnd + '23:59:59'));
 						let nowList = data1.filter(item=> (item.id === event.id) && (item.dk_sj > this.start + '00:00:00'));
 						let day = moment(this.end).diff(moment(event.dk_sj),'day');
-						console.log('nowList',nowList&&nowList.length > 0,day);
+						console.log('nowList',nowList);
 						if(nowList && nowList.length > 0 && (nowList.length < parseInt(this.xj_jg))){
 							if(day < (parseInt(this.xj_jg))){
 								event.zt = 'error';
@@ -332,7 +371,7 @@
 							}else{
 								event.zt = '';
 							}
-						}else{
+						}else if(nowList.length === 0){
 							if(oldList.length >= this.xj_pc){
 								event.zt = '';
 							}else if(day < (parseInt(this.xj_zq) - parseInt(this.xj_jg) - 1)){
@@ -342,15 +381,25 @@
 								event.zt = 'error';
 								this.errorNum = this.errorNum + 1;
 							}
+						}else{
+							//dk_sj
+							let days = moment(nowList[0].dk_sj).diff(nowList[nowList.length - 1].dk_sj,'day');
+							if(days >= this.xj_pc){
+								event.zt = '';
+							}else if(day <= (parseInt(this.xj_zq) - parseInt(this.xj_jg) - 1)){
+								event.zt = 'warning';
+								this.warnNum = this.warnNum + 1;
+							}
 						}
 					})
-					let yqText = this.errorNum > 0 ? `有${this.errorNum}个矿区巡检逾期`:``;
-					let dh = this.errorNum > 0 && this.warnNum > 0 ? `，`:``;
-					let warnText = this.warnNum > 0 ? `${this.warnNum}个矿区需要2日内巡检` : ``;
 					this.list = data2;
 					setTimeout(()=>{
-						this.text = `提示：当前周期${this.start}~${this.end}，${yqText}${dh}${warnText}。`;
-						console.log('this.text=======>',this.text)
+						if(this.is_zz != '1'){
+							let yqText = this.errorNum > 0 ? `有${this.errorNum}个矿区巡检逾期`:``;
+							let dh = this.errorNum > 0 && this.warnNum > 0 ? `，`:``;
+							let warnText = this.warnNum > 0 ? `${this.warnNum}个矿区需要2日内巡检` : ``;
+							this.text = `提示：当前周期${this.start}~${this.end}，${yqText}${dh}${warnText}。`;	
+						}	
 						uni.hideLoading();
 					},500);
 				});
@@ -362,6 +411,23 @@
 						uni.hideLoading();
 					},500);
 				});
+			},	
+			getListXj:function(){
+				console.log('=====执行=====',this.is_zz);
+				if(this.is_zz === '1'){
+					console.log('=====执行001=====');
+					getXjData(`SELECT A.*, B.xm, C.mc FROM xjData A LEFT JOIN usersData B ON A.users_id = B.id LEFT JOIN ksData C ON A.ks_id = C.id WHERE A.users_id = '${getApp().globalData.uid}' ORDER BY dk_sj DESC`,(data)=>{
+						console.log('data,getApp().globalData.uid',data,getApp().globalData.uid);
+						if(data.length >= this.xj_pc_zz){
+							this.isOk=true;
+						}
+						
+						let that = this;
+						setTimeout(()=>{
+							that.textZz = '当前周期：'+that.start+'~'+that.end+'。' + '当前周期内已巡检'+data.length + '次。';
+						},500)
+					});
+				}
 			},	
 			getListWt:function(){
 				getWtData('select * from wtData',(data)=>{
@@ -382,8 +448,13 @@
 					method:'POST',
 				    success: (res) => {
 						if(res.data.data && !res.data.error){
-							setXjData(res.data.data,(res)=>{//存巡检记录
-							});
+							setXjData(res.data.data,(res)=>{});
+							if(this.is_zz === '1'){
+								if(res.data.data.length >= this.xj_pc_zz){
+									this.isOk=true;
+								}
+								this.textZz = '当前周期：'+this.start+'~'+this.end+'。' + '当前周期内已巡检'+res.data.data.length + '次。';
+							}
 							setTimeout(()=>{
 								uni.hideLoading();
 							},500);
@@ -432,27 +503,6 @@
 				    }
 				});
 			},
-			getYh:function(){
-				uni.showLoading({
-				    title: '用户数据同步中…',
-					mask:true
-				});
-				uni.request({
-				    url: getApp().globalData.ip + '/getUsersData', //下载用户列表
-				    data: {"uid": getApp().globalData.uid},
-					method:'POST',
-				    success: (res) => {	
-						if(res.data.data && !res.data.error){
-						 setUsersData(res.data.data,(res)=>{//存用户
-						 	this.getListYh();
-						 });
-						 setTimeout(()=>{
-						 	uni.hideLoading();
-						 },500);
-						} 
-				    }
-				});
-			}
 		}
 	}
 </script>
@@ -532,12 +582,12 @@
 		width: 100%;
 	}
 	.warnTop{
-		background: #ffcfc0;
+		background: #fff;
 		height: 30px;
 		line-height: 30px;
 		font-size: 12px;
 		text-align: center;
-		color: #f45619;
+		color: #333;
 		width: 100%;
 		position: fixed;
 		top: 0px;

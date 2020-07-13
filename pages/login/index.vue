@@ -31,7 +31,7 @@
 </template>
 
 <script>
-	import {openComDB,dropSQL,setConfig,getConfig} from '../common/env.js'
+	import {openComDB,dropSQL,setConfig,getConfig,setUsersData,getUsersData} from '../common/env.js'
 	export default {
 		data() {
 			return {
@@ -101,7 +101,21 @@
 				} else {  
 					  // console.log('-------------无网------------')
 				}
-			},  		
+			},  
+			getYh:function(uid){
+				uni.request({
+					url: getApp().globalData.ip + '/getUsersData', //下载用户列表
+					data: {"uid": uid},
+					method:'POST',
+					success: (res) => {	
+						console.log('res=====>用户',res)
+						if(res.data.data && !res.data.error){
+						 getUsersData(`DELETE FROM usersData`,(res)=>{});
+						 setUsersData(res.data.data,(res)=>{});
+						} 
+					}
+				});
+			},
 			formSubmit: function(e) {
 				// console.log('e.detail.value',e.detail.value);
 				let value = e.detail.value;
@@ -116,10 +130,12 @@
 								if(res.data.data && !res.data.error){
 									getApp().globalData.is_admin = res.data.data.is_admin;
 									getApp().globalData.uid = res.data.data.id;
+									getApp().globalData.is_zz = res.data.data.is_zz;
 									let id = res.data.data.id || '';
 									let name = res.data.data.xm || '';
 									let password = res.data.data.mm || '';
 									let is_admin = res.data.data.is_admin || '';
+									this.getYh(res.data.data.id);
 									uni.setStorage({
 									    key: 'user',
 									    data: JSON.stringify(res.data.data),
@@ -149,6 +165,7 @@
 									if(value.username === JSON.parse(res.data).lxdh  && value.password === JSON.parse(res.data).mm){
 										getApp().globalData.is_admin = JSON.parse(res.data).is_admin;
 										getApp().globalData.uid = JSON.parse(res.data).id;
+										getApp().globalData.is_zz = JSON.parse(res.data).is_zz;
 										uni.redirectTo({
 										    url: '../index/index'
 										});

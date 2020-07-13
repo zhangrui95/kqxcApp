@@ -82,6 +82,7 @@
 			},
 			confirm:function(){
 				 this.$refs.popup.close();
+				  getApp().globalData.isLogin = false;
 				 uni.reLaunch({
 				     url: '../login/index'
 				 });
