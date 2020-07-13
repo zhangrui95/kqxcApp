@@ -100,10 +100,14 @@
     },
     "quickapp" : {},
     "mp-weixin" : {
-        "appid" : "",
+        "appid" : "wx35fb343422f0c01e",
         "setting" : {
-            "urlCheck" : true
-        }
+            "urlCheck" : true,
+            "minified" : true,
+            "postcss" : true,
+            "es6" : true
+        },
+        "permission" : {}
     },
     "h5" : {
         "sdkConfigs" : {

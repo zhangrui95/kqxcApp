@@ -11,13 +11,13 @@
 			     </map>
 			 </view>
         </view>
-		<tabBar :pagePath="'/pages/work/work'"></tabBar>
+		<tabBar :pagePath="'/pages/work/work'" :num="num"></tabBar>
     </view>
 </template>
 
 <script>
 	import uniPopup from '@/components/uni-popup/uni-popup.vue'
-	import {getKsAllData,getConfig} from '../common/env.js'
+	import {getKsAllData,getConfig,getWtData} from '../common/env.js'
 	export default {
 		data() {
 			 return {
@@ -36,6 +36,7 @@
 				oldStart:'',
 				oldEnd:'',
 				ycId:[],
+				num:0,
 			}
 		},
 		 components: {
@@ -107,6 +108,19 @@
 				this.longitude = longitude / data.length; 
 				this.covers = covers;
 			});
+		},
+		onShow() {
+			getWtData(` SELECT A.*, B.dz, B.mc, C.xm as wtr_xm, C.lxdh as wtr_lxdh FROM wtData A
+			LEFT JOIN ksData B ON A.ks_id = B.id
+			LEFT JOIN usersData C ON A.fqr_id = C.id
+			WHERE A.bwtr_id = '${getApp().globalData.uid}' ORDER BY A.wt_sj DESC`,(data)=>{
+					  this.num = 0;
+						data.map((item)=>{
+							if(item.wtzt_dm == '01'){
+								this.num = this.num + 1;
+							}
+						})
+					});
 		},
 		methods: {
 			listShow:function(e){

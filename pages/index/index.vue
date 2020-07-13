@@ -1,11 +1,9 @@
 <template>
 	<view class="box">
-		<view class="warnTop" v-if="errorNum > 0 || warnNum > 0">
-			提示：<text v-if="errorNum > 0">有{{errorNum}}个矿区巡检逾期</text>
-			<text v-if="errorNum > 0 && warnNum > 0">，</text>
-			<text v-if="warnNum > 0">{{warnNum}}个矿区需要2日内巡检</text>。 
+		<view class="warnTop">
+			<uni-notice-bar v-if="text&&text.length > 0" :speed="speed" scrollable="true" single="true" :text="text" backgroundColor="#ffcfc0" color="#f45619"></uni-notice-bar>
 		</view>
-		<view class="listBox" :style="{marginTop:errorNum > 0 || warnNum > 0 ? '30' : '0' + 'px'}">
+		<view class="listBox" :style="{marginTop:errorNum > 0 || warnNum > 0 ? '30px' : '0px'}">
 			<uni-list v-for="(item,index) in list">
 			    <uni-list-item :show-arrow="false" @click="goDetail(item)">
 					<view class="listTitle"><text>{{item.mc}}</text>
@@ -30,7 +28,7 @@
 				</uni-list-item>
 			</uni-list>
 		</view>
-		<tabBar :pagePath="'/pages/index/index'"></tabBar>
+		<tabBar :pagePath="'/pages/index/index'" :num="num"></tabBar>
 	</view>
 </template>
 
@@ -42,6 +40,7 @@
 	import uniNoticeBar from '@/components/uni-notice-bar/uni-notice-bar.vue'
 	import {deleteUpLoad,getXjDataUpLoad,getKsData,setKsData,getConfig,getXjData,setXjData,getWtData,setWtData,getUsersData,setUsersData,setKsAllData,setXjAllData} from '../common/env.js'
 	export default {
+		components: {uniNoticeBar},
 		data() {
 			return {
 				time: moment().format('YYYY.MM.DD'),
@@ -54,14 +53,15 @@
 				wtList:[],
 				yhList:[],
 				xjList:[],
-				imgsNet:[],
-				imgsJNet:[],
 				errorNum:0,
 				warnNum:0,
 				today:moment().format('YYYY-MM-DD'),
 				xj_jg:'2',//时间间隔
 				xj_pc:'2',//打卡次数
 				xj_zq:'7',//周期
+				num:0,
+				text:'',
+				speed: 50
 			}
 		},
 		onLoad(){
@@ -113,6 +113,17 @@
 		},
 		onShow() {
 			this.getListKs();
+			getWtData(` SELECT A.*, B.dz, B.mc, C.xm as wtr_xm, C.lxdh as wtr_lxdh FROM wtData A
+			LEFT JOIN ksData B ON A.ks_id = B.id
+			LEFT JOIN usersData C ON A.fqr_id = C.id
+			WHERE A.bwtr_id = '${getApp().globalData.uid}' ORDER BY A.wt_sj DESC`,(data)=>{
+					  this.num = 0;
+						data.map((item)=>{
+							if(item.wtzt_dm == '01'){
+								this.num = this.num + 1;
+							}
+						})
+					});
 		},
 		onReady() {
 			uni.setNavigationBarTitle({
@@ -157,73 +168,75 @@
 							 			// console.log('uploadFileRes.data',uploadFileRes.data,JSON.parse(uploadFileRes.data).fileUrl);
 										// console.log('======图一转行【JSON.parse(uploadFileRes.data).fileUrl】======',JSON.parse(uploadFileRes.data).fileUrl)
 							 			imgsNet.push(JSON.parse(uploadFileRes.data).fileUrl);
-							 			that.imgsNet = imgsNet;
+										if(imgsNet.length === item.yj_zp.split('#').length){
+											item.jj_zp.split('#').map((e)=>{
+											 	uni.uploadFile({
+											 		url: getApp().globalData.weedIp, //仅为示例，非真实的接口地址
+											 		filePath: e,
+											 		name: 'file',
+											 		formData: {
+											 		    'user': 'test'
+											 		},
+											 		success: (uploadFileRes) => {
+														// console.log('======图二转行【JSON.parse(uploadFileRes.data).fileUrl】======',JSON.parse(uploadFileRes.data).fileUrl)
+											 			imgsJNet.push(JSON.parse(uploadFileRes.data).fileUrl);
+														if(imgsJNet.length === item.jj_zp.split('#').length){
+															setTimeout(()=>{
+																 item.jj_zp_net = imgsJNet.join('#');
+																 item.yj_zp_net = imgsNet.join('#');
+																 // console.log('item.jj_zp_net,item.yj_zp_net',item.jj_zp_net,item.yj_zp_net);
+																 // console.log('item==========>',item);
+																 let uidId = item.users_id;
+																 let {users_id, ...dataItem} = item;
+																 dataItem.uid = uidId;
+																 uni.request({
+																	 url: getApp().globalData.ip + '/saveXjData',
+																	 data: dataItem,
+																	method:'POST',
+																	 success: (res) => {
+																		 console.log('待上传上传',res.data);
+																		 if(res.data.data && !res.data.error){
+																			 setTimeout(()=>{
+																				uni.hideLoading();
+																			 },500)
+																			 setXjAllData([dataItem],(res)=>{});
+																			 setXjData([dataItem],(res)=>{});
+																			 deleteUpLoad(`DELETE FROM xjDataUpLoad WHERE id = '${item.id}'`,(res)=>{
+																				// console.log('删除待上传成功',res.error);
+																			 });
+																			 let idx = that.wtList.findIndex((event)=>{
+																				return event.ks_id === item.ks_id;
+																			 });
+																			 if(idx > -1 && that.wtList[idx].wtzt_dm === '02'){
+																				 uni.request({
+																					 url: getApp().globalData.ip + '/updateWtData',
+																					 data: {"wt_id":that.wtList[idx].id,"wtzt_dm":'04'},
+																					method:'POST',
+																					 success: (res) => {
+																						// console.log('修改委托记录状态',res.data);
+																						if(res.data.data && !res.data.error){
+																								let dataItem = {"id":that.wtList[idx].id,"ks_id":that.wtList[idx].ks_id,"wt_sj":moment().format('YYYY-MM-DD HH:mm:ss'),"fqr_id":that.wtList[idx].fqr_id,"bwtr_id":that.wtList[idx].bwtr_id,"wtzt_dm":'04',"wtzt_mc":'已巡检'};
+																								setWtData([dataItem],(res)=>{});
+																						} 
+																					 }
+																				 });
+																			 }
+																			 // console.log('巡查成功',res.data);
+																		}else{
+																				uni.hideLoading();
+																		}
+																		callback({error:null});
+																	}
+																 }); 
+															},500)
+														}
+											 		}
+											 	});
+											 }); 
+										}
 							 		}
 							 	});
 							 });
-							item.jj_zp.split('#').map((e)=>{
-							 	uni.uploadFile({
-							 		url: getApp().globalData.weedIp, //仅为示例，非真实的接口地址
-							 		filePath: e,
-							 		name: 'file',
-							 		formData: {
-							 		    'user': 'test'
-							 		},
-							 		success: (uploadFileRes) => {
-										// console.log('======图二转行【JSON.parse(uploadFileRes.data).fileUrl】======',JSON.parse(uploadFileRes.data).fileUrl)
-							 			imgsJNet.push(JSON.parse(uploadFileRes.data).fileUrl);
-							 			that.imgsJNet = imgsJNet;
-							 		}
-							 	});
-							 }); 
-							 setTimeout(()=>{
-								 item.jj_zp_net = that.imgsNet.join('#');
-								 item.yj_zp_net = that.imgsJNet.join('#');
-								 // console.log('item.jj_zp_net,item.yj_zp_net',item.jj_zp_net,item.yj_zp_net);
-								 // console.log('item==========>',item);
-								 let uidId = item.users_id;
-								 let {users_id, ...dataItem} = item;
-								 dataItem.uid = uidId;
-								 uni.request({
-								     url: getApp().globalData.ip + '/saveXjData',
-								     data: dataItem,
-								 	method:'POST',
-								     success: (res) => {
-										 console.log('待上传上传',res.data);
-										 if(res.data.data && !res.data.error){
-											 setTimeout(()=>{
-											 	uni.hideLoading();
-											 },500)
-											 setXjAllData([dataItem],(res)=>{});
-											 setXjData([dataItem],(res)=>{});
-											 deleteUpLoad(`DELETE FROM xjDataUpLoad WHERE id = '${item.id}'`,(res)=>{
-											 	// console.log('删除待上传成功',res.error);
-											 });
-											 let idx = that.wtList.findIndex((event)=>{
-											 	return event.ks_id === item.ks_id;
-											 });
-											 if(idx > -1 && that.wtList[idx].wtzt_dm === '02'){
-												 uni.request({
-												     url: getApp().globalData.ip + '/updateWtData',
-												     data: {"wt_id":that.wtList[idx].id,"wtzt_dm":'04'},
-												 	method:'POST',
-												     success: (res) => {
-												 		// console.log('修改委托记录状态',res.data);
-												 		if(res.data.data && !res.data.error){
-												 				let dataItem = {"id":that.wtList[idx].id,"ks_id":that.wtList[idx].ks_id,"wt_sj":moment().format('YYYY-MM-DD HH:mm:ss'),"fqr_id":that.wtList[idx].fqr_id,"bwtr_id":that.wtList[idx].bwtr_id,"wtzt_dm":'04',"wtzt_mc":'已巡检'};
-																setWtData([dataItem],(res)=>{});
-												 		} 
-												     }
-												 });
-											 }
-											 // console.log('巡查成功',res.data);
-										}else{
-												uni.hideLoading();
-										}
-										callback({error:null});
-									}
-								 }); 
-							 },1000)
 						 });
 					}else{
 						callback({error:null});
@@ -308,12 +321,12 @@
 						let oldList = data1.filter(item=> (item.id === event.id) && (item.dk_sj < this.oldEnd + '23:59:59'));
 						let nowList = data1.filter(item=> (item.id === event.id) && (item.dk_sj > this.start + '00:00:00'));
 						let day = moment(this.end).diff(moment(event.dk_sj),'day');
-						// console.log('nowList',nowList);
-						if(nowList&&nowList.length > 0){
-							if(day < (parseInt(this.xj_jg) + 1)){
+						console.log('nowList',nowList&&nowList.length > 0,day);
+						if(nowList && nowList.length > 0 && (nowList.length < parseInt(this.xj_jg))){
+							if(day < (parseInt(this.xj_jg))){
 								event.zt = 'error';
 								this.errorNum = this.errorNum + 1;
-							}else if(day < (parseInt(this.xj_zq) - parseInt(this.xj_jg)*parseInt(this.xj_pc))){
+							}else if(day < (parseInt(this.xj_zq) - parseInt(this.xj_jg)*parseInt(this.xj_pc) - 1)){
 								event.zt = 'warning';
 								this.warnNum = this.warnNum + 1;
 							}else{
@@ -322,7 +335,7 @@
 						}else{
 							if(oldList.length >= this.xj_pc){
 								event.zt = '';
-							}else if(day < (parseInt(this.xj_zq) - parseInt(this.xj_jg)) ){
+							}else if(day < (parseInt(this.xj_zq) - parseInt(this.xj_jg) - 1)){
 								event.zt = 'warning';
 								this.warnNum = this.warnNum + 1;
 							}else{
@@ -331,8 +344,13 @@
 							}
 						}
 					})
+					let yqText = this.errorNum > 0 ? `有${this.errorNum}个矿区巡检逾期`:``;
+					let dh = this.errorNum > 0 && this.warnNum > 0 ? `，`:``;
+					let warnText = this.warnNum > 0 ? `${this.warnNum}个矿区需要2日内巡检` : ``;
 					this.list = data2;
 					setTimeout(()=>{
+						this.text = `提示：当前周期${this.start}~${this.end}，${yqText}${dh}${warnText}。`;
+						console.log('this.text=======>',this.text)
 						uni.hideLoading();
 					},500);
 				});

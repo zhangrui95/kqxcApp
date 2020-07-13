@@ -24,8 +24,9 @@
 		<view class="buttonBox">
 			<button type="primary" style="background: #00b7f0;" @click="entrustColleague()">发起委托</button>
 			<button type="primary" style="background: #f19049;" @click="goWt()">收到委托</button>
+			<uni-badge v-if="num > 0" :text="num" type="error" class="badge" size='small'></uni-badge>
 		</view>
-		<tabBar :pagePath="'/pages/entrust/entrust'"></tabBar> 
+		<tabBar :pagePath="'/pages/entrust/entrust'" :num="num"></tabBar> 
 	</view>
 </template>
 
@@ -34,17 +35,30 @@
 	import uniIcons from "@/components/uni-icons/uni-icons.vue"
 	import detailList from "@/components/detail-list/detail-list.vue"
 	import {getWtData} from '../common/env.js'
+	import uniBadge from "@/components/uni-badge/uni-badge.vue"
 	export default {
 		data() {
 			return {
 				time: moment().format('YYYY.MM.DD'),
 				list:[],
+				num:0,
 			}
 		},
 		components: {
 			detailList,
 		},
 	  onShow: function () { //option为object类型，会序列化上个页面传递的参数
+	  getWtData(` SELECT A.*, B.dz, B.mc, C.xm as wtr_xm, C.lxdh as wtr_lxdh FROM wtData A
+	  LEFT JOIN ksData B ON A.ks_id = B.id
+	  LEFT JOIN usersData C ON A.fqr_id = C.id
+	  WHERE A.bwtr_id = '${getApp().globalData.uid}' ORDER BY A.wt_sj DESC`,(data)=>{
+		  this.num = 0;
+			data.map((item)=>{
+				if(item.wtzt_dm == '01'){
+					this.num = this.num + 1;
+				}
+			})
+		});
 	        // console.log('--------------执行------------')
 			getWtData(`SELECT A.*, B.dz,B.mc, C.xm as bwtr_xm, C.lxdh as bwtr_lxdh FROM wtData A
  LEFT JOIN ksData B ON A.ks_id = B.id
@@ -80,6 +94,11 @@
 </script>
 
 <style>
+	.badge{
+		position: absolute;
+		top: -5px;
+		right: 2%;
+	}
 	.noList{
 		text-align: center;
 		font-size: 14px;

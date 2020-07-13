@@ -21,7 +21,7 @@
 		<uni-popup ref="popup" type="dialog">
 		    <uni-popup-dialog type="input" title="确定退出登陆？" okText="确定" :duration="2000" :before-close="true" @close="close" @confirm="confirm"></uni-popup-dialog>
 		</uni-popup> 
-		<tabBar :pagePath="'/pages/myPage/myPage'"></tabBar>
+		<tabBar :pagePath="'/pages/myPage/myPage'" :num="num"></tabBar>
 	</view>
 </template>
 
@@ -31,10 +31,12 @@
 	import uniPopup from '@/components/uni-popup/uni-popup.vue'
 	import uniPopupMessage from '@/components/uni-popup/uni-popup-message.vue'
 	import uniPopupDialog from '@/components/uni-popup/uni-popup-dialog.vue'
+	import {getWtData} from '../common/env.js'
 	export default {
 		data() {
 			return {
-				name:''
+				name:'',
+				num:0,
 			}
 		},
 		onLoad() {
@@ -47,6 +49,19 @@
 					}
 			    }
 			});
+		},
+		onShow() {
+			getWtData(` SELECT A.*, B.dz, B.mc, C.xm as wtr_xm, C.lxdh as wtr_lxdh FROM wtData A
+			LEFT JOIN ksData B ON A.ks_id = B.id
+			LEFT JOIN usersData C ON A.fqr_id = C.id
+			WHERE A.bwtr_id = '${getApp().globalData.uid}' ORDER BY A.wt_sj DESC`,(data)=>{
+					  this.num = 0;
+						data.map((item)=>{
+							if(item.wtzt_dm == '01'){
+								this.num = this.num + 1;
+							}
+						})
+					});
 		},
 		components: {
 			uniPopup,
