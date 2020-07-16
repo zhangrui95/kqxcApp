@@ -22,6 +22,14 @@
 		    <uni-popup-dialog type="input" title="确定退出登陆？" okText="确定" :duration="2000" :before-close="true" @close="close" @confirm="confirm"></uni-popup-dialog>
 		</uni-popup> 
 		<tabBar :pagePath="'/pages/myPage/myPage'" :num="num"></tabBar>
+		<view class="loading" v-if="load">
+			<view class="loadBox">
+				<view class="loadName">下载中({{this.progress}}%)</view>
+				<view class="loadItem">
+					<view class="load" :style="{width:this.progress+'%'}"></view>
+				</view>
+			</view>
+		</view>
 	</view>
 </template>
 
@@ -37,6 +45,8 @@
 			return {
 				name:'',
 				num:0,
+				progress:0,
+				load:false,
 			}
 		},
 		onLoad() {
@@ -88,6 +98,7 @@
 				 });
 			},
 			getUpdate:function(){
+				let that = this;
 				uni.getNetworkType({
 				    success: function (res) {
 						if(res.networkType !== 'none'){
@@ -106,18 +117,24 @@
 											uni.hideLoading();
 											uni.showModal({
 											    title: '检测到最新版本,是否确认更新？',
-											    success: function (res) {
-											        if (res.confirm) {
-											            // console.log('用户点击确定');
-														uni.downloadFile({
+											    success: function (resDate) {
+											        if (resDate.confirm) {
+														that.load = true;
+											   //          console.log('res.data.data.app_down=====>',res.data.data.app_down);
+														const downloadTask = uni.downloadFile({
 														    url: res.data.data.app_down,
 														    success: (res) => {
 														        if (res.statusCode === 200) {
-														            // console.log('下载成功');
+																	that.load = false; 
+																	plus.runtime.install(res.tempFilePath);
+														            console.log('下载成功');
 														        }
 														    }
 														});
-											        } else if (res.cancel) {
+														downloadTask.onProgressUpdate((res) => {
+															that.progress = res.progress;
+														});
+											        } else if (resDate.cancel) {
 											            // console.log('用户点击取消');
 											        }
 											    }
@@ -158,5 +175,43 @@
 	.listBtn{
 		text-align: center;
 		width: 100%;
+	}
+	.loading{
+		position: fixed;
+		top: 0;
+		left: 0;
+		background: rgba(0,0,0,0.2);
+		width: 100%;
+		height: 100%;
+		z-index: 999;
+	}
+	.loadBox{
+		width: 90%;
+		height: 100px;
+		background: #fff;
+		border-radius: 10px;
+		position: absolute;
+		top: 35%;
+		left: 5%;
+	}
+	.loadName{
+		color: #333;
+		text-align: center;
+		font-size: 16px;
+		margin: 20px 0;
+	}
+	.loadItem{
+		width: 80%;
+		margin: 10px 10%;
+		height: 10px;
+		background: #eee;
+		border-radius: 50px;
+		overflow: hidden;
+	}
+	.load{
+		width: 0%;
+		height: 10px;
+		background: #172f87;
+		border-radius: 50px;
 	}
 </style>

@@ -5,9 +5,9 @@
 			     <map :style="{height:height+ 'px'}" scale="11" style="width: 100%; position: relative;" :latitude="latitude" :longitude="longitude" :markers="covers" @markertap='listShow' @labeltap='listShow'>
 					 <cover-view class="kdNumberBoxAll"></cover-view>
 					 <cover-view class="kdNumberBox"> 当前矿点：{{kdNum}}个</cover-view>
-					 <cover-view class="kdNumberBox1">正常矿点：{{kdNum - ycNum}}个</cover-view>
-					 <cover-view class="kdNumberBox2">异常矿点：{{ycNum}}个</cover-view>
-					 <!-- <cover-view class="kdNumberBox3">未采集矿点：{{zwsjNum}}个</cover-view> -->
+					 <cover-view class="kdNumberBox1">正常矿点：{{kdNum - errorNum - warnNum}}个</cover-view>
+					 <cover-view class="kdNumberBox2" v-if="week == 0">告警矿点：{{errorNum}}个</cover-view>
+					 <cover-view class="kdNumberBox3" v-if="week !== 0">预警矿点：{{warnNum}}个</cover-view>
 			     </map>
 			 </view>
         </view>
@@ -16,6 +16,7 @@
 </template>
 
 <script>
+	import moment from 'moment';
 	import uniPopup from '@/components/uni-popup/uni-popup.vue'
 	import {getKsAllData,getConfig,getWtData} from '../common/env.js'
 	export default {
@@ -29,14 +30,18 @@
 				longitude: 0,
 				covers: [],
 				kdNum:0,
-				ycNum:0,
-				zwsjNum:0,
+				errorNum:0,
+				warnNum:0,
 				start:'',
 				end:'',
-				oldStart:'',
-				oldEnd:'',
 				ycId:[],
 				num:0,
+				yj_xq_num:5,//预警星期
+				week:moment().day(),
+				yjList:[],
+				xj_jg:'2',//时间间隔
+				xj_pc:'2',//打卡次数
+				xj_zq:'7',//周期
 			}
 		},
 		 components: {
@@ -56,57 +61,103 @@
 					let daysNum = Math.ceil((moment(today).diff(startTime, 'days') + 1) / (data[0].xj_zq ? data[0].xj_zq : 7)) - 1; 
 					let start =  moment(startTime).add(daysNum*(data[0].xj_zq ? data[0].xj_zq : 7),'day').format('YYYY-MM-DD');
 					let end =  moment(start).add(data[0].xj_zq-1,'day').format('YYYY-MM-DD');
-					let oldStart = moment(startTime).add((daysNum - 1)*(data[0].xj_zq ? data[0].xj_zq : 7),'day').format('YYYY-MM-DD');
-					let oldEnd =  moment(oldStart).add(data[0].xj_zq ? data[0].xj_zq - 1 : 6,'day').format('YYYY-MM-DD');
 					this.start = start;
-					this.end = end;
-					this.oldStart = oldStart;
-					this.oldEnd = oldEnd;
+					this.end = end; 
+					this.xj_jg = data[0].xj_jg;
+					this.xj_pc = data[0].xj_pc;
+					this.xj_zq = data[0].xj_zq;
+					this.yj_xq_num = data[0].yj_xq_num;
+					getKsAllData(`SELECT
+					 A.id,
+					 A.dz,
+					 A.jd,
+					 A.wd,
+					 A.mc,
+					 D.xm as fzr_xm,
+					 C.xm,
+					 B.dk_sj,
+					 B.kczt_dm,
+					 B.yczt_dm,
+					 B.jj_zp,
+					 B.yj_zp,
+					 B.bz
+					FROM
+					 ksAllData A 
+					 LEFT JOIN (SELECT * FROM xjAllData WHERE users_id = '${getApp().globalData.uid}' AND dk_sj >= '${start} 00:00:00' ORDER BY dk_sj DESC) B ON A.id = B.ks_id
+					 LEFT JOIN usersAllData C ON B.users_id = C.id
+					 LEFT JOIN usersAllData D ON A.fzr_id = D.id
+					ORDER BY A.id,B.dk_sj desc`,(data)=>{
+						 let data1 = data;
+						let hash = {}; 
+						const data2 = data.reduce((preVal, curVal) => {
+						    hash[curVal.id] ? '' : hash[curVal.id] = true && preVal.push(curVal); 
+						    return preVal 
+						}, []);
+						this.kdNum = data2.length;
+						let yjList = [];
+						console.log('data2========>',data2);
+						let latitude = 0;
+						let longitude = 0;
+						let covers = [];
+						data2.map((event)=>{
+							let nowList = data1.filter(item=>(item.id === event.id) && (moment(item.dk_sj) >= moment(this.start + ' 00:00:00')));
+							let day = moment(this.end).diff(moment(event.dk_sj),'day');
+							let week = moment().day();
+							if(nowList && (nowList.length < parseInt(this.xj_pc))){
+								if(week === 0){
+									event.zt = nowList.length === 0 ? 'errors' : 'error';
+									this.errorNum = this.errorNum + 1;
+									yjList.push({xm:nowList.length > 0 ? [nowList.length - 1].xm : '',text:nowList.length === 0 ? '还需巡检两次次' : '还需巡检一次'});
+								}else if(week >= this.yj_xq_num){
+									event.zt = nowList.length === 0 ? 'warnings' :'warning';
+									this.warnNum = this.warnNum + 1;
+									yjList.push({xm:nowList.length > 0 ? [nowList.length - 1].xm : '',text:nowList.length === 0 ? '还需巡检两次次' : '还需巡检一次'});
+								}else{
+									event.zt = nowList.length === 0 ? 'primarys' : 'primary';
+								}
+							}else{
+								let days = moment(nowList[nowList.length - 1].dk_sj).diff(nowList[0].dk_sj,'day')+1;
+								console.log('days====>',days);
+								if(days === 0 && week === 0){
+									event.zt = 'error';
+									this.errorNum = this.errorNum + 1;
+									yjList.push({xm:nowList.length > 0 ? [nowList.length - 1].xm : '',text:'还需巡检一次'});
+								}else if(days === 0 && week >= this.yj_xq_num){
+									event.zt = 'warning';
+									this.warnNum = this.warnNum + 1;
+									yjList.push({xm:nowList.length > 0 ? [nowList.length - 1].xm : '',text:'还需巡检一次'});
+								}else{
+									if(days === 0){
+										event.zt = 'primary';
+									}else{
+										event.zt = 'success';
+									}
+								}
+							}
+							console.log('yjList=======>',yjList); 
+							latitude = latitude + parseFloat(event.wd);
+							longitude = longitude + parseFloat(event.jd);
+							// console.log('latitude',latitude,longitude);
+							this.ycId.map((res)=>{
+								if(res === event.id){
+									res.zt_dm = '02';
+								}
+							});
+							covers.push({
+								latitude: parseFloat(event.wd),
+								longitude: parseFloat(event.jd),
+								iconPath: event.zt == 'error' || event.zt == 'errors' ? '/static/map3.png' : event.zt == 'warnings' || event.zt == 'warning' ? '/static/map2.png' : '/static/map1.png',
+								label:{content:event.mc},
+								id:event.id,
+							});
+							this.yjList = yjList;
+						})
+						
+						this.latitude = latitude / data.length;
+						this.longitude = longitude / data.length; 
+						this.covers = covers;
+					});
 				}
-			});
-			getKsAllData(`SELECT id, '00' AS zt_dm FROM ksAllData UNION ALL SELECT id, '02' AS zt_dm FROM ( SELECT A.id, A.dz, A.jd, A.mc, A.ms, A.wd, B.dk_sj FROM ksAllData A LEFT JOIN ( SELECT * FROM xjAllData WHERE dk_sj > '${this.start} 00:00:00' AND yczt_dm = '01' ) B ON A.id = B.ks_id ) WHERE dk_sj IS NOT NULL GROUP BY id UNION ALL SELECT id, '03' AS zt_dm FROM ( SELECT A.id, A.dz, A.jd, A.mc, A.ms, A.wd, B.dk_sj FROM ksAllData A LEFT JOIN ( SELECT * FROM xjAllData WHERE dk_sj > '${this.start} 00:00:00' AND yczt_dm = '01' ) B ON A.id = B.ks_id ) WHERE dk_sj IS NULL GROUP BY id`,(data)=>{
-				// console.log('data 数量汇总是总数',data);
-				this.kdNum = 0;
-				this.ycNum = 0;
-				this.zwsjNum = 0;
-				data.map((item)=>{
-					if(item.zt_dm === '00'){
-						this.kdNum = this.kdNum + 1;
-					}
-					if(item.zt_dm === '02'){
-						this.ycNum = this.ycNum + 1;
-						this.ycId.push(item.id);
-					}
-					if(item.zt_dm === '03'){
-						this.zwsjNum = this.zwsjNum + 1;
-					}
-				})
-			});
-			getKsAllData('select A.*, B.xm as fzr_xm from ksAllData A LEFT JOIN usersData B ON A.fzr_id = B.id',(data)=>{
-				// console.log('ksAllData=====>',data,this.ycId);
-				let latitude = 0;
-				let longitude = 0;
-				let covers = [];
-				data.map((item,index)=>{
-					latitude = latitude + parseFloat(item.wd);
-					longitude = longitude + parseFloat(item.jd);
-					// console.log('latitude',latitude,longitude);
-					this.ycId.map((event)=>{
-						if(event === item.id){
-							item.zt_dm = '02';
-						}
-					});
-					covers.push({
-						latitude: parseFloat(item.wd),
-						longitude: parseFloat(item.jd),
-						iconPath: item.zt_dm&&item.zt_dm === '02' ? '/static/map3.png' : '/static/map1.png',
-						label:{content:item.mc},
-						id:item.id,
-					});
-				});
-				this.latitude = latitude / data.length;
-				this.longitude = longitude / data.length; 
-				this.covers = covers;
 			});
 		},
 		onShow() {
@@ -129,7 +180,7 @@
 					return item.id === e.detail.markerId
 				})
 				uni.navigateTo({
-				    url: '../workList/workList?cover='+JSON.stringify(this.covers[index]) + '&kdNum=' + this.kdNum + '&ycNum=' + this.ycNum
+				    url: '../workList/workList?cover='+JSON.stringify(this.covers[index]) + '&kdNum=' + this.kdNum + '&errorNum=' + this.errorNum+ '&warnNum=' + this.warnNum + '&start=' +  this.start+ '&end=' +  this.end
 				});
 			}
 		}
@@ -184,5 +235,16 @@
 		line-height: 22px;
 		width: 100px;
 		color: #F45151;
+	}
+	.kdNumberBox3{
+		position: fixed!important;
+		top: 67px!important;
+		right: 10px!important;
+		border-radius: 0 0 0 10px;
+		z-index: 999;
+		font-size: 14px;
+		line-height: 22px;
+		width: 100px;
+		color: #F9A936;
 	}
 </style>

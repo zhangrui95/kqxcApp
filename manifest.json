@@ -2,7 +2,7 @@
     "name" : "矿区巡检",
     "appid" : "__UNI__38E87E1",
     "description" : "",
-    "versionName" : "1.0.0",
+    "versionName" : "1.0.4",
     "versionCode" : "100",
     "transformPx" : false,
     "app-plus" : {
@@ -54,8 +54,8 @@
                 },
                 "maps" : {
                     "amap" : {
-                        "appkey_ios" : "a0792a8e3d7461989b2aba9d28afa4cc",
-                        "appkey_android" : "a0792a8e3d7461989b2aba9d28afa4cc"
+                        "appkey_ios" : "f37cd4d5a8ba6a8806923beb18c5fa8d",
+                        "appkey_android" : "f37cd4d5a8ba6a8806923beb18c5fa8d"
                     }
                 },
                 "ad" : {}

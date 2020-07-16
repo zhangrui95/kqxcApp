@@ -19,23 +19,30 @@
 						<input class="uni-input" name="password" password='true'  placeholder="请输入密码" />
 					</view>
 					<view class="uni-btn-v">
-						<button form-type="submit" class="loginBtn">登录</button>
+						<button form-type="submit" class="loginBtn">登录</button> 
 					</view>
 				</form>
 			</view>
-			<!-- <view class="forgotBtn">
-				<text>忘记密码</text>
-			</view> -->
+			<view class="loading" v-if="load">
+				<view class="loadBox">
+					<view class="loadName">下载中({{this.progress}}%)</view>
+					<view class="loadItem">
+						<view class="load" :style="{width:this.progress+'%'}"></view>
+					</view>
+				</view>
+			</view>
 		</view>
 	</view>
 </template>
 
 <script>
-	import {openComDB,dropSQL,setConfig,getConfig,setUsersData,getUsersData} from '../common/env.js'
+	import {openComDB,dropSQL,setConfig,getConfig,setUsersData,getUsersData,setUsersAllData,getUsersAllData} from '../common/env.js'
 	export default {
 		data() {
 			return {
 				network:false,
+				progress:0,
+				load:false,
 			}
 		},
 		onShow(){
@@ -57,6 +64,32 @@
 									setConfig(res.data.data);
 									getApp().globalData.weedIp = res.data.data.zp_base;
 									getApp().globalData.httpImg = res.data.data.zp_pub;
+									if(res.data.data.must_update === '1'){
+										uni.showModal({
+										    title: '检测到新版本,确认更新？',
+											showCancel:false,
+										    success: function (resDate) {
+										         if (resDate.confirm) {
+													that.load = true;
+													const downloadTask = uni.downloadFile({
+														url: res.data.data.app_down,
+														success: (res) => {
+															if (res.statusCode === 200) {
+																that.load = false; 
+																plus.runtime.install(res.tempFilePath);
+																console.log('下载成功');
+															}
+														}
+													});
+													downloadTask.onProgressUpdate((res) => {
+														that.progress = res.progress;
+													});
+										         } else if (resDate.cancel) {
+										             // console.log('用户点击取消');
+										         }
+											}
+										});
+									}
 								}
 						    } 
 						});
@@ -70,6 +103,63 @@
 			});
 		},
 		methods: {
+			gps1:function(){
+				uni.getLocation({
+				    success: function (res) {
+						uni.showModal({
+						    title: '提示1',
+						    content: '当前位置的经度：'+ res.longitude+',当前位置的纬度：' + res.latitude,
+						    success: function (res) {
+						        if (res.confirm) {
+						            console.log('用户点击确定');
+						        } else if (res.cancel) {
+						            console.log('用户点击取消');
+						        }
+						    },
+						});
+				    },
+					fail:function (res) {
+						uni.showModal({
+						    title: '提示1',
+						    content: JSON.stringify(res),
+						    success: function (res) {
+						        if (res.confirm) {
+						            console.log('用户点击确定');
+						        } else if (res.cancel) {
+						            console.log('用户点击取消');
+						        }
+						    },
+						});
+					}
+				});
+			},
+			gps2:function(){
+				plus.geolocation.getCurrentPosition(function(p){
+					uni.showModal({
+					    title: '提示2',
+					    content: '当前位置的经度：'+ p.coords.latitude+',当前位置的纬度：' + p.coords.longitude,
+					    success: function (res) {
+					        if (res.confirm) {
+					            console.log('用户点击确定');
+					        } else if (res.cancel) {
+					            console.log('用户点击取消');
+					        }
+					    },
+					});
+				}, function(e){
+					uni.showModal({
+					    title: '提示2',
+					    content: e.message,
+					    success: function (res) {
+					        if (res.confirm) {
+					            console.log('用户点击确定');
+					        } else if (res.cancel) {
+					            console.log('用户点击取消');
+					        }
+					    },
+					});
+				} );
+			},
 			 isOpenDB(network) {  
 					// console.log('是否打开数据库');  
 					var isOpen = plus.sqlite.isOpenDatabase({  
@@ -102,7 +192,7 @@
 					  // console.log('-------------无网------------')
 				}
 			},  
-			getYh:function(uid){
+			getYh:function(uid,is_admin){
 				uni.request({
 					url: getApp().globalData.ip + '/getUsersData', //下载用户列表
 					data: {"uid": uid},
@@ -115,6 +205,19 @@
 						} 
 					}
 				});
+				if(is_admin === '1'){
+					uni.request({
+						url: getApp().globalData.ip + '/getUsersData', //下载用户列表
+						data: {},
+						method:'POST',
+						success: (res) => {	
+							console.log('res=====>用户',res)
+							if(res.data.data && !res.data.error){
+							 setUsersAllData(res.data.data,(res)=>{});
+							} 
+						}
+					});
+				}
 			},
 			formSubmit: function(e) {
 				// console.log('e.detail.value',e.detail.value);
@@ -135,7 +238,7 @@
 									let name = res.data.data.xm || '';
 									let password = res.data.data.mm || '';
 									let is_admin = res.data.data.is_admin || '';
-									this.getYh(res.data.data.id);
+									this.getYh(res.data.data.id,res.data.data.is_admin);
 									uni.setStorage({
 									    key: 'user',
 									    data: JSON.stringify(res.data.data),
@@ -276,5 +379,43 @@
 		bottom: -20px;
 		width: 60%;
 		margin-left: 15%;
+	}
+	.loading{
+		position: fixed;
+		top: 0;
+		left: 0;
+		background: rgba(0,0,0,0.2);
+		width: 100%;
+		height: 100%;
+		z-index: 999;
+	}
+	.loadBox{
+		width: 90%;
+		height: 100px;
+		background: #fff;
+		border-radius: 10px;
+		position: absolute;
+		top: 35%;
+		left: 5%;
+	}
+	.loadName{
+		color: #333;
+		text-align: center;
+		font-size: 16px;
+		margin: 20px 0;
+	}
+	.loadItem{
+		width: 80%;
+		margin: 10px 10%;
+		height: 10px;
+		background: #eee;
+		border-radius: 50px;
+		overflow: hidden;
+	}
+	.load{
+		width: 0%;
+		height: 10px;
+		background: #172f87;
+		border-radius: 50px;
 	}
 </style>

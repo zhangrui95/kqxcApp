@@ -18,7 +18,7 @@
 		            </picker-view-column>
 		</picker-view> -->
 		<view class="listBox">
-			<detailList :list="list"></detailList>
+			<detailList :list="list" :record="record"></detailList>
 		</view>
 	</view>
 </template>

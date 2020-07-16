@@ -1,21 +1,22 @@
 <template>
 	<view class="box">
-		<view class="warnTop" v-if="text || textZz">
-			<uni-notice-bar v-if="text && is_zz!='1'" :speed="speed" scrollable="true" single="true" :text="text" backgroundColor="#ffcfc0" color="#f45619"></uni-notice-bar>
-			<uni-notice-bar v-if="textZz && is_zz=='1'" :speed="speed" scrollable="true" single="true" :text="textZz" :backgroundColor="this.isOk ? '#d1ffd9' : 'rgb(255, 251, 232)'" :color="this.isOk ? '#0bc62b' : 'rgb(222, 140, 23)'"></uni-notice-bar>
+		<view class="warnTop">
+			<uni-notice-bar @getmore="getMore" showIcon="true" single="true" :text="'当前周期:'+start+'~'+end" backgroundColor="#e6f7ff" color="#2998fe" :showGetMore="true" moreText="查看更多"></uni-notice-bar>
+			<!-- <uni-notice-bar v-if="textZz && is_zz=='1'" :speed="speed" scrollable="true" single="true" :text="textZz" backgroundColor="#e6f7ff" color="#2998fe"></uni-notice-bar> -->
 		</view>
-		<view class="listBox" :style="{marginTop:text || textZz ? '30px' : '0px'}">
+		<view class="listBox" :style="{marginTop:text || textZz ? '30px' : '0px'}"> 
 			<uni-list v-for="(item,index) in list">
 			    <uni-list-item :show-arrow="false" @click="goDetail(item)">
-					<view class="listTitle"><text>{{item.mc}}</text>
-					<uni-tag v-if="item.zt && is_zz!='1'" :text="item.zt === 'error' ? '巡检逾期' : item.zt === 'warning' ? '2日内巡检' : ''" :type="item.zt"></uni-tag>
+					<view class="listTitle"><text :style="{color: item.zt === 'error' || item.zt === 'errors' ? '#f45619' : item.zt === 'warning' || item.zt === 'warnings' ? 'rgb(222, 140, 23)' : ' #000'}">{{item.mc}}</text>
+					<uni-tag v-if="item.zt && is_zz!='1'" :text="item.zt === 'error' || item.zt === 'warning' || item.zt === 'primary' ? '还需巡检一次': item.zt === 'errors' || item.zt === 'warnings' || item.zt === 'primarys' ? '还需巡检两次' : item.zt === 'success' ? '巡检已完成' : ''" :type="item.zt == 'primarys' ? 'primary' :item.zt == 'warnings' ? 'warning':item.zt == 'errors' ? 'error'  : item.zt"></uni-tag>
+					<uni-tag v-if="item.zt && is_zz=='1'" :text="item.zt === 'primary' ? '待巡检': item.zt === 'success' ? '已巡检'+item.num+'次' : ''" :type="item.zt"></uni-tag>
 				</view>
-					<view class="msgBox"> 
+					<view class="msgBox">
 						<text class="leftBox">上次巡查：{{item && item.dk_sj ? item.dk_sj : '暂无'}}</text>
 						<text class="rightBox">巡查人：{{item && item.xm ? item.xm : '暂无'}}</text>
 					</view>
 					<view class="msgBox"> 
-						<text class="leftBox">巡查结果：<text :style="{color:item&&item.kczt_dm === '01' ? '#2de17e' : '#747474'}">{{item && item.kczt_dm ? item.kczt_dm === '02' ? '未开采' : '开采中' : '暂无'}}</text></text>
+						<text class="leftBox">巡查结果：<text :style="{color:item&&item.kczt_dm === '01' ? '#747474' : '#747474'}">{{item && item.kczt_dm ? item.kczt_dm === '02' ? '未开采' : '开采中' : '暂无'}}</text></text>
 						<text class="rightBox">矿山状态：
 							<text :style="{color:item&&item.yczt_dm === '01' ? '#ee4c26' : '#747474'}">{{item && item.yczt_dm ? item.yczt_dm === '02' ? '无异常' : '有异常' : '暂无'}}</text>
 							<text style="margin-left: 5px;"> {{item && item.yj_zp &&item.jj_zp  ?
@@ -63,23 +64,24 @@
 				xj_jg_zz:'2',//时间间隔(组长)
 				xj_pc_zz:'2',//打卡次数(组长)
 				xj_zq_zz:'30',//周期(组长)
+				yj_xq_num:5,//预警星期
 				num:0,
 				text:'',
 				speed: 30,
 				is_zz:getApp().globalData.is_zz,
 				textZz:'',
 				isOk:false,
+				days:2,
 			}
 		},
 		onLoad(){
 			getConfig('select * from config',(data)=>{
 				if(data && data[0] && data[0].xj_jzrq){
 					let startTime = data[0].xj_jzrq;
-					console.log('data[0].xj_zq_zz',data[0].xj_zq_zz)
 					let today = moment().format('YYYY-MM-DD');
-					let daysNum = this.is_zz == '1' ? Math.ceil((moment(today).diff(startTime, 'days') + 1) / (data[0].xj_zq_zz ? data[0].xj_zq_zz : 30)) - 1 : Math.ceil((moment(today).diff(startTime, 'days') + 1) / (data[0].xj_zq ? data[0].xj_zq : 7)) - 1; 
-					let start =  this.is_zz == '1' ? moment(startTime).add(daysNum*(data[0].xj_zq_zz ? data[0].xj_zq_zz : 30),'day').format('YYYY-MM-DD') : moment(startTime).add(daysNum*(data[0].xj_zq ? data[0].xj_zq : 7),'day').format('YYYY-MM-DD');
-					let end =  this.is_zz == '1' ? moment(start).add(data[0].xj_zq_zz-1,'day').format('YYYY-MM-DD') : moment(start).add(data[0].xj_zq-1,'day').format('YYYY-MM-DD');
+					let daysNum = Math.ceil((moment(today).diff(startTime, 'days') + 1) / (data[0].xj_zq ? data[0].xj_zq : 7)) - 1; 
+					let start =  this.is_zz == '1' ? moment().startOf('month').format("YYYY-MM-DD") : moment(startTime).add(daysNum*(data[0].xj_zq ? data[0].xj_zq : 7),'day').format('YYYY-MM-DD');
+					let end =  this.is_zz == '1' ? moment().endOf('month').format("YYYY-MM-DD") : moment(start).add(data[0].xj_zq-1,'day').format('YYYY-MM-DD');
 					let oldStart = moment(startTime).add((daysNum - 1)*(data[0].xj_zq ? data[0].xj_zq : 7),'day').format('YYYY-MM-DD');
 					let oldEnd =  moment(oldStart).add(data[0].xj_zq ? data[0].xj_zq - 1 : 6,'day').format('YYYY-MM-DD');
 					this.start = start;
@@ -92,30 +94,12 @@
 					this.xj_jg_zz = data[0].xj_jg_zz;
 					this.xj_pc_zz = data[0].xj_pc_zz;
 					this.xj_zq_zz = data[0].xj_zq_zz;
+					this.yj_xq_num = data[0].yj_xq_num;
+					this.days = moment(end).diff(today,'day') + 1;
 					console.log('start',start,end);
-					if(data[0].must_update === '1'){
-						uni.showModal({
-						    title: '检测到新版本,确认更新？',
-							showCancel:false,
-						    success: function (res) {
-						        if (res.confirm) {
-						            // console.log('用户点击确定');
-									uni.downloadFile({
-									    url: data[0].app_down,
-									    success: (res) => {
-									        if (res.statusCode === 200) {
-									            // console.log('下载成功');
-									        }
-									    }
-									});
-						        } else if (res.cancel) {
-						            // console.log('用户点击取消');
-						        }
-						    }
-						});
-					}
 				}
 			});
+			console.log('getApp().globalData.isLogin',getApp().globalData.isLogin)
 			if(!getApp().globalData.isLogin){
 				getApp().globalData.isLogin = true;
 				let that = this;
@@ -151,6 +135,8 @@
 			}
 		},
 		onShow() {
+			this.getListKs();
+			this.getListXj();
 			getWtData(` SELECT A.*, B.dz, B.mc, C.xm as wtr_xm, C.lxdh as wtr_lxdh FROM wtData A
 			LEFT JOIN ksData B ON A.ks_id = B.id
 			LEFT JOIN usersData C ON A.fqr_id = C.id
@@ -169,6 +155,19 @@
 			});
 		},
 		methods: {
+			getMore:function(){
+				uni.showModal({
+				    content: this.is_zz === '1' ? this.textZz : this.text,
+					showCancel:false,
+				    success: function (res) {
+				        if (res.confirm) {
+				            console.log('用户点击确定');
+				        } else if (res.cancel) {
+				            console.log('用户点击取消');
+				        }
+				    }
+				});
+			},
 			getUpload:function(callback){
 				let that = this;
 				getXjDataUpLoad(`SELECT
@@ -344,7 +343,7 @@
 				 B.bz
 				FROM
 				 ksData A 
-				 LEFT JOIN (SELECT * FROM xjData WHERE users_id = '${getApp().globalData.uid}' AND dk_sj >= '${this.oldStart} 00:00:00' ORDER BY dk_sj DESC) B ON A.id = B.ks_id
+				 LEFT JOIN (SELECT * FROM xjData WHERE users_id = '${getApp().globalData.uid}' AND dk_sj >= '${this.start} 00:00:00' ORDER BY dk_sj DESC) B ON A.id = B.ks_id
 				 LEFT JOIN usersData C ON B.users_id = C.id
 				 LEFT JOIN usersData D ON A.fzr_id = D.id
 				ORDER BY A.id,B.dk_sj desc`,(data)=>{
@@ -357,48 +356,65 @@
 					this.errorNum=0;
 					this.warnNum=0;
 					data2.map((event)=>{
-						let oldList = data1.filter(item=> (item.id === event.id) && (item.dk_sj < this.oldEnd + '23:59:59'));
-						let nowList = data1.filter(item=> (item.id === event.id) && (item.dk_sj > this.start + '00:00:00'));
+						let nowList = data1.filter(item=>(item.id === event.id) && (moment(item.dk_sj) >= moment(this.start + ' 00:00:00')));
 						let day = moment(this.end).diff(moment(event.dk_sj),'day');
-						console.log('nowList',nowList);
-						if(nowList && nowList.length > 0 && (nowList.length < parseInt(this.xj_jg))){
-							if(day < (parseInt(this.xj_jg))){
-								event.zt = 'error';
-								this.errorNum = this.errorNum + 1;
-							}else if(day < (parseInt(this.xj_zq) - parseInt(this.xj_jg)*parseInt(this.xj_pc) - 1)){
-								event.zt = 'warning';
-								this.warnNum = this.warnNum + 1;
+						let week = moment().day();
+						// let days = moment(nowList[0].dk_sj).diff(nowList[nowList.length - 1].dk_sj,'day');
+						if(this.is_zz == '1'){
+							if(nowList && nowList.length > 0){
+								event.zt = 'success';
+								event.num = nowList.length;
 							}else{
-								event.zt = '';
-							}
-						}else if(nowList.length === 0){
-							if(oldList.length >= this.xj_pc){
-								event.zt = '';
-							}else if(day < (parseInt(this.xj_zq) - parseInt(this.xj_jg) - 1)){
-								event.zt = 'warning';
-								this.warnNum = this.warnNum + 1;
-							}else{
-								event.zt = 'error';
-								this.errorNum = this.errorNum + 1;
+								event.zt = 'primary';
+								event.num = 0;
 							}
 						}else{
-							//dk_sj
-							let days = moment(nowList[0].dk_sj).diff(nowList[nowList.length - 1].dk_sj,'day');
-							if(days >= this.xj_pc){
-								event.zt = '';
-							}else if(day <= (parseInt(this.xj_zq) - parseInt(this.xj_jg) - 1)){
-								event.zt = 'warning';
-								this.warnNum = this.warnNum + 1;
+							console.log('nowList && (nowList.length < parseInt(this.xj_pc)):',nowList && (nowList.length < parseInt(this.xj_pc)))
+							if(nowList && (nowList.length < parseInt(this.xj_pc))){
+								if(week === 0){
+									event.zt = nowList.length === 0 ? 'errors' : 'error';
+									this.errorNum = this.errorNum + 1;
+								}else if(week >= this.yj_xq_num){
+									event.zt = nowList.length === 0 ? 'warnings' :'warning';
+									this.warnNum = this.warnNum + 1;
+								}else{
+									event.zt = nowList.length === 0 ? 'primarys' : 'primary';
+								}
+							}else{
+								let days = moment(nowList[nowList.length - 1].dk_sj).diff(nowList[0].dk_sj,'day')+1;
+								console.log('days====>',days);
+								if(days === 0 && week === 0){
+									event.zt = 'error';
+									this.errorNum = this.errorNum + 1;
+								}else if(days === 0 && week >= this.yj_xq_num){
+									event.zt = 'warning';
+									this.warnNum = this.warnNum + 1;
+								}else{
+									if(days === 0){
+										event.zt = 'primary';
+									}else{
+										event.zt = 'success';
+									}
+								}
 							}
 						}
 					})
 					this.list = data2;
+					let isXj = false;
+					data2.map((event)=>{
+						if(event.dk_sj){
+							isXj = true;
+						}
+					})
+					console.log('data1,data2',data1,data2);
 					setTimeout(()=>{
 						if(this.is_zz != '1'){
-							let yqText = this.errorNum > 0 ? `有${this.errorNum}个矿区巡检逾期`:``;
+							let yqText = this.errorNum > 0 ? `有${this.errorNum}个矿区即将巡检逾期`:``;
 							let dh = this.errorNum > 0 && this.warnNum > 0 ? `，`:``;
-							let warnText = this.warnNum > 0 ? `${this.warnNum}个矿区需要2日内巡检` : ``;
-							this.text = `提示：当前周期${this.start}~${this.end}，${yqText}${dh}${warnText}。`;	
+							let warnText = this.warnNum > 0 ? `${this.warnNum}个矿区需要${this.days}日内巡检` : ``;
+							let dh1 = this.errorNum > 0 || this.warnNum > 0 ? `，`:``;
+							let isWc = this.errorNum == 0 && this.warnNum == 0 ? isXj ? '暂无巡检告警及巡检预警记录。':'暂无巡检记录，请在当前周期内巡检以免逾期。' : '';
+							this.text = `当前周期${this.start}~${this.end}${dh1}${yqText}${dh}${warnText}。${isWc}`;	
 						}	
 						uni.hideLoading();
 					},500);
@@ -424,7 +440,8 @@
 						
 						let that = this;
 						setTimeout(()=>{
-							that.textZz = '当前周期：'+that.start+'~'+that.end+'。' + '当前周期内已巡检'+data.length + '次。';
+							let text = this.isOk ? '本周期巡检任务您已全都完成。' : '';
+							that.textZz = '当前周期：'+that.start+'~'+that.end+'。' + '当前周期内已巡检'+data.length + '次。'+text;
 						},500)
 					});
 				}
@@ -453,7 +470,8 @@
 								if(res.data.data.length >= this.xj_pc_zz){
 									this.isOk=true;
 								}
-								this.textZz = '当前周期：'+this.start+'~'+this.end+'。' + '当前周期内已巡检'+res.data.data.length + '次。';
+								let text = this.isOk ? '本周期巡检任务您已全都完成。' : '';
+								this.textZz = '当前周期：'+this.start+'~'+this.end+'。' + '当前周期内已巡检'+res.data.data.length + '次。' + text;
 							}
 							setTimeout(()=>{
 								uni.hideLoading();
@@ -519,6 +537,7 @@
 	}
 	.uni-list-item{
 		background: #fff;
+		/* background: linear-gradient(left,#f6ffed,#fff,#fff); */
 		margin-bottom: 7px;
 	}
 	.uni-tag--error{
@@ -547,6 +566,34 @@
 	}
 	/deep/ .uni-tag--warning .uni-tag-text{
 		color: #f4bb52!important;
+		font-size: 12px;
+	}
+	.uni-tag--primary{
+		float: left;
+		background: #e6f7ff!important;
+		border: 1px solid #2db7f5!important;
+		padding: 0 5px!important;
+		height:20px!important;
+		line-height: 19px!important;
+		/* margin-left: 5px; */
+		transform: scale(0.70);
+	}
+	/deep/ .uni-tag--primary .uni-tag-text{
+		color: #2db7f5!important;
+		font-size: 12px;
+	}
+	.uni-tag--success{
+		float: left;
+		background: #effce3!important;
+		border: 1px solid #52c41a!important;
+		padding: 0 5px!important;
+		height:20px!important;
+		line-height: 19px!important;
+		/* margin-left: 5px; */
+		transform: scale(0.70);
+	}
+	/deep/ .uni-tag--success .uni-tag-text{
+		color: #52c41a!important;
 		font-size: 12px;
 	}
 	.leftBox{
@@ -584,9 +631,10 @@
 	.warnTop{
 		background: #fff;
 		height: 30px;
-		line-height: 30px;
+		line-height: 20px;
+		overflow: hidden;
 		font-size: 12px;
-		text-align: center;
+		text-align:left;
 		color: #333;
 		width: 100%;
 		position: fixed;
