@@ -26,8 +26,8 @@
 				height:0,
 				title: 'map',
 				// scale:18,
-				latitude: 0,
-				longitude: 0,
+				latitude: 45.314773,
+				longitude: 130.937761,
 				covers: [],
 				kdNum:0,
 				errorNum:0,
@@ -95,7 +95,6 @@
 						}, []);
 						this.kdNum = data2.length;
 						let yjList = [];
-						console.log('data2========>',data2);
 						let latitude = 0;
 						let longitude = 0;
 						let covers = [];
@@ -116,8 +115,7 @@
 									event.zt = nowList.length === 0 ? 'primarys' : 'primary';
 								}
 							}else{
-								let days = moment(nowList[nowList.length - 1].dk_sj).diff(nowList[0].dk_sj,'day')+1;
-								console.log('days====>',days);
+								let days = moment(nowList[nowList.length - 1].dk_sj.substring(0,10)).diff(nowList[0].dk_sj.substring(0,10),'day');
 								if(days === 0 && week === 0){
 									event.zt = 'error';
 									this.errorNum = this.errorNum + 1;
@@ -134,7 +132,6 @@
 									}
 								}
 							}
-							console.log('yjList=======>',yjList); 
 							latitude = latitude + parseFloat(event.wd);
 							longitude = longitude + parseFloat(event.jd);
 							// console.log('latitude',latitude,longitude);

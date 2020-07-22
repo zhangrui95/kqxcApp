@@ -93,9 +93,14 @@
 			confirm:function(){
 				 this.$refs.popup.close();
 				  getApp().globalData.isLogin = false;
-				 uni.reLaunch({
-				     url: '../login/index'
-				 });
+				  uni.removeStorage({
+				      key: 'userData',
+				      success: function (res) {
+				        uni.reLaunch({
+				            url: '../login/index'
+				        });
+				      }
+				  });
 			},
 			getUpdate:function(){
 				let that = this;

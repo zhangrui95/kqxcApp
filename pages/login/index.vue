@@ -7,7 +7,7 @@
 			</view>
 		</view>
 		<view class="titleTop">矿区巡检</view>
-		<view class="form">
+		<view class="form" v-if="showLogin">
 			<view class="loginBox">
 				<form @submit="formSubmit">
 					<view class="uni-form-item uni-column">
@@ -43,7 +43,54 @@
 				network:false,
 				progress:0,
 				load:false,
+				showLogin:false,
 			}
+		},
+		onLoad() {
+			let that = this;
+			uni.getStorage({
+			    key: 'userData',
+			    success: function (res) {
+					if(res.data){
+						that.showLogin = false;
+						getApp().globalData.is_admin = JSON.parse(res.data).is_admin;
+						getApp().globalData.uid = JSON.parse(res.data).id;
+						getApp().globalData.is_zz = JSON.parse(res.data).is_zz;
+						uni.hideLoading();
+						uni.getNetworkType({
+						    success: function (res) {
+								if(res.networkType !== 'none'){
+									uni.request({
+									    url: getApp().globalData.ip + '/getConfig', 
+									    data: {},
+										method:'POST',
+									    success: (res) => {
+											if(res.data.data && !res.data.error){
+												if(!(res.data.data.must_update === '1' && getApp().globalData.version !== res.data.data.last_version)){
+													uni.redirectTo({
+														url: '../index/index'
+													});
+												}else{
+													that.showLogin = true;
+												}
+											}
+									    } 
+									});
+								}else{
+									uni.redirectTo({
+										url: '../index/index'
+									});
+								}
+							},
+						});
+					}else{
+						that.showLogin = true;
+					}
+			    },
+				fail:function(){
+					that.showLogin = true;
+				}
+			});
 		},
 		onShow(){
 			// console.log('========================================================')
@@ -59,14 +106,14 @@
 						    data: {},
 							method:'POST',
 						    success: (res) => {
-								console.log('getConfig===========>',res.data);
+								console.log('getConfig===========>',res.data); 
 								if(res.data.data && !res.data.error){
 									setConfig(res.data.data);
 									getApp().globalData.weedIp = res.data.data.zp_base;
 									getApp().globalData.httpImg = res.data.data.zp_pub;
-									if(res.data.data.must_update === '1'){
+									if(res.data.data.must_update === '1' && getApp().globalData.version !== res.data.data.last_version){
 										uni.showModal({
-										    title: '检测到新版本,确认更新？',
+										    title: '检测到新版本，与旧版本不兼容，请更新后使用。',
 											showCancel:false,
 										    success: function (resDate) {
 										         if (resDate.confirm) {
@@ -239,6 +286,11 @@
 									let password = res.data.data.mm || '';
 									let is_admin = res.data.data.is_admin || '';
 									this.getYh(res.data.data.id,res.data.data.is_admin);
+									uni.setStorage({
+									    key: 'userData',
+									    data: JSON.stringify(res.data.data),
+									    success: function () {}
+									});
 									uni.setStorage({
 									    key: 'user',
 									    data: JSON.stringify(res.data.data),

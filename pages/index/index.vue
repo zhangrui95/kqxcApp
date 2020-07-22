@@ -9,8 +9,9 @@
 			    <uni-list-item :show-arrow="false" @click="goDetail(item)">
 					<view class="listTitle"><text :style="{color: item.zt === 'error' || item.zt === 'errors' ? '#f45619' : item.zt === 'warning' || item.zt === 'warnings' ? 'rgb(222, 140, 23)' : ' #000'}">{{item.mc}}</text>
 					<uni-tag v-if="item.zt && is_zz!='1'" :text="item.zt === 'error' || item.zt === 'warning' || item.zt === 'primary' ? '还需巡检一次': item.zt === 'errors' || item.zt === 'warnings' || item.zt === 'primarys' ? '还需巡检两次' : item.zt === 'success' ? '巡检已完成' : ''" :type="item.zt == 'primarys' ? 'primary' :item.zt == 'warnings' ? 'warning':item.zt == 'errors' ? 'error'  : item.zt"></uni-tag>
-					<uni-tag v-if="item.zt && is_zz=='1'" :text="item.zt === 'primary' ? '待巡检': item.zt === 'success' ? '已巡检'+item.num+'次' : ''" :type="item.zt"></uni-tag>
+					<uni-tag v-if="item.zt && is_zz=='1'" :text="item.num == 0 ? '待巡检': '已巡检'+item.num+'次'" :type="item.zt"></uni-tag>
 				</view>
+				<view class="msgBox">需要对周边进行地毯式巡查</view>
 					<view class="msgBox">
 						<text class="leftBox">上次巡查：{{item && item.dk_sj ? item.dk_sj : '暂无'}}</text>
 						<text class="rightBox">巡查人：{{item && item.xm ? item.xm : '暂无'}}</text>
@@ -65,6 +66,8 @@
 				xj_pc_zz:'2',//打卡次数(组长)
 				xj_zq_zz:'30',//周期(组长)
 				yj_xq_num:5,//预警星期
+				tqyjtt_zz:7,
+				tqgjtt_zz:3,
 				num:0,
 				text:'',
 				speed: 30,
@@ -95,11 +98,11 @@
 					this.xj_pc_zz = data[0].xj_pc_zz;
 					this.xj_zq_zz = data[0].xj_zq_zz;
 					this.yj_xq_num = data[0].yj_xq_num;
+					this.tqyjtt_zz = data[0].tqyjtt_zz,
+					this.tqgjtt_zz = data[0].tqgjtt_zz,
 					this.days = moment(end).diff(today,'day') + 1;
-					console.log('start',start,end);
 				}
 			});
-			console.log('getApp().globalData.isLogin',getApp().globalData.isLogin)
 			if(!getApp().globalData.isLogin){
 				getApp().globalData.isLogin = true;
 				let that = this;
@@ -231,7 +234,6 @@
 																	 data: dataItem,
 																	method:'POST',
 																	 success: (res) => {
-																		 console.log('待上传上传',res.data);
 																		 if(res.data.data && !res.data.error){
 																			 setTimeout(()=>{
 																				uni.hideLoading();
@@ -359,17 +361,30 @@
 						let nowList = data1.filter(item=>(item.id === event.id) && (moment(item.dk_sj) >= moment(this.start + ' 00:00:00')));
 						let day = moment(this.end).diff(moment(event.dk_sj),'day');
 						let week = moment().day();
-						// let days = moment(nowList[0].dk_sj).diff(nowList[nowList.length - 1].dk_sj,'day');
+						// let days = moment(nowList[0].dk_sj).diff(nowList[nowList.length - 1].dk_sj,'day');this.xj_pc_zz
 						if(this.is_zz == '1'){
-							if(nowList && nowList.length > 0){
-								event.zt = 'success';
-								event.num = nowList.length;
+							let xjList = data1.filter(event => event.dk_sj);
+							let day_zz = moment(this.end).diff(moment(this.today),'day');
+							if(xjList && (xjList.length < parseInt(this.xj_pc_zz))){
+								if(day_zz <= this.tqgjtt_zz){
+									event.zt = 'error';
+								}else if(day_zz <= this.tqyjtt_zz){
+									event.zt = 'warning';
+								}else{
+									event.zt = nowList.length === 0 ? 'primary' : 'success';
+								}
 							}else{
-								event.zt = 'primary';
-								event.num = 0;
+								let days = moment(xjList[xjList.length - 1].dk_sj.substring(0,10)).diff(xjList[0].dk_sj.substring(0,10),'day');
+								if(days === 0 && day_zz <= this.tqgjtt_zz){
+									event.zt = 'error';
+								}else if(days === 0 && day_zz <= this.tqyjtt_zz){ 
+									event.zt = 'warning';
+								}else{
+									event.zt = nowList.length === 0 ? 'primary' : 'success';
+								}
 							}
+							event.num = nowList && nowList.length > 0 ? nowList.length : 0;
 						}else{
-							console.log('nowList && (nowList.length < parseInt(this.xj_pc)):',nowList && (nowList.length < parseInt(this.xj_pc)))
 							if(nowList && (nowList.length < parseInt(this.xj_pc))){
 								if(week === 0){
 									event.zt = nowList.length === 0 ? 'errors' : 'error';
@@ -381,8 +396,7 @@
 									event.zt = nowList.length === 0 ? 'primarys' : 'primary';
 								}
 							}else{
-								let days = moment(nowList[nowList.length - 1].dk_sj).diff(nowList[0].dk_sj,'day')+1;
-								console.log('days====>',days);
+								let days = moment(nowList[nowList.length - 1].dk_sj.substring(0, 10)).diff(nowList[0].dk_sj.substring(0,10),'day');
 								if(days === 0 && week === 0){
 									event.zt = 'error';
 									this.errorNum = this.errorNum + 1;
@@ -390,6 +404,7 @@
 									event.zt = 'warning';
 									this.warnNum = this.warnNum + 1;
 								}else{
+									console.log('days',days)
 									if(days === 0){
 										event.zt = 'primary';
 									}else{
@@ -406,7 +421,6 @@
 							isXj = true;
 						}
 					})
-					console.log('data1,data2',data1,data2);
 					setTimeout(()=>{
 						if(this.is_zz != '1'){
 							let yqText = this.errorNum > 0 ? `有${this.errorNum}个矿区即将巡检逾期`:``;
@@ -429,18 +443,15 @@
 				});
 			},	
 			getListXj:function(){
-				console.log('=====执行=====',this.is_zz);
 				if(this.is_zz === '1'){
-					console.log('=====执行001=====');
 					getXjData(`SELECT A.*, B.xm, C.mc FROM xjData A LEFT JOIN usersData B ON A.users_id = B.id LEFT JOIN ksData C ON A.ks_id = C.id WHERE A.users_id = '${getApp().globalData.uid}' ORDER BY dk_sj DESC`,(data)=>{
-						console.log('data,getApp().globalData.uid',data,getApp().globalData.uid);
 						if(data.length >= this.xj_pc_zz){
 							this.isOk=true;
 						}
 						
 						let that = this;
 						setTimeout(()=>{
-							let text = this.isOk ? '本周期巡检任务您已全都完成。' : '';
+							let text = this.isOk ? '本周期巡检任务您已完成。' : '';
 							that.textZz = '当前周期：'+that.start+'~'+that.end+'。' + '当前周期内已巡检'+data.length + '次。'+text;
 						},500)
 					});
@@ -470,7 +481,7 @@
 								if(res.data.data.length >= this.xj_pc_zz){
 									this.isOk=true;
 								}
-								let text = this.isOk ? '本周期巡检任务您已全都完成。' : '';
+								let text = this.isOk ? '本周期巡检任务您已完成。' : '';
 								this.textZz = '当前周期：'+this.start+'~'+this.end+'。' + '当前周期内已巡检'+res.data.data.length + '次。' + text;
 							}
 							setTimeout(()=>{
