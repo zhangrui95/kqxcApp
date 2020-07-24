@@ -404,7 +404,7 @@
 									event.zt = 'warning';
 									this.warnNum = this.warnNum + 1;
 								}else{
-									console.log('days',days)
+									// console.log('days',days)
 									if(days === 0){
 										event.zt = 'primary';
 									}else{

@@ -138,6 +138,16 @@
 				"navigationBarBackgroundColor": "#000"
 			}
         }
+        ,{
+            "path" : "pages/myMessage/myMessage",
+            "style" : {
+				"navigationBarTitleText": "我的消息"
+			}
+        }
+        ,{
+            "path" : "pages/sendMsg/sendMsg",
+            "style" : {}
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "white",

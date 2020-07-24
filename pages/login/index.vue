@@ -56,6 +56,7 @@
 						getApp().globalData.is_admin = JSON.parse(res.data).is_admin;
 						getApp().globalData.uid = JSON.parse(res.data).id;
 						getApp().globalData.is_zz = JSON.parse(res.data).is_zz;
+						let dataRes = JSON.parse(res.data);
 						uni.hideLoading();
 						uni.getNetworkType({
 						    success: function (res) {
@@ -67,6 +68,7 @@
 									    success: (res) => {
 											if(res.data.data && !res.data.error){
 												if(!(res.data.data.must_update === '1' && getApp().globalData.version !== res.data.data.last_version)){
+													that.getYh(dataRes.id,dataRes.is_admin);
 													uni.redirectTo({
 														url: '../index/index'
 													});
@@ -77,6 +79,7 @@
 									    } 
 									});
 								}else{
+									that.getYh(dataRes.id,dataRes.is_admin);
 									uni.redirectTo({
 										url: '../index/index'
 									});
@@ -122,6 +125,7 @@
 														url: res.data.data.app_down,
 														success: (res) => {
 															if (res.statusCode === 200) {
+																that.delDb();
 																that.load = false; 
 																plus.runtime.install(res.tempFilePath);
 																console.log('下载成功');
@@ -207,6 +211,24 @@
 					});
 				} );
 			},
+			delDb(){
+				let dirPath = '_doc/kqxjList.db';
+				plus.io.resolveLocalFileSystemURL(dirPath, function(entry) {
+					entry.remove( function ( entry ) {
+						console.log('删除成功回调')
+					}, function ( e ) {
+						alert( e.message );
+					} );
+				});
+				let dirPath1 = '_doc/kqxjList.db-journal';
+				plus.io.resolveLocalFileSystemURL(dirPath1, function(entry) {
+					entry.remove( function ( entry ) {
+						console.log('删除成功回调')
+					}, function ( e ) {
+						alert( e.message );
+					} );
+				});
+			},
 			 isOpenDB(network) {  
 					// console.log('是否打开数据库');  
 					var isOpen = plus.sqlite.isOpenDatabase({  
@@ -252,19 +274,19 @@
 						} 
 					}
 				});
-				if(is_admin === '1'){
-					uni.request({
-						url: getApp().globalData.ip + '/getUsersData', //下载用户列表
-						data: {},
-						method:'POST',
-						success: (res) => {	
-							console.log('res=====>用户',res)
-							if(res.data.data && !res.data.error){
-							 setUsersAllData(res.data.data,(res)=>{});
-							} 
-						}
-					});
-				}
+				// if(is_admin === '1'){
+				uni.request({
+					url: getApp().globalData.ip + '/getUsersData', //下载用户列表
+					data: {},
+					method:'POST',
+					success: (res) => {	
+						console.log('res=====>用户All',res)
+						if(res.data.data && !res.data.error){
+						 setUsersAllData(res.data.data,(res)=>{});
+						} 
+					}
+				});
+				// }
 			},
 			formSubmit: function(e) {
 				// console.log('e.detail.value',e.detail.value);

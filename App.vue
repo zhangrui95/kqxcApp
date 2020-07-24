@@ -2,13 +2,14 @@
 export default {
 	globalData: {  
 	   ip:'http://112.102.212.130:10006',//http://192.168.104.100:8082',
+	   socketIp:'http://60.15.118.104:8723',
 	   is_admin:'0',
 	   uid:'',
 	   weedIp:'',
 	   httpImg:'',
-	   version:'1.0.9',
+	   version:'1.1.4',
 	   isLogin:false,
-	   is_zz:'0'
+	   is_zz:'0',
 	},  
 	onLaunch: function() {
 		console.log('App Launch');

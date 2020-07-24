@@ -5,6 +5,7 @@
 			<view class="name">{{name}}</view>
 		</view>
 		<uni-list style="margin-top:10px;">
+			<uni-list-item thumb="../../static/msg.png" title="我的消息" @click="myMessage" :show-badge="parseInt(allNum) > 0 ? true : false" :badge-text="allNum" badge-type="error"></uni-list-item>
 		    <uni-list-item thumb="../../static/bbjc.png" title="检测版本" @click="getUpdate"></uni-list-item>
 			<!-- <uni-list-item thumb="../../static/rjxy.png" title="软件许可协议"></uni-list-item> -->
 		</uni-list>
@@ -21,7 +22,7 @@
 		<uni-popup ref="popup" type="dialog">
 		    <uni-popup-dialog type="input" title="确定退出登陆？" okText="确定" :duration="2000" :before-close="true" @close="close" @confirm="confirm"></uni-popup-dialog>
 		</uni-popup> 
-		<tabBar :pagePath="'/pages/myPage/myPage'" :num="num"></tabBar>
+		<tabBar :pagePath="'/pages/myPage/myPage'" :num="num" @getMsgNum="getMsgNum" ref="tabBar"></tabBar> 
 		<view class="loading" v-if="load">
 			<view class="loadBox">
 				<view class="loadName">下载中({{this.progress}}%)</view>
@@ -47,6 +48,7 @@
 				num:0,
 				progress:0,
 				load:false,
+				allNum:'0',
 			}
 		},
 		onLoad() {
@@ -61,6 +63,9 @@
 			});
 		},
 		onShow() {
+			if(this.$refs.tabBar){
+				this.$refs.tabBar.getNum();
+			}
 			getWtData(` SELECT A.*, B.dz, B.mc, C.xm as wtr_xm, C.lxdh as wtr_lxdh FROM wtData A
 			LEFT JOIN ksData B ON A.ks_id = B.id
 			LEFT JOIN usersData C ON A.fqr_id = C.id
@@ -83,6 +88,14 @@
 				uni.navigateTo({
 					 url: '../choiceNumber/choiceNumber'
 				})
+			},
+			getMsgNum:function(num){
+				this.allNum = num;
+			},
+			myMessage:function(){
+				uni.navigateTo({
+				    url: '../myMessage/myMessage'
+				});
 			},
 			getOk:function(){
 				 this.$refs.popup.open();
