@@ -154,63 +154,6 @@
 			});
 		},
 		methods: {
-			gps1:function(){
-				uni.getLocation({
-				    success: function (res) {
-						uni.showModal({
-						    title: '提示1',
-						    content: '当前位置的经度：'+ res.longitude+',当前位置的纬度：' + res.latitude,
-						    success: function (res) {
-						        if (res.confirm) {
-						            console.log('用户点击确定');
-						        } else if (res.cancel) {
-						            console.log('用户点击取消');
-						        }
-						    },
-						});
-				    },
-					fail:function (res) {
-						uni.showModal({
-						    title: '提示1',
-						    content: JSON.stringify(res),
-						    success: function (res) {
-						        if (res.confirm) {
-						            console.log('用户点击确定');
-						        } else if (res.cancel) {
-						            console.log('用户点击取消');
-						        }
-						    },
-						});
-					}
-				});
-			},
-			gps2:function(){
-				plus.geolocation.getCurrentPosition(function(p){
-					uni.showModal({
-					    title: '提示2',
-					    content: '当前位置的经度：'+ p.coords.latitude+',当前位置的纬度：' + p.coords.longitude,
-					    success: function (res) {
-					        if (res.confirm) {
-					            console.log('用户点击确定');
-					        } else if (res.cancel) {
-					            console.log('用户点击取消');
-					        }
-					    },
-					});
-				}, function(e){
-					uni.showModal({
-					    title: '提示2',
-					    content: e.message,
-					    success: function (res) {
-					        if (res.confirm) {
-					            console.log('用户点击确定');
-					        } else if (res.cancel) {
-					            console.log('用户点击取消');
-					        }
-					    },
-					});
-				} );
-			},
 			delDb(){
 				let dirPath = '_doc/kqxjList.db';
 				plus.io.resolveLocalFileSystemURL(dirPath, function(entry) {

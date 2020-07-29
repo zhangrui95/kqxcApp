@@ -98,8 +98,8 @@
 					this.xj_pc_zz = data[0].xj_pc_zz;
 					this.xj_zq_zz = data[0].xj_zq_zz;
 					this.yj_xq_num = data[0].yj_xq_num;
-					this.tqyjtt_zz = data[0].tqyjtt_zz,
-					this.tqgjtt_zz = data[0].tqgjtt_zz,
+					this.tqyjtt_zz = data[0].tqyjtt_zz;
+					this.tqgjtt_zz = data[0].tqgjtt_zz;
 					this.days = moment(end).diff(today,'day') + 1;
 				}
 			});

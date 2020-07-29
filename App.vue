@@ -7,7 +7,7 @@ export default {
 	   uid:'',
 	   weedIp:'',
 	   httpImg:'',
-	   version:'1.1.4',
+	   version:'1.1.5',
 	   isLogin:false,
 	   is_zz:'0',
 	},  
