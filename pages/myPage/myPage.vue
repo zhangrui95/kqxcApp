@@ -131,7 +131,7 @@
 							    success: (res) => {
 									// console.log('getConfig===========>',res.data);
 									if(res.data.data && !res.data.error){
-										if(getApp().globalData.version !== res.data.data.last_version){
+										if(getApp().globalData.version < res.data.data.last_version){
 											uni.hideLoading();
 											uni.showModal({
 											    title: '检测到最新版本,是否确认更新？',

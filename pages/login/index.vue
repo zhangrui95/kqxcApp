@@ -101,7 +101,7 @@
 			uni.getNetworkType({
 			    success: function (res) {
 			        // console.log('网络状态',res.networkType);
-					that.isOpenDB(res.networkType);  
+					// that.isOpenDB(res.networkType);  
 					if(res.networkType !== 'none'){
 						that.network = true
 						uni.request({
@@ -127,7 +127,7 @@
 															if (res.statusCode === 200) {
 																that.delDb();
 																that.load = false; 
-																plus.runtime.install(res.tempFilePath);
+																// plus.runtime.install(res.tempFilePath);
 																console.log('下载成功');
 															}
 														}
@@ -156,28 +156,28 @@
 		methods: {
 			delDb(){
 				let dirPath = '_doc/kqxjList.db';
-				plus.io.resolveLocalFileSystemURL(dirPath, function(entry) {
-					entry.remove( function ( entry ) {
-						console.log('删除成功回调')
-					}, function ( e ) {
-						alert( e.message );
-					} );
-				});
+				// plus.io.resolveLocalFileSystemURL(dirPath, function(entry) {
+				// 	entry.remove( function ( entry ) {
+				// 		console.log('删除成功回调')
+				// 	}, function ( e ) {
+				// 		alert( e.message );
+				// 	} );
+				// });
 				let dirPath1 = '_doc/kqxjList.db-journal';
-				plus.io.resolveLocalFileSystemURL(dirPath1, function(entry) {
-					entry.remove( function ( entry ) {
-						console.log('删除成功回调')
-					}, function ( e ) {
-						alert( e.message );
-					} );
-				});
+				// plus.io.resolveLocalFileSystemURL(dirPath1, function(entry) {
+				// 	entry.remove( function ( entry ) {
+				// 		console.log('删除成功回调')
+				// 	}, function ( e ) {
+				// 		alert( e.message );
+				// 	} );
+				// });
 			},
 			 isOpenDB(network) {  
 					// console.log('是否打开数据库');  
-					var isOpen = plus.sqlite.isOpenDatabase({  
-						name: 'kqxj', //数据库的名字  
-						path: '_doc/kqxjList.db' //地址  
-					});  
+					// var isOpen = plus.sqlite.isOpenDatabase({  
+					// 	name: 'kqxj', //数据库的名字  
+					// 	path: '_doc/kqxjList.db' //地址  
+					// });  
 					// console.log(!isOpen);  
 	
 					if (!isOpen) {  
