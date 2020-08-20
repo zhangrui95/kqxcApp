@@ -99,6 +99,9 @@
 				wtList:[],
 				max_dkjl:500,
 				PI:3.14159265358979324,
+				ydJd:'',
+				ydWd:'',
+				ydDistance:'',
 			}
 		},
 		onLoad: function (option) { //option为object类型，会序列化上个页面传递的参数
@@ -134,11 +137,6 @@
 						return ret;
 					},
 				delta : function (lat, lon) {
-					// Krasovsky 1940
-					//
-					// a = 6378245.0, 1/f = 298.3
-					// b = a * (1 - f)
-					// ee = (a^2 - b^2) / a^2;
 					var a = 6378245.0; //  a: 卫星椭球坐标投影到平面地图坐标系的投影因子。
 					var ee = 0.00669342162296594323; //  ee: 椭球的偏心率。
 					var dLat = this.transformLat(lon - 105.0, lat - 35.0);
@@ -201,11 +199,30 @@
 				let that = this;
 				uni.chooseImage({
 				    count: 1, //默认9
-				    sizeType: ['original', 'compressed'], //可以指定是原图还是压缩图，默认二者都有
+				    sizeType: ['original'], //可以指定是原图还是压缩图，默认二者都有
 				    // sourceType: ['camera'], //调用相机
 					sourceType: ['album'], //从相册选择
 				    success: function (resImg) {
-				        // console.log(JSON.stringify(resImg.tempFilePaths[0]));
+						console.log('图片信息：',resImg);
+				        console.log(JSON.stringify(resImg.tempFilePaths[0]));
+						console.log(JSON.stringify(resImg.tempFilePaths[0]).split('-')[1],JSON.stringify(resImg.tempFilePaths[0]).split('-')[2]);
+						  let ydJd = JSON.stringify(resImg.tempFilePaths[0]) && JSON.stringify(resImg.tempFilePaths[0]).split('-')&&JSON.stringify(resImg.tempFilePaths[0]).split('-')[1] ? JSON.stringify(resImg.tempFilePaths[0]).split('-')[1] : '';
+						  let ydWd = JSON.stringify(resImg.tempFilePaths[0])&&JSON.stringify(resImg.tempFilePaths[0]).split('-')&&JSON.stringify(resImg.tempFilePaths[0]).split('-')[2] ? JSON.stringify(resImg.tempFilePaths[0]).split('-')[2] : '';
+						  let ydDistance = that.distance(that.record.jd,that.record.wd,ydJd,ydWd);
+						  console.log('----距离---',ydJd,ydWd,ydDistance);
+						  if(ydDistance <= that.max_dkjl){
+							  if(!that.ydDistance){
+								  that.ydDistance = ydDistance;
+								  that.ydJd = ydJd;
+								  that.ydWd = ydWd;
+							  }else{
+								  if(ydDistance < that.ydDistance){
+									  that.ydDistance = ydDistance;
+									  that.ydJd = ydJd;
+									  that.ydWd = ydWd;
+								  }
+							  }
+						  }
 						  uni.saveFile({
 						      tempFilePath: resImg.tempFilePaths[0],
 						      success: function (res) {
@@ -245,11 +262,27 @@
 			upImg2:function(e){
 				let that = this;
 				uni.chooseImage({
-				    count: 1, //默认9
-				    sizeType: ['original', 'compressed'], //可以指定是原图还是压缩图，默认二者都有
+				    count: 1, //默认9 
+				    sizeType: ['original'], //可以指定是原图还是压缩图，默认二者都有
 				    sourceType: ['album'], //从相册选择
 				    success: function (resImg) {
-				        // console.log(JSON.stringify(resImg.tempFilePaths[0]));
+						let ydJd = JSON.stringify(resImg.tempFilePaths[0]) && JSON.stringify(resImg.tempFilePaths[0]).split('-')&&JSON.stringify(resImg.tempFilePaths[0]).split('-')[1] ? JSON.stringify(resImg.tempFilePaths[0]).split('-')[1] : '';
+						let ydWd = JSON.stringify(resImg.tempFilePaths[0])&&JSON.stringify(resImg.tempFilePaths[0]).split('-')&&JSON.stringify(resImg.tempFilePaths[0]).split('-')[2] ? JSON.stringify(resImg.tempFilePaths[0]).split('-')[2] : '';
+						let ydDistance = that.distance(that.record.jd,that.record.wd,ydJd,ydWd);
+						console.log('----距离---',ydJd,ydWd,ydDistance);
+						if(ydDistance <= that.max_dkjl){
+							  if(!that.ydDistance){
+								  that.ydDistance = ydDistance;
+								  that.ydJd = ydJd;
+								  that.ydWd = ydWd;
+							  }else{
+								  if(ydDistance < that.ydDistance){
+									  that.ydDistance = ydDistance;
+									  that.ydJd = ydJd;
+									  that.ydWd = ydWd;
+								  }
+							  }
+						}
 						  uni.saveFile({
 						      tempFilePath: resImg.tempFilePaths[0],
 						      success: function (res) {
@@ -484,30 +517,38 @@
 									if(dist <= that.max_dkjl){
 										that.getNetSave(longitude,latitude,'0',idx);
 									}else{
-										uni.showModal({
-										    title: '您距离矿点位置'+(dist > 1000 ?  parseInt(dist/1000) + '千米' : dist + '米')+'，超出'+that.max_dkjl+'米的打卡范围，仍要打卡？',
-										    success: function (resDate) {
-										         if (resDate.confirm) {
-													that.getNetSave(longitude,latitude,'1',idx);
-										         } else if (resDate.cancel) {
-										             // console.log('用户点击取消'); 
-										         }
-											}
-										});
+										if(that.ydDistance&&that.ydDistance <= that.max_dkjl){
+											that.getNetSave(that.ydJd,that.ydWd,'0',idx);
+										}else{
+											uni.showModal({
+											    title: '您距离矿点位置'+(dist > 1000 ?  parseInt(dist/1000) + '千米' : dist + '米')+'，超出'+that.max_dkjl+'米的打卡范围，仍要打卡？',
+											    success: function (resDate) {
+											         if (resDate.confirm) {
+														that.getNetSave(longitude,latitude,'1',idx);
+											         } else if (resDate.cancel) {
+											             // console.log('用户点击取消'); 
+											         }
+												}
+											});
+										}
 										console.log('that.distance(this.record.jd,this.record.wd,longitude,latitude)',that.distance(that.record.jd,that.record.wd,longitude,latitude))
 									}
 									
 								}, function(e){
-									uni.showModal({
-									    title: '未获取到您的定位，仍要确认打卡？',
-									    success: function (resDate) {
-									         if (resDate.confirm) {
-												that.getNetSave(longitude,latitude,'2',idx);
-									         } else if (resDate.cancel) {
-									             // console.log('用户点击取消');
-									         }
-										}
-									});
+									if(that.ydDistance&&that.ydDistance <= that.max_dkjl){
+										that.getNetSave(that.ydJd,that.ydWd,'0',idx);
+									}else{
+										uni.showModal({
+										    title: '未获取到您的定位，仍要确认打卡？',
+										    success: function (resDate) {
+										         if (resDate.confirm) {
+													that.getNetSave(longitude,latitude,'2',idx);
+										         } else if (resDate.cancel) {
+										             // console.log('用户点击取消');
+										         }
+											}
+										});
+									}
 								} );
 						}else{
 							plus.geolocation.getCurrentPosition(function(p){
@@ -518,28 +559,36 @@
 									if(dist <= that.max_dkjl){
 										that.getNoneNetSave(longitude,latitude,'0',idx);
 									}else{
+										if(that.ydDistance&&that.ydDistance <= that.max_dkjl){
+											that.getNetSave(that.ydJd,that.ydWd,'0',idx);
+										}else{
+											uni.showModal({
+											    title: '您距离矿点位置为'+(dist > 1000 ?  parseInt(dist/1000) + '千米' : dist + '米')+'，超出'+that.max_dkjl+'米的打卡范围，仍要打卡？',
+											    success: function (resDate) {
+											         if (resDate.confirm) {
+														that.getNoneNetSave(longitude,latitude,'1',idx);
+											         } else if (resDate.cancel) {
+											             // console.log('用户点击取消');
+											         }
+												}
+											});
+										}
+									}
+								}, function(e){
+									if(that.ydDistance&&that.ydDistance <= that.max_dkjl){
+										that.getNetSave(that.ydJd,that.ydWd,'0',idx);
+									}else{
 										uni.showModal({
-										    title: '您距离矿点位置为'+(dist > 1000 ?  parseInt(dist/1000) + '千米' : dist + '米')+'，超出'+that.max_dkjl+'米的打卡范围，仍要打卡？',
+										    title: '未获取到您的定位，仍要确认打卡？',
 										    success: function (resDate) {
 										         if (resDate.confirm) {
-													that.getNoneNetSave(longitude,latitude,'1',idx);
+													that.getNoneNetSave(longitude,latitude,'2',idx);
 										         } else if (resDate.cancel) {
 										             // console.log('用户点击取消');
 										         }
 											}
 										});
 									}
-								}, function(e){
-									uni.showModal({
-									    title: '未获取到您的定位，仍要确认打卡？',
-									    success: function (resDate) {
-									         if (resDate.confirm) {
-												that.getNoneNetSave(longitude,latitude,'2',idx);
-									         } else if (resDate.cancel) {
-									             // console.log('用户点击取消');
-									         }
-										}
-									});
 								} );
 						}
 				    }
