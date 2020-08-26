@@ -30,13 +30,13 @@
 					                 						<view style="float: left;">{{item.dk_sj}} <text style="margin: 0 10px;">{{item.is_ycdk == '1' ? '定位异常':item.is_ycdk == '2' ? '无定位' : '正常'}}打卡</text> 巡查人：{{item.xm}}</view>
 					                 						<uni-tag v-if="item.yczt_dm === '01'" text="有异常" type="error"></uni-tag></view>
 					                 </uni-list-item>
-									 <view class="noList" v-if="list.length == 0">暂无历史巡查记录</view>
+									 <view class="noList" v-if="list.length == 0">暂无历史巡查记录</view> 
 					             </view>
 								 <view v-if="current === 1">
-									 <view class="listItem" v-if="item.users_id !== uid" v-for="(item) in yhList">
+									 <view class="listItem" v-for="(item) in yhList">
 										<uni-list-item :title="item.xm + '（'+ (item.is_zz=='1' ? '组长':'组员') +'）'" thumb="/static/leftHeader.png" :showArrow="false">
 										</uni-list-item>
-										<image class="rightImg" src="/static/message.png" mode="widthFix" @click="sendMsg(item)"></image>
+										<image v-if="item.users_id !== uid" class="rightImg" src="/static/message.png" mode="widthFix" @click="sendMsg(item)"></image>
 									</view>
 									<view class="noList" v-if="yhList.length == 0">暂无人员</view>
 								 </view>

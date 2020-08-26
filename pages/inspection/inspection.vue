@@ -81,6 +81,8 @@
 	import uniListItem from "@/components/uni-list-item/uni-list-item.vue"
 	import moment from 'moment';
 	import {getConfig, setXjData,setXjDataUpLoad,setXjAllData,getWtData,setWtData} from '../common/env.js'
+	let latreg = /^(\-|\+)?([0-8]?\d{1}\.\d{0,15}|90\.0{0,15}|[0-8]?\d{1}|90)$/
+	let longrg = /^(\-|\+)?(((\d|[1-9]\d|1[0-7]\d|0{1,3})\.\d{0,15})|(\d|[1-9]\d|1[0-7]\d|0{1,3})|180\.0{0,15}|180)$/
 	export default {
 		data() {
 			return {
@@ -105,7 +107,6 @@
 			}
 		},
 		onLoad: function (option) { //option为object类型，会序列化上个页面传递的参数
-					console.log('option.record:',option.record); //打印出上个页面传递的参数。
 					this.record = JSON.parse(option.record);
 					getWtData(` SELECT A.*, B.dz, C.xm as wtr_xm, C.lxdh as wtr_lxdh FROM wtData A
 					LEFT JOIN ksData B ON A.ks_id = B.id
@@ -116,7 +117,6 @@
 											});
 					getConfig('select * from config',(data)=>{
 						if(data && data[0] && data[0].max_dkjl){
-							console.log('max_dkjl',max_dkjl);
 							  this.max_dkjl = max_dkjl;
 						}
 					});
@@ -203,59 +203,63 @@
 				    // sourceType: ['camera'], //调用相机
 					sourceType: ['album'], //从相册选择
 				    success: function (resImg) {
-						console.log('图片信息：',resImg);
-				        console.log(JSON.stringify(resImg.tempFilePaths[0]));
-						console.log(JSON.stringify(resImg.tempFilePaths[0]).split('-')[1],JSON.stringify(resImg.tempFilePaths[0]).split('-')[2]);
+						console.log('JSON.stringify(resImg.tempFilePaths[0])',JSON.stringify(resImg.tempFilePaths[0]))
 						  let ydJd = JSON.stringify(resImg.tempFilePaths[0]) && JSON.stringify(resImg.tempFilePaths[0]).split('-')&&JSON.stringify(resImg.tempFilePaths[0]).split('-')[1] ? JSON.stringify(resImg.tempFilePaths[0]).split('-')[1] : '';
 						  let ydWd = JSON.stringify(resImg.tempFilePaths[0])&&JSON.stringify(resImg.tempFilePaths[0]).split('-')&&JSON.stringify(resImg.tempFilePaths[0]).split('-')[2] ? JSON.stringify(resImg.tempFilePaths[0]).split('-')[2] : '';
-						  let ydDistance = that.distance(that.record.jd,that.record.wd,ydJd,ydWd);
-						  console.log('----距离---',ydJd,ydWd,ydDistance);
-						  if(ydDistance <= that.max_dkjl){
-							  if(!that.ydDistance){
-								  that.ydDistance = ydDistance;
-								  that.ydJd = ydJd;
-								  that.ydWd = ydWd;
-							  }else{
-								  if(ydDistance < that.ydDistance){
-									  that.ydDistance = ydDistance;
-									  that.ydJd = ydJd;
-									  that.ydWd = ydWd;
-								  }
+						  if(longrg.test(ydJd) && latreg.test(ydWd)){
+							  let ydDistance = that.distance(that.record.jd,that.record.wd,ydJd,ydWd);
+							  if(ydDistance <= that.max_dkjl){
+							  							  if(!that.ydDistance){
+							  								  that.ydDistance = ydDistance;
+							  								  that.ydJd = ydJd;
+							  								  that.ydWd = ydWd;
+							  							  }else{
+							  								  if(ydDistance < that.ydDistance){
+							  									  that.ydDistance = ydDistance;
+							  									  that.ydJd = ydJd;
+							  									  that.ydWd = ydWd;
+							  								  }
+							  							  }
 							  }
+							  uni.saveFile({
+							      tempFilePath: resImg.tempFilePaths[0],
+							      success: function (res) {
+							        let savedFilePath = res.savedFilePath;
+							  								// console.log('savedFilePath====>',savedFilePath)
+							  								let imgs = that.imgs;
+							  								that.imgs.push(savedFilePath);
+							  								that.imgs = imgs;
+							  								// console.log('this.imgs========>',that.imgs)
+							      }
+							    });
+							  							uni.getNetworkType({
+							  							    success: function (res) {
+							  							        // console.log('网络状态',res.networkType);
+							  									if(res.networkType !== 'none'){
+							  										// console.log('getApp().globalData.weedIp',getApp().globalData.weedIp,resImg.tempFilePaths[0])
+							  										uni.uploadFile({
+							  											url: getApp().globalData.weedIp, //仅为示例，非真实的接口地址
+							  											filePath: resImg.tempFilePaths[0],
+							  											name: 'file',
+							  											formData: {
+							  											    'user': 'test'
+							  											},
+							  											success: (uploadFileRes) => {
+							  												let imgsNet = that.imgsNet;
+							  												that.imgsNet.push(JSON.parse(uploadFileRes.data).fileUrl);
+							  												that.imgsNet = imgsNet;
+							  											}
+							  										});
+							  									}
+							  							    }
+							  							});
+						  }else{
+							  uni.showToast({
+							  	title:'请选择新版元道相机拍摄的现场图片',
+							  	icon:'none',
+								duration: 2000
+							  });
 						  }
-						  uni.saveFile({
-						      tempFilePath: resImg.tempFilePaths[0],
-						      success: function (res) {
-						        let savedFilePath = res.savedFilePath;
-								// console.log('savedFilePath====>',savedFilePath)
-								let imgs = that.imgs;
-								that.imgs.push(savedFilePath);
-								that.imgs = imgs;
-								// console.log('this.imgs========>',that.imgs)
-						      }
-						    });
-							uni.getNetworkType({
-							    success: function (res) {
-							        // console.log('网络状态',res.networkType);
-									if(res.networkType !== 'none'){
-										// console.log('getApp().globalData.weedIp',getApp().globalData.weedIp,resImg.tempFilePaths[0])
-										uni.uploadFile({
-											url: getApp().globalData.weedIp, //仅为示例，非真实的接口地址
-											filePath: resImg.tempFilePaths[0],
-											name: 'file',
-											formData: {
-											    'user': 'test'
-											},
-											success: (uploadFileRes) => {
-												console.log('uploadFileRes.data',uploadFileRes);
-												let imgsNet = that.imgsNet;
-												that.imgsNet.push(JSON.parse(uploadFileRes.data).fileUrl);
-												that.imgsNet = imgsNet;
-											}
-										});
-									}
-							    }
-							});
 				    }
 				});
 			},
@@ -268,52 +272,57 @@
 				    success: function (resImg) {
 						let ydJd = JSON.stringify(resImg.tempFilePaths[0]) && JSON.stringify(resImg.tempFilePaths[0]).split('-')&&JSON.stringify(resImg.tempFilePaths[0]).split('-')[1] ? JSON.stringify(resImg.tempFilePaths[0]).split('-')[1] : '';
 						let ydWd = JSON.stringify(resImg.tempFilePaths[0])&&JSON.stringify(resImg.tempFilePaths[0]).split('-')&&JSON.stringify(resImg.tempFilePaths[0]).split('-')[2] ? JSON.stringify(resImg.tempFilePaths[0]).split('-')[2] : '';
-						let ydDistance = that.distance(that.record.jd,that.record.wd,ydJd,ydWd);
-						console.log('----距离---',ydJd,ydWd,ydDistance);
-						if(ydDistance <= that.max_dkjl){
-							  if(!that.ydDistance){
-								  that.ydDistance = ydDistance;
-								  that.ydJd = ydJd;
-								  that.ydWd = ydWd;
-							  }else{
-								  if(ydDistance < that.ydDistance){
+						if(longrg.test(ydJd) && latreg.test(ydWd)){
+							let ydDistance = that.distance(that.record.jd,that.record.wd,ydJd,ydWd);
+							if(ydDistance <= that.max_dkjl){
+								  if(!that.ydDistance){
 									  that.ydDistance = ydDistance;
 									  that.ydJd = ydJd;
 									  that.ydWd = ydWd;
+								  }else{
+									  if(ydDistance < that.ydDistance){
+										  that.ydDistance = ydDistance;
+										  that.ydJd = ydJd;
+										  that.ydWd = ydWd;
+									  }
 								  }
-							  }
-						}
-						  uni.saveFile({
-						      tempFilePath: resImg.tempFilePaths[0],
-						      success: function (res) {
-						        let savedFilePath = res.savedFilePath;
-								let imgsJ = that.imgsJ;
-								that.imgsJ.push(savedFilePath);
-								that.imgsJ = imgsJ;
-						      }
-						    });
-							uni.getNetworkType({
-							    success: function (res) {
-							        console.log('网络状态',res.networkType);
-									if(res.networkType !== 'none'){
-										// console.log('getApp().globalData.weedIp',getApp().globalData.weedIp,resImg.tempFilePaths[0])
-										uni.uploadFile({
-											url: getApp().globalData.weedIp, //仅为示例，非真实的接口地址
-											filePath: resImg.tempFilePaths[0],
-											name: 'file',
-											formData: {
-											    'user': 'test'
-											},
-											success: (uploadFileRes) => {
-												console.log('uploadFileRes.data',uploadFileRes);
-												let imgsJNet = that.imgsJNet;
-												that.imgsJNet.push(JSON.parse(uploadFileRes.data).fileUrl);
-												that.imgsJNet = imgsJNet;
-											}
-										});
-									}
-							    }
+							}
+							  uni.saveFile({
+							      tempFilePath: resImg.tempFilePaths[0],
+							      success: function (res) {
+							        let savedFilePath = res.savedFilePath;
+									let imgsJ = that.imgsJ;
+									that.imgsJ.push(savedFilePath);
+									that.imgsJ = imgsJ;
+							      }
+							    });
+								uni.getNetworkType({
+								    success: function (res) {
+										if(res.networkType !== 'none'){
+											// console.log('getApp().globalData.weedIp',getApp().globalData.weedIp,resImg.tempFilePaths[0])
+											uni.uploadFile({
+												url: getApp().globalData.weedIp, //仅为示例，非真实的接口地址
+												filePath: resImg.tempFilePaths[0],
+												name: 'file',
+												formData: {
+												    'user': 'test'
+												},
+												success: (uploadFileRes) => {
+													let imgsJNet = that.imgsJNet;
+													that.imgsJNet.push(JSON.parse(uploadFileRes.data).fileUrl);
+													that.imgsJNet = imgsJNet;
+												}
+											});
+										}
+								    }
+								});
+						}else{
+							uni.showToast({
+								title:'请选择新版元道相机拍摄的现场图片', 
+								icon:'none',
+								duration: 2000
 							});
+						}
 				    }
 				});
 			},
@@ -374,7 +383,6 @@
 								jj_zp_net:that.imgsJNet.join('#'),
 								is_ycdk:is_ycdk,
 						};
-						console.log('上传：',data);
 						// console.log('data=========>',data);
 						uni.request({
 						    url: getApp().globalData.ip + '/saveXjData',
@@ -531,7 +539,6 @@
 												}
 											});
 										}
-										console.log('that.distance(this.record.jd,this.record.wd,longitude,latitude)',that.distance(that.record.jd,that.record.wd,longitude,latitude))
 									}
 									
 								}, function(e){

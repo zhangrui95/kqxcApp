@@ -92,27 +92,39 @@
 			return text;
 		  },
 			getSend: function(){
-				    let params = {
-				          text: this.value,
-				          name: this.record.xm,
-				    };
-					let id = this.makeId(32);
-			        let msg = {
-						type:'1',
-			            from: this.id,
-			            to: this.record.lxdh,
-			            time: moment().format('YYYY-MM-DD HH:mm:ss'),
-			            params: params,
-			            id:id,
-			            tid:this.tid,
-			        };
-			        let key = this.msg_key_str
-			            ? this.msg_key_str.split(',').map(item => parseInt(item))
-			            : [];
-			        let newMsg = aes_encrypt(key, JSON.stringify(msg));
-			        socket.emit('chat-message', newMsg);
+				if(this.value.trim()){
+					    let params = {
+					          text: this.value,
+					          name: this.record.xm,
+					    };
+						let id = this.makeId(32);
+					    let msg = {
+							type:'1',
+					        from: this.id,
+					        to: this.record.lxdh,
+					        time: moment().format('YYYY-MM-DD HH:mm:ss'), 
+					        params: params,
+					        id:id,
+					        tid:this.tid,
+					    };
+					    let key = this.msg_key_str
+					        ? this.msg_key_str.split(',').map(item => parseInt(item))
+					        : [];
+					    let newMsg = aes_encrypt(key, JSON.stringify(msg));
+					    socket.emit('chat-message', newMsg);
+						this.value = '';
+						setTimeout(()=>{
+							this.getList();
+						},200)
+						
+				}else{
+					uni.showToast({
+						title:'不能发送空白信息',
+						icon:'none',
+						duration: 1500
+					});
 					this.value = '';
-					this.getList();
+				}
 			 },
 			 getList:function(){
 				 uni.request({
