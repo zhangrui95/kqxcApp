@@ -41,6 +41,14 @@
 			    title: record ? record.xm : '消息'
 			});
 			uni.getStorage({
+			    key: 'user',
+			    success: function (res) {
+					if(res.data){
+						that.name = JSON.parse(res.data).xm;
+					}
+			    }
+			});
+			uni.getStorage({
 			    key: 'userData',
 			    success: function (res) {
 					if(res.data){
@@ -95,7 +103,7 @@
 				if(this.value.trim()){
 					    let params = {
 					          text: this.value,
-					          name: this.record.xm,
+					          name: this.name,
 					    };
 						let id = this.makeId(32);
 					    let msg = {
@@ -113,10 +121,13 @@
 					    let newMsg = aes_encrypt(key, JSON.stringify(msg));
 					    socket.emit('chat-message', newMsg);
 						this.value = '';
+						this.list.push(msg);
 						setTimeout(()=>{
-							this.getList();
+							uni.pageScrollTo({
+							    scrollTop: 99999999999,
+								duration: 0,
+							})
 						},200)
-						
 				}else{
 					uni.showToast({
 						title:'不能发送空白信息',

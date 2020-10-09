@@ -9,15 +9,18 @@
 							<text class="bzBox">矿山地址：{{item.dz}}</text>
 						</view>
 						<view class="msgBox">
-							<text class="bzBox">委托人：{{item.wtr_xm}}</text>
+							<text class="leftBox">委托人：{{item.wtr_xm}}</text>
+							<text class="rightBox" v-if="item.wtzt_dm != '01'">委托状态：<text :style="{color: item.wtzt_dm == '01' ? '#F9A936' : item.wtzt_dm == '02' ? '#29B6FF': item.wtzt_dm == '03' ? '#999999': item.wtzt_dm == '04' ? '#3CE84C' : '#bbb'}">{{item.wtzt_mc}}</text></text> 
 						</view>
 						<view class="msgBox">
-							<text class="leftBox">委托时间：{{item.wt_sj}}</text>
+							<text class="bzBox">委托时间：{{item.wt_sj}}</text>
 							<view class="btnBox" v-if="item.wtzt_dm == '01'">
-								<button size='mini' type="warn"@click="getNo(item)">拒绝</button>
+								<button size='mini' type="warn" @click="getNo(item)">拒绝</button>
 								<button size='mini' type="primary" style="background: #0EF023;" @click="getOk(item)">接受</button>
 							</view>
-							<text class="rightBox" v-if="item.wtzt_dm != '01'">委托状态：<text :style="{color: item.wtzt_dm == '01' ? '#F9A936' : item.wtzt_dm == '02' ? '#29B6FF': item.wtzt_dm == '03' ? '#999999': item.wtzt_dm == '04' ? '#3CE84C' : '#bbb'}">{{item.wtzt_mc}}</text></text> 
+							<view class="btnBox" v-if="item.wtzt_dm == '02'">
+								<button size='mini' type="primary" style="background: #29B6FF;" @click="goList(item)">去巡查</button> 
+							</view>
 						</view>
 						<template v-slot:right="">
 						    <image style="width: 30px;height: 30px;" src="/static/phone.png" mode="widthFix" @click="makePhone(item.wtr_lxdh)"></image>
@@ -66,15 +69,15 @@
 				let that = this;
 				uni.getNetworkType({
 				    success: function (res) {
-						if(res.networkType !== 'none'){
+						if(res.networkType !== 'none' &&  res.networkType !== '2g' &&  res.networkType !== '3g'){
 							that.getWt();
 						}
 					},
-				});
-				getWtData(` SELECT A.*, B.dz, B.mc, C.xm as wtr_xm, C.lxdh as wtr_lxdh FROM wtData A
-				LEFT JOIN ksData B ON A.ks_id = B.id
-				LEFT JOIN usersData C ON A.fqr_id = C.id
-				WHERE A.bwtr_id = '${getApp().globalData.uid}' ORDER BY A.wt_sj DESC`,(data)=>{
+				}); 
+				getWtData(` SELECT A.*, B.dz, B.mc, B.jd, B.wd, B.fzr_id, C.xm as wtr_xm, C.lxdh as wtr_lxdh FROM wtData A
+				LEFT JOIN ksAllData B ON A.ks_id = B.id
+				LEFT JOIN usersAllData C ON A.fqr_id = C.id
+				WHERE A.bwtr_id = '${getApp().globalData.uid}' ORDER BY A.wt_sj DESC, A.id`,(data)=>{
 											console.log('委托',data);
 											 this.list = data;
 										});
@@ -89,6 +92,12 @@
 						  setWtData(res.data.data,(res)=>{});
 						} 
 				    }
+				});
+			},
+			goList:function(item){
+				item.typeXj = true;
+				uni.navigateTo({
+				    url: '../inspection/inspection?record=' + JSON.stringify(item),
 				});
 			},
 			onNavigationBarButtonTap:function(e){
@@ -228,11 +237,11 @@
 		border: 0px!important;
 	}
 	.leftBox{
-		width: 60%;
+		width: 40%;
 		float: left;
 	}
 	.rightBox{
-		width: 40%;
+		width: 60%;
 		float: left;
 	}
 	.listTitle{

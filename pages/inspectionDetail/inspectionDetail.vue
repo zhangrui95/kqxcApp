@@ -74,7 +74,7 @@
 			uni.getNetworkType({
 			    success: function (res) {
 			        // console.log('网络状态',res.networkType);
-					if(res.networkType !== 'none' && !that.isUpload){
+					if(res.networkType !== 'none' &&  res.networkType !== '2g' &&  res.networkType !== '3g' && !that.isUpload){
 						// console.log('图片',detail.yj_zp_net)
 						let yjList = [];
 						let jjList = [];

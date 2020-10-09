@@ -4,7 +4,7 @@
 			<uni-notice-bar @getmore="getMore" showIcon="true" single="true" :text="'当前周期:'+start+'~'+end" backgroundColor="#e6f7ff" color="#2998fe" :showGetMore="true" moreText="查看更多"></uni-notice-bar>
 			<!-- <uni-notice-bar v-if="textZz && is_zz=='1'" :speed="speed" scrollable="true" single="true" :text="textZz" backgroundColor="#e6f7ff" color="#2998fe"></uni-notice-bar> -->
 		</view>
-		<view class="listBox" :style="{marginTop:text || textZz ? '30px' : '0px'}"> 
+		<view class="listBox" :style="{marginTop:'30px'}">  
 			<uni-list v-for="(item,index) in list">
 			    <uni-list-item :show-arrow="false" @click="goDetail(item)">
 					<view class="listTitle"><text :style="{color: item.zt === 'error' || item.zt === 'errors' ? '#f45619' : item.zt === 'warning' || item.zt === 'warnings' ? 'rgb(222, 140, 23)' : ' #000'}">{{item.mc}}</text>
@@ -108,7 +108,7 @@
 				let that = this;
 				uni.getNetworkType({
 				    success: function (res) {
-						if(res.networkType !== 'none'){
+						if(res.networkType !== 'none' &&  res.networkType !== '2g' &&  res.networkType !== '3g'){
 							that.network = true;
 							that.getUpload(()=>{
 								that.getListYh();
@@ -350,10 +350,10 @@
 				 LEFT JOIN usersData D ON A.fzr_id = D.id
 				ORDER BY A.id,B.dk_sj desc`,(data)=>{
 	                let data1 = data;
-					let hash = {}; 
+					let hash = {}; 
 					const data2 = data.reduce((preVal, curVal) => {
-					    hash[curVal.id] ? '' : hash[curVal.id] = true && preVal.push(curVal); 
-					    return preVal 
+					    hash[curVal.id] ? '' : hash[curVal.id] = true && preVal.push(curVal); 
+					    return preVal 
 					}, [])
 					this.errorNum=0;
 					this.warnNum=0;

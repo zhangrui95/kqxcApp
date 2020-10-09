@@ -9,11 +9,11 @@
 							<text class="bzBox">矿山地址：{{item.dz}}</text>
 						</view>
 						<view class="msgBox">
-							<text class="bzBox">被委托人：{{item.bwtr_xm}}</text>
+							<text class="leftBox">被委托人：{{item.bwtr_xm}}</text>
+							<text class="rightBox">委托状态：<text :style="{color: item.wtzt_dm == '01' ? '#F9A936' : item.wtzt_dm == '02' ? '#29B6FF': item.wtzt_dm == '03' ? '#999999': item.wtzt_dm == '04' ? '#3CE84C' : '#bbb'}">{{item.wtzt_mc}}</text></text> 
 						</view>
 						<view class="msgBox">
-							<text class="leftBox">委托时间：{{item.wt_sj}}</text>
-							<text class="rightBox">委托状态：<text :style="{color: item.wtzt_dm == '01' ? '#F9A936' : item.wtzt_dm == '02' ? '#29B6FF': item.wtzt_dm == '03' ? '#999999': item.wtzt_dm == '04' ? '#3CE84C' : '#bbb'}">{{item.wtzt_mc}}</text></text> 
+							<text class="bzBox">委托时间：{{item.wt_sj}}</text>
 						</view>
 						<template v-slot:right="">
 						           <image style="width: 30px;height: 30px;" src="/static/phone.png" mode="widthFix" @click="makePhone(item.bwtr_lxdh)"></image>
@@ -50,7 +50,7 @@
 	  onShow: function () { //option为object类型，会序列化上个页面传递的参数
 	  getWtData(` SELECT A.*, B.dz, B.mc, C.xm as wtr_xm, C.lxdh as wtr_lxdh FROM wtData A
 	  LEFT JOIN ksData B ON A.ks_id = B.id
-	  LEFT JOIN usersData C ON A.fqr_id = C.id
+	  LEFT JOIN usersAllData C ON A.fqr_id = C.id 
 	  WHERE A.bwtr_id = '${getApp().globalData.uid}' ORDER BY A.wt_sj DESC`,(data)=>{
 		  this.num = 0;
 			data.map((item)=>{
@@ -62,7 +62,7 @@
 	        // console.log('--------------执行------------')
 			getWtData(`SELECT A.*, B.dz,B.mc, C.xm as bwtr_xm, C.lxdh as bwtr_lxdh FROM wtData A
  LEFT JOIN ksData B ON A.ks_id = B.id
- LEFT JOIN usersData C ON A.bwtr_id = C.id
+ LEFT JOIN usersAllData C ON A.bwtr_id = C.id
  WHERE A.fqr_id = '${getApp().globalData.uid}' ORDER BY A.wt_sj DESC`,(data)=>{
 				// console.log('委托',data);
 				 this.list = data;
@@ -154,11 +154,11 @@
 		border: 0px!important;
 	}
 	.leftBox{
-		width: 60%;
+		width: 40%;
 		float: left;
 	}
 	.rightBox{
-		width: 40%;
+		width: 60%;
 		float: left;
 	}
 	.listTitle{

@@ -115,24 +115,24 @@
 			getListKs:function(uid){
 				let res = [];
 				// console.log('uid',uid)
-				getKsAllData(`SELECT
-				 A.id,
-				 A.dz,
-				 A.jd,
-				 A.wd,
-				 A.mc,
-				 C.xm,
-				 B.dk_sj,
-				 B.kczt_dm,
-				 B.yczt_dm,
-				 B.jj_zp,
-				 B.yj_zp,
-				 B.bz
-				FROM
-				 ksAllData A 
-				 LEFT JOIN (SELECT * FROM xjData WHERE users_id = '${uid}' AND dk_sj >= '${this.oldStart} 00:00:00' ORDER BY dk_sj DESC) B ON A.id = B.ks_id
-				 LEFT JOIN usersData C ON B.users_id = C.id
-				ORDER BY A.id,B.dk_sj desc`,(res)=>{
+				// getKsAllData(`SELECT
+				//  A.id,
+				//  A.dz,
+				//  A.jd,
+				//  A.wd,
+				//  A.mc,
+				//  C.xm,
+				//  B.dk_sj,
+				//  B.kczt_dm,
+				//  B.yczt_dm,
+				//  B.jj_zp,
+				//  B.yj_zp,
+				//  B.bz
+				// FROM
+				//  ksAllData A 
+				//  LEFT JOIN (SELECT * FROM xjData WHERE users_id = '${uid}' AND dk_sj >= '${this.oldStart} 00:00:00' ORDER BY dk_sj DESC) B ON A.id = B.ks_id
+				//  LEFT JOIN usersData C ON B.users_id = C.id
+				// ORDER BY A.id,B.dk_sj desc`,(res)=>{
 					getKsAllData(`SELECT
 					 A.id,
 					 A.dz,
@@ -155,11 +155,11 @@
 					ORDER BY A.id,B.dk_sj desc`,(data)=>{
 					    let data1 = data;
 						let hash = {}; 
-						const data3 = data.reduce((preVal, curVal) => {
+						const data2 = data.reduce((preVal, curVal) => {
 						    hash[curVal.id] ? '' : hash[curVal.id] = true && preVal.push(curVal); 
 						    return preVal 
 						}, [])
-						let data2 = data3.filter(item => JSON.stringify(res).includes(item.id)); 
+						// let data2 = data3.filter(item => JSON.stringify(res).includes(item.id)); 
 						// console.log('dataList,data2',dataList,data2);
 						this.errorNum=0;
 						this.warnNum=0;
@@ -208,7 +208,7 @@
 						})
 						this.list = data2;
 					});
-				});
+				// });
 			},
 			//生成id
 			makeId:function(thelen){
@@ -244,7 +244,7 @@
 											 success: (res) => {
 												// console.log('修改委托记录状态',res.data);
 												if(res.data.data && !res.data.error){
-														let dataItem = {"id":wtData[0].id,"ks_id":wtData[0].ks_id,"wt_sj":wtData[0].wt_sj,"fqr_id":wtData[0].fqr_id,"bwtr_id":wtData[0].bwtr_id,"wtzt_dm":'05',"wtzt_mc":'已解除'};
+														let dataItem = {"id":wtData[0].id,"ks_id":wtData[0].ks_id,"wt_sj":wtData[0].wt_sj,"fqr_id":wtData[0].fqr_id,"bwtr_id":wtData[0].bwtr_id,"wtzt_dm":'05',"wtzt_mc":'已撤销'};
 														setWtData([dataItem],(res)=>{});
 												} 
 											 }

@@ -60,7 +60,7 @@
 						uni.hideLoading();
 						uni.getNetworkType({
 						    success: function (res) {
-								if(res.networkType !== 'none'){
+								if(res.networkType !== 'none' &&  res.networkType !== '2g' &&  res.networkType !== '3g'){
 									uni.request({
 									    url: getApp().globalData.ip + '/getConfig', 
 									    data: {},
@@ -102,7 +102,7 @@
 			    success: function (res) {
 			        // console.log('网络状态',res.networkType);
 					that.isOpenDB(res.networkType);  
-					if(res.networkType !== 'none'){
+					if(res.networkType !== 'none' &&  res.networkType !== '2g' &&  res.networkType !== '3g'){
 						that.network = true
 						uni.request({
 						    url: getApp().globalData.ip + '/getConfig', 

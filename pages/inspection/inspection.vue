@@ -108,6 +108,7 @@
 		},
 		onLoad: function (option) { //option为object类型，会序列化上个页面传递的参数
 					this.record = JSON.parse(option.record);
+					console.log('this.record',this.record)
 					getWtData(` SELECT A.*, B.dz, C.xm as wtr_xm, C.lxdh as wtr_lxdh FROM wtData A
 					LEFT JOIN ksData B ON A.ks_id = B.id
 					LEFT JOIN usersData C ON A.fqr_id = C.id
@@ -235,7 +236,7 @@
 							  							uni.getNetworkType({
 							  							    success: function (res) {
 							  							        // console.log('网络状态',res.networkType);
-							  									if(res.networkType !== 'none'){
+							  									if(res.networkType !== 'none' &&  res.networkType !== '2g' &&  res.networkType !== '3g'){
 							  										// console.log('getApp().globalData.weedIp',getApp().globalData.weedIp,resImg.tempFilePaths[0])
 							  										uni.uploadFile({
 							  											url: getApp().globalData.weedIp, //仅为示例，非真实的接口地址
@@ -298,7 +299,7 @@
 							    });
 								uni.getNetworkType({
 								    success: function (res) {
-										if(res.networkType !== 'none'){
+										if(res.networkType !== 'none' &&  res.networkType !== '2g' &&  res.networkType !== '3g'){
 											// console.log('getApp().globalData.weedIp',getApp().globalData.weedIp,resImg.tempFilePaths[0])
 											uni.uploadFile({
 												url: getApp().globalData.weedIp, //仅为示例，非真实的接口地址
@@ -368,7 +369,7 @@
 				let that = this;
 				let data = {
 								id:that.makeId(32),
-								ks_id:that.record.id,
+								ks_id:that.record.typeXj ? that.record.ks_id : that.record.id,
 								uid:uid,
 								kczt_dm:that.currentKc,
 								yczt_dm:that.currentYc,
@@ -425,7 +426,7 @@
 				let that = this;
 				let dataEnNet = {
 								id:that.makeId(32),
-								ks_id:that.record.id,
+								ks_id:that.record.typeXj ? that.record.ks_id : that.record.id,
 								uid:uid,
 								users_id:uid,
 								kczt_dm:that.currentKc,
@@ -445,8 +446,9 @@
 						if(back){
 							uni.hideLoading();
 							uni.showToast({
-								title: '巡查成功',
-								duration: 800
+								title: '当前网络环境较差，记录已离线保存成功',
+								icon:'none',
+								duration: 2000
 							});	
 						}
 						setXjDataUpLoad([dataEnNet],(res)=>{});
@@ -513,10 +515,10 @@
 				    success: function (res) {
 				        // console.log('网络状态',res.networkType);
 						let idx = that.wtList.findIndex((event)=>{
-							return event.ks_id === that.record.id
+							return event.ks_id === (that.record.typeXj ? that.record.ks_id : that.record.id)
 						});
 						// console.log('idx',idx);
-						if(res.networkType !== 'none'){
+						if(res.networkType !== 'none' &&  res.networkType !== '2g' &&  res.networkType !== '3g'){
 							plus.geolocation.getCurrentPosition(function(p){
 									let res = p.coords;
 									longitude = res&&res.longitude ? that.gcj_decrypt(res.latitude,res.longitude).lon.toFixed(6) : '';

@@ -119,7 +119,7 @@
 				let that = this;
 				uni.getNetworkType({
 				    success: function (res) {
-						if(res.networkType !== 'none'){
+						if(res.networkType !== 'none' &&  res.networkType !== '2g' &&  res.networkType !== '3g'){
 							uni.showLoading({
 							    title: '版本检测中…',
 								mask: true

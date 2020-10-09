@@ -1,8 +1,9 @@
 <template>
 	<view>
+		<view class="noList" v-if="list.length == 0">暂无数据</view>
 		<uni-list v-for="(item,index) in list">
 			<view class="listItem" v-if="item.id !== uid">
-				<uni-list-item :disabled="item.is_zz=='1' || is_zz=='1'" :title="item.xm + '（'+ (item.is_zz=='1' ? '组长':'组员') +'）'" thumb="/static/leftHeader.png" :showArrow="false" @click="getOk(item)">
+				<uni-list-item :disabled="is_zz=='1'" :title="item.xm" thumb="/static/leftHeader.png" :showArrow="false" @click="getOk(item)">
 					 <!-- <template v-slot:right="">
 					            <image style="width: 30px;height: 30px;" src="/static/phone.png" mode="widthFix" @click="makePhone(item.lxdh)"></image>
 					        </template> -->
@@ -56,10 +57,22 @@
 					this.oldEnd = oldEnd;
 				}
 			});
-			getUsersData('select * from usersData',(data)=>{
-				this.list = data;
-				console.log('人员',data);
-			});
+			// getUsersData('select * from usersData',(data)=>{
+			// 	this.list = data;
+			// 	console.log('人员',data);
+			// });
+			uni.request({
+			    url: getApp().globalData.ip + '/getWtUsersData ',
+			   data: {
+					uid:getApp().globalData.uid
+				},
+				method:'POST',
+			    success: (res) => {
+					if(res.data.data && !res.data.error){
+						this.list = res.data.data;
+					}
+				}
+			})
 			// console.log('option.record',option.record)
 			if(option.record){
 				// console.log(option.record); //打印出上个页面传递的参数。
@@ -106,7 +119,7 @@
 					 uni.getNetworkType({
 					     success: function (res) {
 					         // console.log('网络状态',res.networkType);
-					 		if(res.networkType !== 'none'){
+					 		if(res.networkType !== 'none' &&  res.networkType !== '2g' &&  res.networkType !== '3g'){
 								// console.log('--------------this.record--------------',that.record)
 								if(that.record){
 									that.$refs.popup.open();
@@ -194,7 +207,7 @@
 																 success: (res) => {
 																	// console.log('修改委托记录状态',res.data);
 																	if(res.data.data && !res.data.error){
-																			let dataItem = {"id":this.wtList[0].id,"ks_id":this.wtList[0].ks_id,"wt_sj":this.wtList[0].wt_sj,"fqr_id":this.wtList[0].fqr_id,"bwtr_id":this.wtList[0].bwtr_id,"wtzt_dm":'05',"wtzt_mc":'已解除'};
+																			let dataItem = {"id":this.wtList[0].id,"ks_id":this.wtList[0].ks_id,"wt_sj":this.wtList[0].wt_sj,"fqr_id":this.wtList[0].fqr_id,"bwtr_id":this.wtList[0].bwtr_id,"wtzt_dm":'05',"wtzt_mc":'已撤销'};
 																			setWtData([dataItem],(res)=>{});
 																	} 
 																 }
@@ -243,4 +256,12 @@
 	width: 30px;
 	height: 30px;
 }
+.noList{
+		text-align: center;
+		font-size: 14px;
+		color: #999;
+		height: 50px;
+		line-height: 50px;
+		background: #fff;
+	}
 </style>

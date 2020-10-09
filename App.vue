@@ -1,13 +1,14 @@
 <script>
 export default {
 	globalData: {  
-	   ip:'https://jixi.app.hylink.net.cn:10002',//http://192.168.104.100:8082',
+	   // ip:'https://jixi.app.hylink.net.cn:10002',//http://192.168.104.100:8082',
+	   ip:'http://112.102.212.130:10006',
 	   socketIp:'http://60.15.118.104:8723',
 	   is_admin:'0',
 	   uid:'',
 	   weedIp:'',
 	   httpImg:'',
-	   version:'1.1.7',
+	   version:'1.1.10',
 	   isLogin:false,
 	   is_zz:'0',
 	},  
