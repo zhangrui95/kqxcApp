@@ -148,6 +148,12 @@
             "path" : "pages/sendMsg/sendMsg",
             "style" : {}
         }
+        ,{
+            "path" : "pages/inspectionList/inspectionList",
+            "style" : {
+				"navigationBarTitleText": "巡查记录"
+			}
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "white",

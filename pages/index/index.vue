@@ -1,35 +1,44 @@
 <template>
 	<view class="box">
-		<view class="warnTop">
-			<uni-notice-bar @getmore="getMore" showIcon="true" single="true" :text="'当前周期:'+start+'~'+end" backgroundColor="#e6f7ff" color="#2998fe" :showGetMore="true" moreText="查看更多"></uni-notice-bar>
-			<!-- <uni-notice-bar v-if="textZz && is_zz=='1'" :speed="speed" scrollable="true" single="true" :text="textZz" backgroundColor="#e6f7ff" color="#2998fe"></uni-notice-bar> -->
+		<view v-if="list&&list.length > 0">
+			<view class="warnTop">
+				<uni-notice-bar @getmore="getMore" showIcon="true" single="true" :text="'当前周期:'+start+'~'+end" backgroundColor="#e6f7ff" color="#2998fe" :showGetMore="true" moreText="查看更多"></uni-notice-bar>
+				<!-- <uni-notice-bar v-if="textZz && is_zz=='1'" :speed="speed" scrollable="true" single="true" :text="textZz" backgroundColor="#e6f7ff" color="#2998fe"></uni-notice-bar> -->
+			</view>
+			<view class="listBox" :style="{marginTop:'30px'}">  
+				<uni-list v-for="(item,index) in list">
+				    <uni-list-item :show-arrow="false" @click="goDetail(item)">
+						<view class="listTitle"><text :style="{color: item.zt === 'error' || item.zt === 'errors' ? '#f45619' : item.zt === 'warning' || item.zt === 'warnings' ? 'rgb(222, 140, 23)' : ' #000'}">{{item.mc}}</text>
+						<uni-tag v-if="item.zt && is_zz!='1'" :text="item.zt === 'error' || item.zt === 'warning' || item.zt === 'primary' ? '还需巡检一次': item.zt === 'errors' || item.zt === 'warnings' || item.zt === 'primarys' ? '还需巡检两次' : item.zt === 'success' ? '巡检已完成' : ''" :type="item.zt == 'primarys' ? 'primary' :item.zt == 'warnings' ? 'warning':item.zt == 'errors' ? 'error'  : item.zt"></uni-tag>
+						<uni-tag v-if="item.zt && is_zz=='1'" :text="item.num == 0 ? '待巡检': '已巡检'+item.num+'次'" :type="item.zt"></uni-tag>
+					</view>
+					<view class="msgBox">需要对周边进行地毯式巡查</view>
+						<view class="msgBox">
+							<text class="leftBox">上次巡查：{{item && item.dk_sj ? item.dk_sj : '暂无'}}</text>
+							<text class="rightBox">巡查人：{{item && item.xm ? item.xm : '暂无'}}</text>
+						</view>
+						<view class="msgBox"> 
+							<text class="leftBox">巡查结果：<text :style="{color:item&&item.kczt_dm === '01' ? '#747474' : '#747474'}">{{item && item.kczt_dm ? item.kczt_dm === '02' ? '未开采' : '开采中' : '暂无'}}</text></text>
+							<text class="rightBox">矿山状态：
+								<text :style="{color:item&&item.yczt_dm === '01' ? '#ee4c26' : '#747474'}">{{item && item.yczt_dm ? item.yczt_dm === '02' ? '无异常' : '有异常' : '暂无'}}</text>
+								<text style="margin-left: 5px;"> {{item && item.yj_zp &&item.jj_zp  ?
+								(item.yj_zp.split('#') && item.yj_zp.split('#').length > 0 ? item.yj_zp.split('#').length : 0) + 
+								(item.jj_zp.split('#')&&item.jj_zp.split('#').length > 0 ? item.jj_zp.split('#').length : 0) : 0}}照片</text>
+							</text>
+						</view>
+						<view class="msgBox"> 
+							<text class="bzBox">备注：{{item && item.bz ? item.bz : ''}}</text>
+						</view>
+					</uni-list-item>
+				</uni-list>
+			</view>
 		</view>
-		<view class="listBox" :style="{marginTop:'30px'}">  
-			<uni-list v-for="(item,index) in list">
-			    <uni-list-item :show-arrow="false" @click="goDetail(item)">
-					<view class="listTitle"><text :style="{color: item.zt === 'error' || item.zt === 'errors' ? '#f45619' : item.zt === 'warning' || item.zt === 'warnings' ? 'rgb(222, 140, 23)' : ' #000'}">{{item.mc}}</text>
-					<uni-tag v-if="item.zt && is_zz!='1'" :text="item.zt === 'error' || item.zt === 'warning' || item.zt === 'primary' ? '还需巡检一次': item.zt === 'errors' || item.zt === 'warnings' || item.zt === 'primarys' ? '还需巡检两次' : item.zt === 'success' ? '巡检已完成' : ''" :type="item.zt == 'primarys' ? 'primary' :item.zt == 'warnings' ? 'warning':item.zt == 'errors' ? 'error'  : item.zt"></uni-tag>
-					<uni-tag v-if="item.zt && is_zz=='1'" :text="item.num == 0 ? '待巡检': '已巡检'+item.num+'次'" :type="item.zt"></uni-tag>
-				</view>
-				<view class="msgBox">需要对周边进行地毯式巡查</view>
-					<view class="msgBox">
-						<text class="leftBox">上次巡查：{{item && item.dk_sj ? item.dk_sj : '暂无'}}</text>
-						<text class="rightBox">巡查人：{{item && item.xm ? item.xm : '暂无'}}</text>
-					</view>
-					<view class="msgBox"> 
-						<text class="leftBox">巡查结果：<text :style="{color:item&&item.kczt_dm === '01' ? '#747474' : '#747474'}">{{item && item.kczt_dm ? item.kczt_dm === '02' ? '未开采' : '开采中' : '暂无'}}</text></text>
-						<text class="rightBox">矿山状态：
-							<text :style="{color:item&&item.yczt_dm === '01' ? '#ee4c26' : '#747474'}">{{item && item.yczt_dm ? item.yczt_dm === '02' ? '无异常' : '有异常' : '暂无'}}</text>
-							<text style="margin-left: 5px;"> {{item && item.yj_zp &&item.jj_zp  ?
-							(item.yj_zp.split('#') && item.yj_zp.split('#').length > 0 ? item.yj_zp.split('#').length : 0) + 
-							(item.jj_zp.split('#')&&item.jj_zp.split('#').length > 0 ? item.jj_zp.split('#').length : 0) : 0}}照片</text>
-						</text>
-					</view>
-					<view class="msgBox"> 
-						<text class="bzBox">备注：{{item && item.bz ? item.bz : ''}}</text>
-					</view>
-				</uni-list-item>
-			</uni-list>
+		<view v-else>
+			<view class="ksxjBox" @click="goXc()">
+				<view class="ksxjName">马上巡查</view>
+				<view>{{newTime}}</view>
+			</view>
+			<view class="ckBtn" @click="getList()" >查看巡查记录 <text class="jtRight">>></text></view>
 		</view>
 		<tabBar :pagePath="'/pages/index/index'" :num="num"></tabBar>
 	</view>
@@ -47,6 +56,7 @@
 		data() {
 			return {
 				time: moment().format('YYYY.MM.DD'),
+				newTime: moment().format('HH:mm:ss'),
 				list:[],
 				network:false, 
 				start:'',
@@ -78,6 +88,9 @@
 			}
 		},
 		onLoad(){
+			setInterval(()=>{
+				this.newTime = moment().format('HH:mm:ss')
+			},1000);
 			getConfig('select * from config',(data)=>{
 				if(data && data[0] && data[0].xj_jzrq){
 					let startTime = data[0].xj_jzrq;
@@ -158,6 +171,11 @@
 			});
 		},
 		methods: {
+			getList:function(){
+				uni.navigateTo({
+					url:'../inspectionList/inspectionList',
+				}) 
+			},
 			getMore:function(){
 				uni.showModal({
 				    content: this.is_zz === '1' ? this.textZz : this.text,
@@ -169,6 +187,12 @@
 				            console.log('用户点击取消');
 				        }
 				    }
+				});
+			},
+			goXc:function(e){
+				// console.log('e', e);
+				uni.navigateTo({
+				    url: '../inspection/inspection?record=' + JSON.stringify(this.record),
 				});
 			},
 			getUpload:function(callback){
@@ -427,7 +451,7 @@
 							let dh = this.errorNum > 0 && this.warnNum > 0 ? `，`:``;
 							let warnText = this.warnNum > 0 ? `${this.warnNum}个矿区需要${this.days}日内巡检` : ``;
 							let dh1 = this.errorNum > 0 || this.warnNum > 0 ? `，`:``;
-							let isWc = this.errorNum == 0 && this.warnNum == 0 ? isXj ? '暂无巡检告警及巡检预警记录。':'暂无巡检记录，请在当前周期内巡检以免逾期。' : '';
+							let isWc = this.errorNum == 0 && this.warnNum == 0 ? isXj ? '暂无巡检告警及巡检预警记录。':'暂无巡查记录，请在当前周期内巡检以免逾期。' : '';
 							this.text = `当前周期${this.start}~${this.end}${dh1}${yqText}${dh}${warnText}。${isWc}`;	
 						}	
 						uni.hideLoading();
@@ -471,7 +495,7 @@
 					mask:true
 				});
 				uni.request({
-				    url: getApp().globalData.ip + '/getXjData', //获取下载巡检记录
+				    url: getApp().globalData.ip + '/getXjData', //获取下载巡查记录
 				    data: {"uid": getApp().globalData.uid},
 					method:'POST',
 				    success: (res) => {
@@ -497,12 +521,12 @@
 					mask:true
 				});
 				uni.request({
-				    url: getApp().globalData.ip + '/getXjData', //获取下载巡检记录
+				    url: getApp().globalData.ip + '/getXjData', //获取下载巡查记录
 				    data: {},
 					method:'POST',
 				    success: (res) => {
 						if(res.data.data && !res.data.error){
-							setXjAllData(res.data.data,(res)=>{//存巡检记录
+							setXjAllData(res.data.data,(res)=>{//存巡查记录
 							});
 							setTimeout(()=>{
 								uni.hideLoading();
@@ -537,6 +561,37 @@
 </script>
 
 <style>
+	.ckBtn{
+		color: #0087ff;
+		font-size: 18px;
+		text-align: center;
+		width: 100%;
+		height: 30px;
+		line-height: 30px;
+		position: relative;
+		top: 250px;
+	}
+	.jtRight{
+		font-family: '宋体';
+		margin-left: 5px;
+	}
+	.ksxjBox{
+		width: 180px; 
+		height: 180px;
+		border-radius: 200px;
+		background:linear-gradient(to bottom, #04a4fa 0%,#0089ff 100%);
+		color: #fff;
+		position: relative;
+		top: 200px;
+		margin-left: 50%;
+		left: -90px;
+		text-align: center;
+		box-shadow: 0 0 10px #999;
+	}
+	.ksxjName{
+		padding-top: 60px;
+		font-size: 24px;
+	}
 	/deep/ .uni-list-item__container:after{
 		height: 0!important;
 	}

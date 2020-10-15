@@ -1,16 +1,23 @@
 <template>
     <view>
-        <view class="pageBody">
-			<view class="page-section page-section-gap">
-			     <map :style="{height:height+ 'px'}" scale="12" style="width: 100%; position: relative;" :latitude="latitude" :longitude="longitude" :markers="covers" @markertap='listShow' @labeltap='listShow'>
-					 <cover-view class="kdNumberBoxAll"></cover-view>
-					 <cover-view class="kdNumberBox"> 当前矿点：{{kdNum}}个</cover-view>
-					 <cover-view class="kdNumberBox1">正常矿点：{{kdNum - errorNum - warnNum}}个</cover-view>
-					 <cover-view class="kdNumberBox2" v-if="week == 0">告警矿点：{{errorNum}}个</cover-view>
-					 <cover-view class="kdNumberBox3" v-if="week !== 0">预警矿点：{{warnNum}}个</cover-view>
-			     </map>
-			 </view>
-        </view>
+		  <view class="pageBody">
+			 <uni-segmented-control :current="current" :values="items" @clickItem="onClickItem" style-type="button" active-color="#172f87"></uni-segmented-control>
+			    <view v-if="current === 0" class="listBox">
+					<uni-list-item v-for="(item) in listZzJg">
+						<view class="msgBox">{{item.name}}</view> 
+					</uni-list-item>
+				</view>
+				<view class="page-section page-section-gap" v-if="current === 1">
+					 <map :style="{height:height+ 'px'}" scale="12" style="width: 100%; position: relative;" :latitude="latitude" :longitude="longitude" :markers="covers" @markertap='listShow' @labeltap='listShow'>
+						 <cover-view class="kdNumberBoxAll" v-if="current === 1"></cover-view>
+						 <cover-view class="kdNumberBox" v-if="current === 1"> 当前矿点：{{kdNum}}个</cover-view>
+						 <cover-view class="kdNumberBox1" v-if="current === 1">正常矿点：{{kdNum - errorNum - warnNum}}个</cover-view>
+						 <cover-view class="kdNumberBox2" v-if="week == 0 && current === 1">告警矿点：{{errorNum}}个</cover-view>
+						 <cover-view class="kdNumberBox3" v-if="week !== 0 && current === 1">预警矿点：{{warnNum}}个</cover-view>
+					 </map>
+				 </view>
+			 </uni-segmented-control>
+		  </view>
 		<tabBar :pagePath="'/pages/work/work'" :num="num"></tabBar>
     </view>
 </template>
@@ -43,6 +50,9 @@
 				xj_pc:'2',//打卡次数
 				xj_zq:'7',//周期
 				PI:3.14159265358979324,
+				items: ['组织架构','矿山督查'],
+				current: 0,
+				listZzJg:[{name:'鸡东县第一大队'},{name:'鸡东县执法大队'},{name:'鸡东县缉毒大队'}]
 			}
 		},
 		 components: {
@@ -52,7 +62,7 @@
 			let that = this;
 			uni.getSystemInfo({
 				success:function(res) {
-					that.height = res.windowHeight - 48 
+					that.height = res.windowHeight - 86 
 				}
 			});
 			getConfig('select * from config',(data)=>{
@@ -173,6 +183,11 @@
 					});
 		},
 		methods: {
+			onClickItem:function(e) {
+			           if (this.current !== e.currentIndex) {
+			               this.current = e.currentIndex;
+			           }
+			       },
 			transformLon : function (x, y) {
 					var ret = 300.0 + x + 2.0 * y + 0.1 * x * x + 0.1 * x * y + 0.1 * Math.sqrt(Math.abs(x));
 					ret += (20.0 * Math.sin(6.0 * x * this.PI) + 20.0 * Math.sin(2.0 * x * this.PI)) * 2.0 / 3.0;
@@ -229,14 +244,22 @@
 </script>
 
 <style>
+	.segmented-control__item--button{
+		border-radius: 0!important;
+		position: absolute;
+		top: 0;
+	}
 	.pageBody,.page-section{
 		height: 100%;
 		width: 100%;
 	}
+	.listBox{
+		background: #fff;
+	}
 	.kdNumberBoxAll{
 		background: rgba(255,255,255,0.85);
 		position: fixed!important;
-		top: 20px!important;
+		top: 50px!important;
 		right: -10px!important;
 		z-index: 999;
 		font-size: 14px;
@@ -248,7 +271,7 @@
 	}
 	.kdNumberBox{
 		position: fixed!important;
-		top: 27px!important;
+		top: 57px!important;
 		right: 10px!important;
 		border-radius: 10px 0 0 10px;
 		z-index: 999;
@@ -258,7 +281,7 @@
 	}
 	.kdNumberBox1{
 		position: fixed!important;
-		top:47px!important;
+		top:77px!important;
 		right: 10px!important;
 		z-index: 999;
 		font-size: 14px;
@@ -268,7 +291,7 @@
 	}
 	.kdNumberBox2{
 		position: fixed!important;
-		top: 67px!important;
+		top: 97px!important;
 		right: 10px!important;
 		border-radius: 0 0 0 10px;
 		z-index: 999;
@@ -279,7 +302,7 @@
 	}
 	.kdNumberBox3{
 		position: fixed!important;
-		top: 67px!important;
+		top: 97px!important;
 		right: 10px!important;
 		border-radius: 0 0 0 10px;
 		z-index: 999;

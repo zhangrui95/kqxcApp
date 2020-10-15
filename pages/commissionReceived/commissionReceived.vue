@@ -141,7 +141,7 @@
 								// console.log('修改委托记录状态',res.data);
 								if(res.data.data && !res.data.error){
 													let dataItem = {"id":event.id,"ks_id":event.ks_id,"wt_sj":event.wt_sj,"fqr_id":event.fqr_id,"bwtr_id":event.bwtr_id,"wtzt_dm":'03',"wtzt_mc":'已拒绝'};
-										setWtData([dataItem],(res)=>{//存巡检记录
+										setWtData([dataItem],(res)=>{//存巡查记录
 											this.getList();
 										});
 								} 
@@ -157,7 +157,7 @@
 				 		// console.log('修改委托记录状态',res.data);
 				 		if(res.data.data && !res.data.error){
 							let dataItem = {"id":this.item.id,"ks_id":this.item.ks_id,"wt_sj":this.item.wt_sj,"fqr_id":this.item.fqr_id,"bwtr_id":this.item.bwtr_id,"wtzt_dm":dm,"wtzt_mc":dm == '02' ? "已接受" : '已拒绝'};
-				 				setWtData([dataItem],(res)=>{//存巡检记录
+				 				setWtData([dataItem],(res)=>{//存巡查记录
 				 					this.getList();
 				 				});
 				 		} 

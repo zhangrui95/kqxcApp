@@ -61,13 +61,15 @@
 						uni.getNetworkType({
 						    success: function (res) {
 								if(res.networkType !== 'none' &&  res.networkType !== '2g' &&  res.networkType !== '3g'){
+									console.log('==执行==')
 									uni.request({
 									    url: getApp().globalData.ip + '/getConfig', 
 									    data: {},
 										method:'POST',
 									    success: (res) => {
+											console.log('/getConfig',res);
 											if(res.data.data && !res.data.error){
-												if(!(res.data.data.must_update === '1' &&  (getApp().globalData.version < res.data.data.last_version))){
+												if(!(res.data.data.must_update === '1' &&  (that.toNum(getApp().globalData.version) < that.toNum(res.data.data.last_version)))){
 													that.getYh(dataRes.id,dataRes.is_admin);
 													uni.redirectTo({
 														url: '../index/index'
@@ -114,7 +116,8 @@
 									setConfig(res.data.data);
 									getApp().globalData.weedIp = res.data.data.zp_base;
 									getApp().globalData.httpImg = res.data.data.zp_pub;
-									if(res.data.data.must_update === '1' && (getApp().globalData.version < res.data.data.last_version)){
+									console.log('getApp().globalData.version < res.data.data.last_version',that.toNum(getApp().globalData.version) < that.toNum(res.data.data.last_version),that.toNum(getApp().globalData.version) , that.toNum(res.data.data.last_version))
+									if(res.data.data.must_update === '1' && (that.toNum(getApp().globalData.version) < that.toNum(res.data.data.last_version))){
 										uni.showModal({
 										    title: '检测到新版本，与旧版本不兼容，请更新后使用。',
 											showCancel:false,
@@ -154,6 +157,17 @@
 			});
 		},
 		methods: {
+			toNum(a){
+			  var a=a.toString();
+			  var c=a.split('.');
+			  var num_place=["","0","00","000","0000"],r=num_place.reverse();
+			  for (var i=0;i<c.length;i++){ 
+			     var len=c[i].length;       
+			     c[i]=r[len]+c[i];  
+			  } 
+			  var res= c.join(''); 
+			  return res; 
+			},
 			delDb(){
 				let dirPath = '_doc/kqxjList.db';
 				plus.io.resolveLocalFileSystemURL(dirPath, function(entry) {

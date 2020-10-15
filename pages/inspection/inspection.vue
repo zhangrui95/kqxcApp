@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<view class="boxTop">
+		<view class="boxTop" v-if="record">
 			<view class="name">{{record.mc}}</view>
 			<view class="address">矿山地址：{{record.dz}}</view>
 			<view class='address'>矿山说明：{{record.ms}}</view>
@@ -46,9 +46,9 @@
 				</view>
 		    </uni-list-item>
 			<uni-list-item :showArrow="false">
-			    <view>远景照片（{{imgs.length}}/3）</view>
+			    <view>远景照片（{{imgs.length}}）</view>
 				<view class="img-list">
-					<image src="../../static/picter.png" class="imgItem" @click="upImg1" v-if="imgs.length < 3"></image>
+					<image src="../../static/picter.png" class="imgItem" @click="upImg1"></image>
 					<view v-for="(item,index) in imgs" class="threeImg"> 
 						<view class="imgItemBox">
 							<image :src="item" class="imgItem" @click="bigImg(imgs,index)"></image>
@@ -58,9 +58,9 @@
 				</view>
 			</uni-list-item> 
 			<uni-list-item :showArrow="false">
-			    <view>近景照片（{{imgsJ.length}}/3）</view>
+			    <view>近景照片（{{imgsJ.length}}）</view>
 			    <view class="img-list">
-					<image src="../../static/picter.png" class="imgItem" @click="upImg2" v-if="imgsJ.length < 3"></image>
+					<image src="../../static/picter.png" class="imgItem" @click="upImg2"></image>
 			    	<view v-for="(item,index) in imgsJ" class="threeImg">
 						<view class="imgItemBox">
 							<image :src="item" class="imgItem"  @click="bigImg(imgsJ,index)"></image>
@@ -69,7 +69,22 @@
 			    	</view>
 			    </view>
 			</uni-list-item>
+			<uni-list-item :showArrow="false"> 
+			    <view>上传视频（{{video.length}}/3）</view>
+			    <view class="img-list">
+					<image src="../../static/picter.png" class="imgItem" @click="upVideo" v-if="video.length < 3"></image>
+			    	<view v-for="(item,index) in video" class="threeImg">
+						<view class="imgItemBox">
+							<video :src="item" class="imgItem" @play="bigVideo(item)" v-if="!playUrl"></video>
+							<image src="../../static/del.png" class="del" @click="getDelVideo(index)"></image>
+						</view>
+			    	</view>
+			    </view>
+			</uni-list-item>
 		</uni-list>
+		<view class="videoBox" v-if="playUrl">
+			<video :src="playUrl" autoplay="true" class="videoItem"></video>
+		</view>
 		<view class="btnBox">
 			   <button type="primary" :disabled="!(imgs.length > 0 && imgsJ.length > 0)" @click="getSave">提交</button>
 		</view>
@@ -96,6 +111,8 @@
 				imgsJ:[],
 				imgsNet:[],
 				imgsJNet:[],
+				video:[],
+				videoNet:[],
 				setXjDataUpLoad:[],
 				bz:'',
 				wtList:[],
@@ -104,10 +121,20 @@
 				ydJd:'',
 				ydWd:'',
 				ydDistance:'',
+				playUrl:''
+			}
+		},
+		onBackPress:function(event){
+			console.log('=================执行返回================');
+			if(this.playUrl){
+				this.playUrl = '';
+				return true;
+			}else{
+				return false;
 			}
 		},
 		onLoad: function (option) { //option为object类型，会序列化上个页面传递的参数
-					this.record = JSON.parse(option.record);
+					this.record = option&&option.record && JSON.parse(option.record) ? JSON.parse(option.record) : '';
 					console.log('this.record',this.record)
 					getWtData(` SELECT A.*, B.dz, C.xm as wtr_xm, C.lxdh as wtr_lxdh FROM wtData A
 					LEFT JOIN ksData B ON A.ks_id = B.id
@@ -327,6 +354,44 @@
 				    }
 				});
 			},
+			upVideo:function(e){
+				let that = this;
+				uni.chooseVideo({
+				    count: 1, //默认9 
+				    sourceType: ['camera'], //从相册选择
+					maxDuration:15,
+				    success: function (resImg) {
+							  uni.saveFile({
+							      tempFilePath: resImg.tempFilePath,
+							      success: function (res) {
+							        let savedFilePath = res.savedFilePath;
+									let video = that.video;
+									that.video.push(savedFilePath);
+									that.video = video;
+							      }
+							    });
+								uni.getNetworkType({
+								    success: function (res) {
+										if(res.networkType !== 'none' &&  res.networkType !== '2g' &&  res.networkType !== '3g'){
+											uni.uploadFile({
+												url: getApp().globalData.weedIp, //仅为示例，非真实的接口地址
+												filePath: resImg.tempFilePath,
+												name: 'file',
+												formData: {
+												    'user': 'test'
+												},
+												success: (uploadFileRes) => {
+													let videoNet = that.videoNet;
+													that.videoNet.push(JSON.parse(uploadFileRes.data).fileUrl);
+													that.videoNet = videoNet;
+												}
+											});
+										}
+								    }
+								});
+				    }
+				});
+			},
 			bigImg:function(urls,current){
 				uni.previewImage({
 					current:current,
@@ -345,6 +410,10 @@
 				// 	 url: '../bigImg/bigImg'
 				// })
 			},
+			bigVideo:function(item){
+				console.log('item',item)
+				this.playUrl = item;
+			},
 			getDelImg:function(index){
 				this.imgs.splice(index,1);
 				this.imgs = this.imgs;
@@ -352,6 +421,10 @@
 			getDelImg1:function(index){
 				this.imgsJ.splice(index,1);
 				this.imgsJ = this.imgsJ;
+			},
+			getDelVideo:function(index){
+				this.video.splice(index,1);
+				this.video = this.video;
 			},
 			//生成id
 			makeId:function(thelen){
@@ -401,7 +474,7 @@
 										}
 										data.users_id = uid;
 										setXjAllData([data],(res)=>{});
-										setXjData([data],(res)=>{//存巡检记录
+										setXjData([data],(res)=>{//存巡查记录
 											if(back){
 												uni.navigateBack({
 													delta: 1
@@ -453,7 +526,7 @@
 						}
 						setXjDataUpLoad([dataEnNet],(res)=>{});
 						setXjAllData([dataEnNet],(res)=>{});
-						setXjData([dataEnNet],(res)=>{//存巡检记录
+						setXjData([dataEnNet],(res)=>{//存巡查记录
 							if(back){
 								uni.navigateBack({
 									delta: 1
@@ -672,5 +745,17 @@ uni-button[disabled]{
 	}
 	.img-list{
 		margin-top: 10px;
+	}
+	.videoBox{
+		position: absolute;
+		width: 100%;
+		height: 100%;
+		background: #000;
+		top: 0;
+		left: 0;
+		z-index: 999;
+	}
+	.videoItem{
+		width: 100%;
 	}
 </style>
