@@ -166,6 +166,24 @@
 				"navigationBarTitleText": "首页"
 			}
         }
+        ,{
+            "path" : "pages/notice/notice",
+            "style" : {
+				"navigationBarTitleText": "通知通告"
+			}
+        }
+        ,{
+            "path" : "pages/sendNotice/sendNotice",
+            "style" : {
+				"navigationBarTitleText": "下发通知"
+			}
+        }
+        ,{
+            "path" : "node_modules/receivedNotice/receivedNotice",
+            "style" : {
+				"navigationBarTitleText": "收到通知"
+			}
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "white",

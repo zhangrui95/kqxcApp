@@ -272,12 +272,12 @@ function getWtData(sql, callback){
 function setUsersData(data,callback){
 	plus.sqlite.executeSql({
 		name: 'kqxj',
-		sql: 'create table if not exists usersData("id" CHAR(100) PRIMARY KEY,"xm" CHAR(100),"lxdh" CHAR(100),"is_admin" CHAR(100),"is_zz" CHAR(100),"dw_mc" CHAR(100),"zw_mc" CHAR(100),"org_id" CHAR(100),"org_name" CHAR(100))',
+		sql: 'create table if not exists usersData("id" CHAR(100) PRIMARY KEY,"xm" CHAR(100),"lxdh" CHAR(100),"is_admin" CHAR(100),"is_zz" CHAR(100),"dw_mc" CHAR(100),"zw_mc" CHAR(100),"org_id" CHAR(100),"org_name" CHAR(100),"fkr_id" CHAR(100))',
 		success: function(e){
 			data.map((item)=>{
 				plus.sqlite.executeSql({
 					name: 'kqxj',
-					sql: "insert or replace into usersData(id, xm, lxdh, is_admin, is_zz, dw_mc,zw_mc,org_id,org_name) values('" + item.id + "', '" + item.xm + "', '" + item.lxdh + "', '" + item.is_admin + "', '"+ item.is_zz + "', '" + item.dw_mc + "', '" + item.zw_mc + "', '" + item.org_id + "', '" + item.org_name + "')",
+					sql: "insert or replace into usersData(id, xm, lxdh, is_admin, is_zz, dw_mc,zw_mc,org_id,org_name,fkr_id) values('" + item.id + "', '" + item.xm + "', '" + item.lxdh + "', '" + item.is_admin + "', '"+ item.is_zz + "', '" + item.dw_mc + "', '" + item.zw_mc + "', '" + item.org_id + "', '" + item.org_name + "', '" + item.fkr_id + "')",
 					success: function(e){
 						callback({error:null});
 					},
@@ -308,12 +308,12 @@ function getUsersData(sql, callback){
 function setUsersAllData(data,callback){
 	plus.sqlite.executeSql({
 		name: 'kqxj',
-		sql: 'create table if not exists usersAllData("id" CHAR(100) PRIMARY KEY,"xm" CHAR(100),"lxdh" CHAR(100),"is_admin" CHAR(100),"is_zz" CHAR(100),"dw_mc" CHAR(100),"zw_mc" CHAR(100),"org_id" CHAR(100),"org_name" CHAR(100))',
+		sql: 'create table if not exists usersAllData("id" CHAR(100) PRIMARY KEY,"xm" CHAR(100),"lxdh" CHAR(100),"is_admin" CHAR(100),"is_zz" CHAR(100),"dw_mc" CHAR(100),"zw_mc" CHAR(100),"org_id" CHAR(100),"org_name" CHAR(100),"fkr_id" CHAR(100))',
 		success: function(e){
 			data.map((item)=>{
 				plus.sqlite.executeSql({
 					name: 'kqxj',
-					sql: "insert or replace into usersAllData(id, xm, lxdh, is_admin, is_zz, dw_mc,zw_mc,org_id,org_name) values('" + item.id + "', '" + item.xm + "', '" + item.lxdh + "', '" + item.is_admin + "', '"+ item.is_zz + "', '" + item.dw_mc + "', '" + item.zw_mc + "', '" + item.org_id + "', '" + item.org_name + "')",
+					sql: "insert or replace into usersAllData(id, xm, lxdh, is_admin, is_zz, dw_mc,zw_mc,org_id,org_name,fkr_id) values('" + item.id + "', '" + item.xm + "', '" + item.lxdh + "', '" + item.is_admin + "', '"+ item.is_zz + "', '" + item.dw_mc + "', '" + item.zw_mc + "', '" + item.org_id + "', '" + item.org_name +"', '" + item.fkr_id + "')",
 					success: function(e){
 						callback({error:null});
 					},

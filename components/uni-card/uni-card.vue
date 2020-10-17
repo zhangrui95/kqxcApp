@@ -257,6 +257,7 @@
 
 	.uni-card__content {
 		color: #333;
+		font-size: 16px;
 	}
 
 	.uni-card__content--pd {

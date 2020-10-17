@@ -87,20 +87,17 @@
 				this.record = JSON.parse(option.record);
 			}else{
 				this.record = {fzr_xm:detail&&detail.fzr_xm ? detail.fzr_xm : ''};
-				this.isUpload = true;
 			}
 			this.item = detail;
 			let that = this;
 			uni.getNetworkType({
 			    success: function (res) {
-			        // console.log('网络状态',res.networkType);
+			        console.log('网络状态',res.networkType);
 					if(res.networkType !== 'none' &&  res.networkType !== '2g' &&  res.networkType !== '3g' && !that.isUpload){
-						// console.log('图片',detail.yj_zp_net)
 						let yjList = [];
 						let jjList = [];
 						let videoList = [];
 						detail.yj_zp_net.split('#').map((item)=>{
-							console.log(item)
 							if(item.includes('http')){
 								yjList.push(item)
 							}else{
@@ -115,6 +112,7 @@
 							}
 						});
 						detail.dsp_net.split('#').map((item)=>{
+							console.log('item???',item)
 							if(item.includes('http')){
 								videoList.push(item);
 							}else{
@@ -125,6 +123,7 @@
 						that.jjList = jjList;
 						that.videoList = videoList;
 					}else{
+						console.log('视频detail.dsp',detail.dsp)
 						that.yjList = detail.yj_zp.split('#');
 						that.jjList = detail.jj_zp.split('#');
 						that.videoList = detail.dsp ? detail.dsp.split('#') : [];

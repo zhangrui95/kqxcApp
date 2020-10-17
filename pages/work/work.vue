@@ -76,7 +76,7 @@
 				uniSearchBar,
 		},
 		onBackPress:function(event){
-			if(this.jzList.length > 0){
+			if(this.jzList.length > 1){
 				this.jzList.pop();
 				this.getZzjg(this.jzList[this.jzList.length - 1],true);
 				return true;
@@ -199,9 +199,7 @@
 			    key: 'userData',
 			    success: function (res) {
 					if(res.data){
-						console.log('用户信息1',JSON.parse(res.data).org_id);
 						if(JSON.parse(res.data).org_id){
-							console.log('用户信息2',res.data);
 							that.getZzjg({id:JSON.parse(res.data).org_id,name:JSON.parse(res.data).org_name || '组织架构'});
 						}
 					}

@@ -370,6 +370,10 @@
 									that.video = video;
 							      }
 							    });
+								uni.showLoading({
+								    title: '视频存储中…',
+									mask:true,
+								});
 								uni.getNetworkType({
 								    success: function (res) {
 										if(res.networkType !== 'none' &&  res.networkType !== '2g' &&  res.networkType !== '3g'){
@@ -384,6 +388,7 @@
 													let videoNet = that.videoNet;
 													that.videoNet.push(JSON.parse(uploadFileRes.data).fileUrl);
 													that.videoNet = videoNet;
+													uni.hideLoading();
 												}
 											});
 										}
