@@ -7,7 +7,7 @@
 		</view>
 		<!-- 右侧插槽 -->
 		<uni-list>
-		    <uni-list-item title="开采状态：" :showArrow="false">
+		   <!-- <uni-list-item title="开采状态：" :showArrow="false">
 		        <template v-slot:right="">
 		            <view>
 						 <radio-group @change="radioChangeKc">
@@ -16,7 +16,7 @@
 						 </radio-group>
 		            </view>
 		        </template>
-		    </uni-list-item>
+		    </uni-list-item> -->
 			<uni-list-item title="异常状态：" :showArrow="false">
 			    <template v-slot:right="">
 			        <view>
@@ -31,8 +31,8 @@
 			    <template v-slot:right="">
 			        <view>
 						<radio-group @change="radioChangeXc">
-			              <label class="radio"><radio value="01" :checked="currentXc==='1'"/>是</label>
-			              <label class="radio"><radio value="02" :checked="currentXc==='0'"/>否</label>
+			              <label class="radio"><radio value="1" :checked="currentXc==='1'"/>是</label>
+			              <label class="radio"><radio value="0" :checked="currentXc==='0'"/>否</label>
 						</radio-group>
 			        </view>
 			    </template>
@@ -102,7 +102,7 @@
 		data() {
 			return {
 				record:'',
-				currentKc: '01',
+				currentKc: '02',
 				currentYc: '02',
 				currentXc:'1',
 				kc:true,
@@ -453,8 +453,10 @@
 								dk_wd:latitude,
 								yj_zp:that.imgs.join('#'),
 								jj_zp:that.imgsJ.join('#'),
+								dsp:that.video ? that.video.join('#') : '',
 								yj_zp_net:that.imgsNet.join('#'),
 								jj_zp_net:that.imgsJNet.join('#'),
+								dsp_net:that.videoNet ? that.videoNet.join('#') : '',
 								is_ycdk:is_ycdk,
 						};
 						// console.log('data=========>',data);
@@ -511,8 +513,10 @@
 								dk_wd:latitude,
 								yj_zp:that.imgs.join('#'),
 								jj_zp:that.imgsJ.join('#'),
+								dsp:that.video ? that.video.join('#') : '',
 								yj_zp_net:that.imgsNet.join('#'),
 								jj_zp_net:that.imgsJNet.join('#'),
+								dsp_net:that.videoNet ? that.videoNet.join('#') : '',
 								is_ycdk:is_ycdk,
 						};
 						// console.log('dataEnNet=========>',dataEnNet);

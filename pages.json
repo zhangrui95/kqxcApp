@@ -154,6 +154,18 @@
 				"navigationBarTitleText": "巡查记录"
 			}
         }
+        ,{
+            "path" : "pages/inspectionXc/inspectionXc",
+            "style" : {
+					"navigationBarTitleText": "巡查"
+			}
+        }
+        ,{
+            "path" : "pages/home/home",
+            "style" : {
+				"navigationBarTitleText": "首页"
+			}
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "white",

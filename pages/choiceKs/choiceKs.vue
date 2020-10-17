@@ -145,6 +145,7 @@
 					 B.kczt_dm,
 					 B.yczt_dm,
 					 B.jj_zp,
+					 B.dsp,
 					 B.yj_zp,
 					 B.bz
 					FROM

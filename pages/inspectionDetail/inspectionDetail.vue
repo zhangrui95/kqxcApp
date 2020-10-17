@@ -14,7 +14,7 @@
 				</view>
 			</uni-list-item>
 			<uni-list-item :showArrow="false">
-				<view class="address">巡查结果：<text :style="{color:item.kczt_dm === '02' ? '#747474' : '#2de17e'}">{{item.kczt_dm === '02' ? '未开采' : '开采中'}}</text></view>
+				<!-- <view class="address">巡查结果：<text :style="{color:item.kczt_dm === '02' ? '#747474' : '#2de17e'}">{{item.kczt_dm === '02' ? '未开采' : '开采中'}}</text></view> -->
 				<view class='address'>异常说明：<text :style="{color:item.yczt_dm === '02' ? '#747474' : '#ee4c26'}">{{item.yczt_dm === '02' ? '无异常' : '有异常'}}</text></view>
 			</uni-list-item>
 			<uni-list-item :showArrow="false">
@@ -41,7 +41,16 @@
 			    	<image :src="item" class="imgItem" @click="getBigImg(jjList,index)" v-for="(item,index) in jjList"></image>
 			    </view>
 			</uni-list-item>
+			<uni-list-item :showArrow="false" v-if="videoList&&videoList.length > 0">
+			    <view>上传视频：{{videoList.length}}个</view>
+			    <view class="img-list">
+			    	<video :src="item" class="imgItem" @play="bigVideo(item)" v-for="(item) in videoList" v-if="!playUrl"></video>
+			    </view>
+			</uni-list-item>
 		</uni-list>
+		<view class="videoBox" v-if="playUrl">
+			<video :src="playUrl" autoplay="true" class="videoItem"></video>
+		</view>
 	</view>
 </template>
 
@@ -57,7 +66,18 @@
 				name:'',
 				yjList:[],
 				jjList:[],
+				videoList:[],
+				playUrl:'',
 				isUpload:false,
+			}
+		},
+		onBackPress:function(event){
+			console.log('=================执行返回================');
+			if(this.playUrl){
+				this.playUrl = '';
+				return true;
+			}else{
+				return false;
 			}
 		},
 		onLoad: function (option) { //option为object类型，会序列化上个页面传递的参数
@@ -78,6 +98,7 @@
 						// console.log('图片',detail.yj_zp_net)
 						let yjList = [];
 						let jjList = [];
+						let videoList = [];
 						detail.yj_zp_net.split('#').map((item)=>{
 							console.log(item)
 							if(item.includes('http')){
@@ -93,16 +114,29 @@
 								jjList.push('http://'+ item);
 							}
 						});
+						detail.dsp_net.split('#').map((item)=>{
+							if(item.includes('http')){
+								videoList.push(item);
+							}else{
+								videoList.push('http://'+ item);
+							}
+						});
 						that.yjList = yjList;
 						that.jjList = jjList;
+						that.videoList = videoList;
 					}else{
 						that.yjList = detail.yj_zp.split('#');
 						that.jjList = detail.jj_zp.split('#');
+						that.videoList = detail.dsp ? detail.dsp.split('#') : [];
 					}
 			    }
 			});
 		}, 
 		methods: {
+			bigVideo:function(item){
+				console.log('item',item)
+				this.playUrl = item;
+			},
 			getBigImg:function(urls,current){
 				uni.previewImage({
 					current:current,
@@ -208,5 +242,17 @@
 	}
 	.img-list{
 		margin-top: 10px;
+	}
+	.videoBox{
+		position: absolute;
+		width: 100%;
+		height: 100%;
+		background: #000;
+		top: 0;
+		left: 0;
+		z-index: 999;
+	}
+	.videoItem{
+		width: 100%;
 	}
 </style>

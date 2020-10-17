@@ -72,7 +72,7 @@
 												if(!(res.data.data.must_update === '1' &&  (that.toNum(getApp().globalData.version) < that.toNum(res.data.data.last_version)))){
 													that.getYh(dataRes.id,dataRes.is_admin);
 													uni.redirectTo({
-														url: '../index/index'
+														url: '../home/home'
 													});
 												}else{
 													that.showLogin = true;
@@ -83,7 +83,7 @@
 								}else{
 									that.getYh(dataRes.id,dataRes.is_admin);
 									uni.redirectTo({
-										url: '../index/index'
+										url: '../home/home'
 									});
 								}
 							},
@@ -274,7 +274,7 @@
 									    data: JSON.stringify(res.data.data),
 									    success: function () {
 									       uni.redirectTo({
-									           url: '../index/index'
+									           url: '../home/home'
 									       });
 									    }
 									});
@@ -300,7 +300,7 @@
 										getApp().globalData.uid = JSON.parse(res.data).id;
 										getApp().globalData.is_zz = JSON.parse(res.data).is_zz;
 										uni.redirectTo({
-										    url: '../index/index'
+										    url: '../home/home'
 										});
 									}else{
 										uni.showToast({

@@ -36,11 +36,12 @@
 		<view v-else>
 			<view class="ksxjBox" @click="goXc()">
 				<view class="ksxjName">马上巡查</view>
-				<view>{{newTime}}</view>
+				<!-- <view>{{newTime}}</view> -->
 			</view>
 			<view class="ckBtn" @click="getList()" >查看巡查记录 <text class="jtRight">>></text></view>
+			<view class="ycBtn" @click="goXc('01')" >异常反馈 <text class="jtRight">>></text></view>
 		</view>
-		<tabBar :pagePath="'/pages/index/index'" :num="num"></tabBar>
+		<!-- <tabBar :pagePath="'/pages/index/index'" :num="num"></tabBar> -->
 	</view>
 </template>
 
@@ -189,10 +190,9 @@
 				    }
 				});
 			},
-			goXc:function(e){
-				// console.log('e', e);
+			goXc:function(is_yczt){
 				uni.navigateTo({
-				    url: '../inspection/inspection?record=' + JSON.stringify(this.record),
+				    url: is_yczt ? '../inspectionXc/inspectionXc?is_yczt=' + is_yczt : '../inspectionXc/inspectionXc' ,
 				});
 			},
 			getUpload:function(callback){
@@ -218,6 +218,7 @@
 						 data.map((item)=>{
 							 let imgsJNet = []; 
 							 let imgsNet = [];
+							  let videoNet = [];
 							 // console.log('------------图【item.yj_zp】------------',item.yj_zp,item.yj_zp.split('#'));
 							 // console.log('------------图【item.jj_zp】------------',item.jj_zp,item.jj_zp.split('#'));
 							 item.yj_zp.split('#').map((e)=>{
@@ -245,53 +246,70 @@
 														// console.log('======图二转行【JSON.parse(uploadFileRes.data).fileUrl】======',JSON.parse(uploadFileRes.data).fileUrl)
 											 			imgsJNet.push(JSON.parse(uploadFileRes.data).fileUrl);
 														if(imgsJNet.length === item.jj_zp.split('#').length){
-															setTimeout(()=>{
-																 item.jj_zp_net = imgsJNet.join('#');
-																 item.yj_zp_net = imgsNet.join('#');
-																 // console.log('item.jj_zp_net,item.yj_zp_net',item.jj_zp_net,item.yj_zp_net);
-																 // console.log('item==========>',item);
-																 let uidId = item.users_id;
-																 let {users_id, ...dataItem} = item;
-																 dataItem.uid = uidId;
-																 uni.request({
-																	 url: getApp().globalData.ip + '/saveXjData',
-																	 data: dataItem,
-																	method:'POST',
-																	 success: (res) => {
-																		 if(res.data.data && !res.data.error){
-																			 setTimeout(()=>{
-																				uni.hideLoading();
-																			 },500)
-																			 setXjAllData([dataItem],(res)=>{});
-																			 setXjData([dataItem],(res)=>{});
-																			 deleteUpLoad(`DELETE FROM xjDataUpLoad WHERE id = '${item.id}'`,(res)=>{
-																				// console.log('删除待上传成功',res.error);
-																			 });
-																			 let idx = that.wtList.findIndex((event)=>{
-																				return event.ks_id === item.ks_id;
-																			 });
-																			 if(idx > -1 && that.wtList[idx].wtzt_dm === '02'){
+															item.dsp.split('#').map((e)=>{
+																uni.uploadFile({
+																	url: getApp().globalData.weedIp, //仅为示例，非真实的接口地址
+																	filePath: e,
+																	name: 'file',
+																	formData: {
+																		'user': 'test'
+																	},
+																	success: (uploadFileRes) => {
+																		// console.log('======图二转行【JSON.parse(uploadFileRes.data).fileUrl】======',JSON.parse(uploadFileRes.data).fileUrl)
+																		videoNet.push(JSON.parse(uploadFileRes.data).fileUrl);
+																		if(videoNet.length === item.dsp.split('#').length){
+																			setTimeout(()=>{
+																				 item.jj_zp_net = imgsJNet.join('#');
+																				 item.yj_zp_net = imgsNet.join('#');
+																				 item.dsp_net = videoNet.join('#');
+																				 // console.log('item.jj_zp_net,item.yj_zp_net',item.jj_zp_net,item.yj_zp_net);
+																				 // console.log('item==========>',item);
+																				 let uidId = item.users_id;
+																				 let {users_id, ...dataItem} = item;
+																				 dataItem.uid = uidId;
 																				 uni.request({
-																					 url: getApp().globalData.ip + '/updateWtData',
-																					 data: {"wt_id":that.wtList[idx].id,"wtzt_dm":'04'},
+																					 url: getApp().globalData.ip + '/saveXjData',
+																					 data: dataItem,
 																					method:'POST',
 																					 success: (res) => {
-																						// console.log('修改委托记录状态',res.data);
-																						if(res.data.data && !res.data.error){
-																								let dataItem = {"id":that.wtList[idx].id,"ks_id":that.wtList[idx].ks_id,"wt_sj":moment().format('YYYY-MM-DD HH:mm:ss'),"fqr_id":that.wtList[idx].fqr_id,"bwtr_id":that.wtList[idx].bwtr_id,"wtzt_dm":'04',"wtzt_mc":'已巡检'};
-																								setWtData([dataItem],(res)=>{});
-																						} 
-																					 }
-																				 });
-																			 }
-																			 // console.log('巡查成功',res.data);
-																		}else{
-																				uni.hideLoading();
+																						 if(res.data.data && !res.data.error){
+																							 setTimeout(()=>{
+																								uni.hideLoading();
+																							 },500)
+																							 setXjAllData([dataItem],(res)=>{});
+																							 setXjData([dataItem],(res)=>{});
+																							 deleteUpLoad(`DELETE FROM xjDataUpLoad WHERE id = '${item.id}'`,(res)=>{
+																								// console.log('删除待上传成功',res.error);
+																							 });
+																							 let idx = that.wtList.findIndex((event)=>{
+																								return event.ks_id === item.ks_id;
+																							 });
+																							 if(idx > -1 && that.wtList[idx].wtzt_dm === '02'){
+																								 uni.request({
+																									 url: getApp().globalData.ip + '/updateWtData',
+																									 data: {"wt_id":that.wtList[idx].id,"wtzt_dm":'04'},
+																									method:'POST',
+																									 success: (res) => {
+																										// console.log('修改委托记录状态',res.data);
+																										if(res.data.data && !res.data.error){
+																												let dataItem = {"id":that.wtList[idx].id,"ks_id":that.wtList[idx].ks_id,"wt_sj":moment().format('YYYY-MM-DD HH:mm:ss'),"fqr_id":that.wtList[idx].fqr_id,"bwtr_id":that.wtList[idx].bwtr_id,"wtzt_dm":'04',"wtzt_mc":'已巡检'};
+																												setWtData([dataItem],(res)=>{});
+																										} 
+																									 }
+																								 });
+																							 }
+																							 // console.log('巡查成功',res.data);
+																						}else{
+																								uni.hideLoading();
+																						}
+																						callback({error:null});
+																					}
+																				 }); 
+																			},500)
 																		}
-																		callback({error:null});
-																	}
-																 }); 
-															},500)
+																	},
+																});
+															});
 														}
 											 		}
 											 	});
@@ -365,6 +383,7 @@
 				 B.kczt_dm,
 				 B.yczt_dm,
 				 B.jj_zp,
+				 B.dsp,
 				 B.yj_zp,
 				 B.bz
 				FROM
@@ -571,6 +590,16 @@
 		position: relative;
 		top: 250px;
 	}
+	.ycBtn{
+		color: #F45151;
+		font-size: 18px;
+		text-align: center;
+		width: 100%;
+		height: 40px;
+		line-height:40px;
+		position: relative;
+		top: 250px;
+	}
 	.jtRight{
 		font-family: '宋体';
 		margin-left: 5px;
@@ -587,10 +616,11 @@
 		left: -90px;
 		text-align: center;
 		box-shadow: 0 0 10px #999;
+		line-height: 180px;
 	}
 	.ksxjName{
-		padding-top: 60px;
-		font-size: 24px;
+		/* padding-top: 60px; */
+		font-size: 28px;
 	}
 	/deep/ .uni-list-item__container:after{
 		height: 0!important;

@@ -34,10 +34,10 @@
 				numAll:'0',
 				tabbar: getApp().globalData.is_admin === '1' ? [
 					{
-						"pagePath": "/pages/index/index",
-						"iconPath": "/static/icon1.png",
-						"selectedIconPath": "/static/icon_1.png",
-						"text": "矿山"
+						"pagePath": "/pages/home/home",
+						"iconPath": "/static/icon6.png",
+						"selectedIconPath": "/static/icon_6.png",
+						"text": "首页"
 					}, {
 						"pagePath": "/pages/work/work",
 						"iconPath": "/static/icon2.png",
@@ -64,10 +64,10 @@
 					},
 				] : [
 					{
-						"pagePath": "/pages/index/index",
-						"iconPath": "/static/icon1.png",
-						"selectedIconPath": "/static/icon_1.png",
-						"text": "矿山"
+						"pagePath": "/pages/home/home",
+						"iconPath": "/static/icon6.png",
+						"selectedIconPath": "/static/icon_6.png",
+						"text": "首页"
 					}, {
 						"pagePath": "/pages/upload/upload",
 						"iconPath": "/static/icon3.png",

@@ -3,9 +3,22 @@
 		  <view class="pageBody">
 			 <uni-segmented-control :current="current" :values="items" @clickItem="onClickItem" style-type="button" active-color="#172f87"></uni-segmented-control>
 			    <view v-if="current === 0" class="listBox">
-					<uni-list-item v-for="(item) in listZzJg">
-						<view class="msgBox">{{item.name}}</view> 
-					</uni-list-item>
+					<uni-search-bar ></uni-search-bar>
+					<view v-if="jzList && jzList.length>0" class="titleTop">
+						<text @click="getBack(item)" v-for="(item,index) in jzList" :style="index+1 === jzList.length ? {color:'#172f87'} : {}">{{item.name}} {{index+1 === jzList.length ? '' : ' > '}} </text>
+					</view>
+					<uni-list v-if="listZzJg&&listZzJg.length > 0">
+						<uni-list-item v-for="(item) in listZzJg" class="nohover">
+							<view class="msgBox" @click="getZzjg(item)">{{item.name}}</view> 
+						</uni-list-item>
+					</uni-list>
+					<view v-if="usersList && usersList.length > 0 && listZzJg.length > 0" class="titleTop">成员</view>
+					<uni-list v-if="usersList&&usersList.length > 0">
+						<uni-list-item v-for="(item) in usersList" class="nohover" @click="getList(item.id)">
+							<view class="msgBox">{{item.xm}}</view>
+						</uni-list-item>
+					</uni-list>
+					 <view class="noList" v-if="usersList.length == 0 && listZzJg.length == 0">暂无数据</view> 
 				</view>
 				<view class="page-section page-section-gap" v-if="current === 1">
 					 <map :style="{height:height+ 'px'}" scale="12" style="width: 100%; position: relative;" :latitude="latitude" :longitude="longitude" :markers="covers" @markertap='listShow' @labeltap='listShow'>
@@ -25,6 +38,7 @@
 <script>
 	import moment from 'moment';
 	import uniPopup from '@/components/uni-popup/uni-popup.vue'
+	import uniSearchBar from '@/components/uni-search-bar/uni-search-bar.vue'
 	import {getKsAllData,getConfig,getWtData} from '../common/env.js'
 	export default {
 		data() {
@@ -52,11 +66,23 @@
 				PI:3.14159265358979324,
 				items: ['组织架构','矿山督查'],
 				current: 0,
-				listZzJg:[{name:'鸡东县第一大队'},{name:'鸡东县执法大队'},{name:'鸡东县缉毒大队'}]
+				listZzJg:[],
+				usersList:[],
+				jzList:[],
 			}
 		},
 		 components: {
 		        uniPopup, 
+				uniSearchBar,
+		},
+		onBackPress:function(event){
+			if(this.jzList.length > 0){
+				this.jzList.pop();
+				this.getZzjg(this.jzList[this.jzList.length - 1],true);
+				return true;
+			}else{
+				return false;
+			}
 		},
 		onLoad() {
 			let that = this;
@@ -90,6 +116,7 @@
 					 B.kczt_dm,
 					 B.yczt_dm,
 					 B.jj_zp,
+					 B.dsp,
 					 B.yj_zp,
 					 B.bz
 					FROM
@@ -168,6 +195,18 @@
 					});
 				}
 			});
+			uni.getStorage({
+			    key: 'userData',
+			    success: function (res) {
+					if(res.data){
+						console.log('用户信息1',JSON.parse(res.data).org_id);
+						if(JSON.parse(res.data).org_id){
+							console.log('用户信息2',res.data);
+							that.getZzjg({id:JSON.parse(res.data).org_id,name:JSON.parse(res.data).org_name || '组织架构'});
+						}
+					}
+				},
+			});
 		},
 		onShow() {
 			getWtData(` SELECT A.*, B.dz, B.mc, C.xm as wtr_xm, C.lxdh as wtr_lxdh FROM wtData A
@@ -183,6 +222,37 @@
 					});
 		},
 		methods: {
+			getList:function(uid){
+				uni.navigateTo({
+					url:'../inspectionList/inspectionList?uid='+uid,
+				}) 
+			},
+			getBack:function(item){
+				let index = this.jzList.findIndex(event=>event.id == item.id);
+				if(index > -1){
+					this.jzList.splice(index+1,this.jzList.length);
+				}
+				this.getZzjg(item,true);
+			},
+			getZzjg:function(item,isUnPush){
+				uni.request({
+					 url: getApp().globalData.ip + '/getOrgData',
+					 data: {
+						id:item.id
+					},
+					 method:'POST',
+					 success: (res) => {
+						 console.log('组织架构',res.data);
+						 if(res&&res.data&&res.data.data){
+							 this.listZzJg = res.data.data.org ? res.data.data.org : [];
+							 this.usersList = res.data.data.users ? res.data.data.users : [];
+							 if(!isUnPush){
+								 this.jzList.push(item);
+							 }
+						 }
+					 }
+				});
+			},
 			onClickItem:function(e) {
 			           if (this.current !== e.currentIndex) {
 			               this.current = e.currentIndex;
@@ -249,6 +319,9 @@
 		position: absolute;
 		top: 0;
 	}
+	.nohover.uni-list-item--hover{
+		background: #fff!important;
+	}
 	.pageBody,.page-section{
 		height: 100%;
 		width: 100%;
@@ -310,5 +383,19 @@
 		line-height: 22px;
 		width: 100px;
 		color: #F9A936;
+	}
+	.titleTop{
+		font-size: 16px;
+		height: 26px;
+		line-height: 26px;
+		padding: 0 10px;
+		background: #f5f5f5;
+	}
+	.noList{
+		text-align: center;
+		font-size: 14px;
+		color: #999;
+		height: 50px;
+		line-height: 50px;
 	}
 </style>
