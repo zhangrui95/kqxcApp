@@ -151,7 +151,19 @@
         ,{
             "path" : "pages/inspectionList/inspectionList",
             "style" : {
-				"navigationBarTitleText": "巡查记录"
+				"navigationBarTitleText": "巡查记录",
+				"app-plus": {
+					 "titleNView": {
+						 "buttons": [
+										{
+											 "color": "#fff",
+											 "fontSize": "14px",
+											 "text": "时间筛选",
+											 "width": "70px"
+										}
+									] 
+					 }
+				}
 			}
         }
         ,{
@@ -179,9 +191,15 @@
 			}
         }
         ,{
-            "path" : "node_modules/receivedNotice/receivedNotice",
+            "path" : "pages/receivedNotice/receivedNotice",
             "style" : {
 				"navigationBarTitleText": "收到通知"
+			}
+        }
+        ,{
+            "path" : "pages/noticeDetail/noticeDetail",
+            "style" : {
+				"navigationBarTitleText": "通知详情"
 			}
         }
     ],
