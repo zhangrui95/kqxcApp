@@ -70,15 +70,73 @@
 							  this.nr = e.target.value;
 			},
 			getSave:function(){
-				
+				let that = this;
+				uni.getStorage({
+				    key: 'userData',
+				    success: function (res) {
+						if(res.data){
+							if(JSON.parse(res.data).org_id){
+								that.getZzjg({id:JSON.parse(res.data).org_id,name:JSON.parse(res.data).org_name || '组织架构'});
+							}
+						}
+					},
+				});
+			},
+			getZzjg:function(item,isUnPush){
+				uni.request({
+					 url: getApp().globalData.ip + '/getOrgData',
+					 data: {
+						id:item.id
+					},
+					 method:'POST',
+					 success: (res) => {
+						 console.log('组织架构',res.data);
+						 if(res&&res.data&&res.data.data){
+							 let parent = res.data.data.parent ? res.data.data.parent : {};
+							 if(parent && parent.track_code){
+								 console.log('parent.track_code',parent.track_code);
+								 this.getSend(parent.track_code);
+							 }
+						 }
+					 }
+				});
+			},
+			getSend:function(track_code){
+				uni.request({
+					 url: getApp().globalData.ip + '/postNotice',
+					 data: {
+						title: this.title,
+						text: this.nr,
+						img_url: this.imgs&&this.imgs.length > 0 ? this.imgs.join('#') : '',
+						poster_user_id: getApp().globalData.uid,
+						track_code: track_code
+					},
+					 method:'POST',
+					 success: (res) => {
+						console.log('res=====>',res.data);
+						if(!res.data.error){
+							uni.showToast({
+								title: '下发成功',
+								duration: 800,
+								success:()=>{
+									setTimeout(()=>{
+										uni.navigateBack({
+											delta: 1
+										});
+									},800)
+								}
+							});
+						}
+					 }
+				});
 			},
 			upImg1:function(e){
 				let that = this;
 				uni.chooseImage({
 				    count: 1, //默认9
 				    sizeType: ['original'], //可以指定是原图还是压缩图，默认二者都有
-				    sourceType: ['camera'], //调用相机
-					// sourceType: ['album'], //从相册选择
+				    // sourceType: ['camera'], //调用相机
+					sourceType: ['album'], //从相册选择
 				    success: function (resImg) {
 						console.log('JSON.stringify(resImg.tempFilePaths[0])',JSON.stringify(resImg.tempFilePaths[0]))
 							  uni.saveFile({

@@ -3,23 +3,23 @@
 		<view class="boxList">
 			<view class="noList" v-if="list.length == 0">暂无数据</view>
 			<uni-list  v-if="list.length > 0">
-					<uni-list-item v-for="(item,index) in list" @click="getDetail()"> 
+					<uni-list-item v-for="(item,index) in list" @click="getDetail(item)"> 
 						<view class="listTitle"><text>{{item.mc}}</text></view>
 						<view class="msgBox">
-							<text class="ztTitle">这是标题</text> <uni-icons type="image" size="16" color="#666" style="margin-left: 5px;"></uni-icons>
+							<text class="ztTitle">{{item.title}}</text> <uni-icons v-if="item.img_url" type="image" size="16" color="#666" style="margin-left: 5px;"></uni-icons>
 						</view>
 						<view class="msgBox">
-							<text class="bzBox">通知内容：这是内容，这是内容，这是内容这是内容，这是内容。</text>
+							<text class="tzBox">通知内容：{{item.text}}</text>
 						</view>
 						<view class="msgBox">
 							<text class="bzBox">通知人数：30人，已读人数：16人</text>
-							<text class="ztTime">2020-10-17</text>
+							<text class="ztTime">{{item.cjsj.substring(0,10)}}</text>
 						</view>
 					</uni-list-item>
 				</uni-list>
 		</view>
 		<view class="buttonBox">
-			<button type="primary" style="background: #00b7f0;" @click="entrustColleague()">下发通知</button>
+			<button type="primary" style="background: #00b7f0;" @click="getXf()">下发通知</button>
 			<button type="primary" style="background: #f19049;" @click="goTz()">收到通知</button>
 			<uni-badge v-if="num > 0" :text="num" type="error" class="badge" size='small'></uni-badge>
 		</view>
@@ -46,31 +46,23 @@
 			uniCard,
 			uniIcons
 		},
-	  onShow: function () { //option为object类型，会序列化上个页面传递的参数
-	  getWtData(` SELECT A.*, B.dz, B.mc, C.xm as wtr_xm, C.lxdh as wtr_lxdh FROM wtData A
-	  LEFT JOIN ksData B ON A.ks_id = B.id
-	  LEFT JOIN usersAllData C ON A.fqr_id = C.id 
-	  WHERE A.bwtr_id = '${getApp().globalData.uid}' ORDER BY A.wt_sj DESC`,(data)=>{
-		  this.num = 0;
-			data.map((item)=>{
-				if(item.wtzt_dm == '01'){
-					this.num = this.num + 1;
-				}
-			})
-		});
-	        // console.log('--------------执行------------')
-			getWtData(`SELECT A.*, B.dz,B.mc, C.xm as bwtr_xm, C.lxdh as bwtr_lxdh FROM wtData A
- LEFT JOIN ksData B ON A.ks_id = B.id
- LEFT JOIN usersAllData C ON A.bwtr_id = C.id
- WHERE A.fqr_id = '${getApp().globalData.uid}' ORDER BY A.wt_sj DESC`,(data)=>{
-				// console.log('通知',data);
-				 this.list = [{},{}]; 
-			});
+		onShow: function () { //option为object类型，会序列化上个页面传递的参数
+			this.getList();
 		}, 
 		methods: {
-			timeSearch:function(){
-				uni.navigateTo({
-				    url: '../detailKsTimeSearch/detailKsTimeSearch'
+			getList:function(){
+				uni.request({
+					 url: getApp().globalData.ip + '/getNoticeSendList',
+					 data: {
+						poster_user_id: getApp().globalData.uid,
+					},
+					 method:'POST',
+					 success: (res) => {
+						console.log('res=====>',res.data);
+						if(res.data&&res.data.data){
+							this.list = res.data.data;
+						}
+					 }
 				});
 			},
 			goTz:function(){
@@ -78,14 +70,14 @@
 				    url: '../receivedNotice/receivedNotice' 
 				});
 			},
-			entrustColleague:function(item){
+			getXf:function(item){
 				uni.navigateTo({
 				    url: '../sendNotice/sendNotice'
 				});
 			},
 			getDetail:function(item){
 				uni.navigateTo({
-				    url: '../noticeDetail/noticeDetail'
+				    url: '../noticeDetail/noticeDetail?record='+JSON.stringify(item)
 				});
 			}
 		}
@@ -93,6 +85,12 @@
 </script>
 
 <style>
+	.tzBox{
+		display: -webkit-box; 
+		-webkit-box-orient: vertical;
+		 -webkit-line-clamp: 2; 
+		 overflow: hidden;
+	}
 	.ztTitle{
 		color: #333;
 		font-size: 16px;

@@ -2,21 +2,20 @@
 	<view>
 		<uni-list>
 			<uni-list-item :showArrow="false">
-				<view class="name">这是通知标题</view>
+				<view class="name">{{record.title}}</view>
 			</uni-list-item>
 			<uni-list-item :showArrow="false">
-				<view class="address"><text style="float: left;">发布时间：2020-10-19 13:22:51</text></view>
+				<view class="address"><text style="float: left;">发布时间：{{record.cjsj}}</text></view>
 			</uni-list-item>
 			<uni-list-item :showArrow="false">
-				<view class="address">通知内容：通知内容通知内容通知内容通知内容，通知内容通知内容通知内容，通知内容通知内容通知内容，通知内容通知内容。</view>
+				<view class="address">通知内容：{{record.text}}</view>
 			</uni-list-item>
-			<uni-list-item :showArrow="false" >
+			<uni-list-item :showArrow="false" v-if="imgList&&imgList.length > 0">
 			    <view class="address">图片：</view>
 				<view class="img-list">
 					<image :src="item" class="imgItem" @click="getBigImg(imgList,index)" v-for="(item,index) in imgList"></image>
 				</view>
 			</uni-list-item> 
-			</uni-list-item>
 			<uni-list-item :showArrow="false" v-if="!isReceived">
 				<view class="address">通知人数：30人，已读人数：16人</view>
 			</uni-list-item>
@@ -28,13 +27,15 @@
 	export default {
 		data() {
 			return {
-				imgList:['https://img-cdn-qiniu.dcloud.net.cn/uniapp/images/cbd.jpg','https://img-cdn-qiniu.dcloud.net.cn/uniapp/images/muwu.jpg'],
+				imgList:[],
 				isReceived:false,
-			
+				record:{},
 			}
 		},
 		onLoad:function(option){
 			this.isReceived =  option.isReceived ? option.isReceived : false;
+			this.record = option.record ? JSON.parse(option.record):{};
+			this.imgList = this.record.img_url ? this.record.img_url.split('#') : [];
 		},
 		methods: {
 				getBigImg:function(urls,current){

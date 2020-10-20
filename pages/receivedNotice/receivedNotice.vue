@@ -4,16 +4,15 @@
 			<view class="noList" v-if="list.length == 0">暂无数据</view>
 			<uni-list v-if="list.length > 0">
 					<uni-list-item v-for="(item,index) in list">
-						<view @click="getDetail()">
-							<view class="listTitle"><text>{{item.mc}}</text></view>
+						<view @click="getDetail(item)">
 							<view class="msgBox">
-								<text class="ztTitle">这是标题</text> <uni-icons type="image" size="16" color="#666" style="margin-left: 5px;"></uni-icons>
+								<text class="ztTitle">{{item.title}}</text> <uni-icons v-if="item.img_url"  type="image" size="16" color="#666" style="margin-left: 5px;"></uni-icons>
 							</view>
 							<view class="msgBox">
-								<text class="bzBox">通知内容：这是内容，这是内容，这是内容这是内容，这是内容。</text>
+								<text class="tzBox">通知内容：{{item.text}}</text>
 							</view>
 							<view class="msgBox">
-								<text class="bzBox">时间：2020-10-17</text>
+								<text class="bzBox">时间：{{item.cjsj.substring(0,10)}}</text>
 								<view class="wdbj" v-if="item.type=='0'"></view>
 							</view>
 						</view>
@@ -36,7 +35,7 @@
 			return {
 				name:'',
 				time: moment().format('YYYY.MM.DD'),
-				list:[{type:'0'},{type:'1'},{type:'0'}],
+				list:[],
 				item:{},
 				text:'',
 			}
@@ -48,12 +47,27 @@
 			uniPopupDialog
 		},
 	    onShow: function (option) { //option为object类型，会序列化上个页面传递的参数
-			
+			this.getList();
 		}, 
 		methods: {
+			getList:function(){
+				uni.request({
+					 url: getApp().globalData.ip + '/getNoticeReceiveList',
+					 data: {
+						user_id: getApp().globalData.uid,
+					},
+					 method:'POST',
+					 success: (res) => {
+						console.log('res=====>',res.data);
+						if(res.data&&res.data.data){
+							this.list = res.data.data;
+						}
+					 }
+				});
+			},
 			getDetail:function(item){
 				uni.navigateTo({
-				    url: '../noticeDetail/noticeDetail?isReceived=true'
+				    url: '../noticeDetail/noticeDetail?isReceived=true&record='+JSON.stringify(item)
 				});
 			},
 		}
@@ -61,6 +75,12 @@
 </script>
 
 <style>
+	.tzBox{
+		display: -webkit-box; 
+		-webkit-box-orient: vertical;
+		 -webkit-line-clamp: 2; 
+		 overflow: hidden;
+	}
 	/deep/ .uni-list-item__extra{
 		top: -15px;
 	    position: relative;
