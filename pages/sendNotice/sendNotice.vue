@@ -75,6 +75,7 @@
 				    key: 'userData',
 				    success: function (res) {
 						if(res.data){
+							console.log('JSON.parse(res.data)',JSON.parse(res.data))
 							if(JSON.parse(res.data).org_id){
 								that.getZzjg({id:JSON.parse(res.data).org_id,name:JSON.parse(res.data).org_name || '组织架构'});
 							}

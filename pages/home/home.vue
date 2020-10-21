@@ -53,6 +53,7 @@
 				textZz:'',
 				isOk:false,
 				days:2,
+				is_notice:'0',
 			}
 		},
 		onLoad(){
@@ -118,6 +119,17 @@
 		onShow() {
 			this.getListKs();
 			this.getListXj();
+			let that = this;
+			uni.getStorage({
+			    key: 'userData',
+			    success: function (res) {
+					if(res.data){
+						if(JSON.parse(res.data).is_notice){
+							that.is_notice = JSON.parse(res.data).is_notice;
+						}
+					}
+				},
+			});
 			getWtData(` SELECT A.*, B.dz, B.mc, C.xm as wtr_xm, C.lxdh as wtr_lxdh FROM wtData A
 			LEFT JOIN ksData B ON A.ks_id = B.id
 			LEFT JOIN usersData C ON A.fqr_id = C.id
@@ -137,8 +149,9 @@
 				}) 
 			},
 			getNotice:function(){
+				let that = this;
 				uni.navigateTo({
-					url:'../notice/notice',
+					url:that.is_notice==='1' ? '../notice/notice' : '../receivedNotice/receivedNotice',
 				}) 
 			},
 			getList:function(){

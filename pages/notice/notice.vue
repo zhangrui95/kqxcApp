@@ -12,7 +12,7 @@
 							<text class="tzBox">通知内容：{{item.text}}</text>
 						</view>
 						<view class="msgBox">
-							<text class="bzBox">通知人数：30人，已读人数：16人</text>
+							<text class="bzBox">通知人数：{{item.receiver_total}}人，已读人数：{{item.receiver_total - item.receiver_unread}}人</text>
 							<text class="ztTime">{{item.cjsj.substring(0,10)}}</text>
 						</view>
 					</uni-list-item>

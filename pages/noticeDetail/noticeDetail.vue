@@ -16,14 +16,39 @@
 					<image :src="item" class="imgItem" @click="getBigImg(imgList,index)" v-for="(item,index) in imgList"></image>
 				</view>
 			</uni-list-item> 
-			<uni-list-item :showArrow="false" v-if="!isReceived">
-				<view class="address">通知人数：30人，已读人数：16人</view>
-			</uni-list-item>
 		</uni-list>
+		<uni-collapse @change="change"  v-if="!isReceived" style="border-top: 1px solid #eee;">
+		    <uni-collapse-item :showAnimation="true" :title="'通知人数：'+record.receiver_total+'人，已读人数：'+ (record.receiver_total - record.receiver_unread) + '人'">
+		        <uni-list>
+		            <uni-list-item :showArrow="false">
+						<view class="address"><text style="float: left;">张三</text>
+							<uni-tag :text="'已读'" :type="'primary'"></uni-tag>
+						</view>
+					</uni-list-item>
+					<uni-list-item :showArrow="false">
+						<view class="address"><text style="float: left;">李四四</text>
+							<uni-tag :text="'未读'" :type="'warning'"></uni-tag>
+						</view>
+					</uni-list-item>
+					<uni-list-item :showArrow="false">
+						<view class="address"><text style="float: left;">王二</text>
+							<uni-tag :text="'未读'" :type="'warning'"></uni-tag>
+						</view>
+					</uni-list-item>
+					<uni-list-item :showArrow="false">
+						<view class="address"><text style="float: left;">苏五五</text>
+							<uni-tag :text="'已读'" :type="'primary'"></uni-tag>
+						</view>
+					</uni-list-item>
+		        </uni-list>
+		    </uni-collapse-item>
+		</uni-collapse>
 	</view>
 </template>
 
 <script>
+	import uniCollapse from '@/components/uni-collapse/uni-collapse.vue'
+	import uniCollapseItem from '@/components/uni-collapse-item/uni-collapse-item.vue'
 	export default {
 		data() {
 			return {
@@ -32,6 +57,7 @@
 				record:{},
 			}
 		},
+		components: {uniCollapse,uniCollapseItem},
 		onLoad:function(option){
 			this.isReceived =  option.isReceived ? option.isReceived : false;
 			this.record = option.record ? JSON.parse(option.record):{};
@@ -58,6 +84,12 @@
 </script>
 
 <style>
+	.uni-collapse-cell__title{
+		color: #666;
+	}
+	.uni-collapse-cell__title-text{
+		font-size: 14px!important;
+	}
 	.uni-tag--primary{
 		float: left;
 		background: #41BEF9!important;

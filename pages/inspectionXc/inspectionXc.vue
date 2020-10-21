@@ -466,8 +466,6 @@
 					mask:true,
 				});
 				let that = this;
-				console.log('that.video========>',that.video);
-				console.log('that.videoNet========>',that.videoNet);
 				let data = {
 								id:that.makeId(32),
 								ks_id:that.makeId(32),
@@ -510,10 +508,8 @@
 												    key: 'userData',
 												    success: function (res) {
 														if(res.data && !that.is_yczt){
-															console.log('用户信息1',JSON.parse(res.data).fkr_id);
 															if(JSON.parse(res.data).fkr_id){
 																getUsersAllData(`select * from usersAllData WHERE id='${JSON.parse(res.data).fkr_id}'`,(res)=>{
-																	console.log('上级？',res[0].lxdh);
 																	that.sjLxfs = res[0].lxdh;
 																	that.$refs.popup.open();
 																});
