@@ -17,27 +17,12 @@
 				</view>
 			</uni-list-item> 
 		</uni-list>
-		<uni-collapse @change="change"  v-if="!isReceived" style="border-top: 1px solid #eee;">
+		<uni-collapse v-if="!isReceived" style="border-top: 1px solid #eee;">
 		    <uni-collapse-item :showAnimation="true" :title="'通知人数：'+record.receiver_total+'人，已读人数：'+ (record.receiver_total - record.receiver_unread) + '人'">
 		        <uni-list>
-		            <uni-list-item :showArrow="false">
-						<view class="address"><text style="float: left;">张三</text>
-							<uni-tag :text="'已读'" :type="'primary'"></uni-tag>
-						</view>
-					</uni-list-item>
-					<uni-list-item :showArrow="false">
-						<view class="address"><text style="float: left;">李四四</text>
-							<uni-tag :text="'未读'" :type="'warning'"></uni-tag>
-						</view>
-					</uni-list-item>
-					<uni-list-item :showArrow="false">
-						<view class="address"><text style="float: left;">王二</text>
-							<uni-tag :text="'未读'" :type="'warning'"></uni-tag>
-						</view>
-					</uni-list-item>
-					<uni-list-item :showArrow="false">
-						<view class="address"><text style="float: left;">苏五五</text>
-							<uni-tag :text="'已读'" :type="'primary'"></uni-tag>
+		            <uni-list-item :showArrow="false" v-for="item in personList">
+						<view class="address"><text style="float: left;">{{item.xm}}</text>
+							<uni-tag :text="item.is_read == '1' ? '已读' : '未读'" :type="item.is_read == '1' ? 'primary' : 'warning'"></uni-tag>
 						</view>
 					</uni-list-item>
 		        </uni-list>
@@ -55,6 +40,7 @@
 				imgList:[],
 				isReceived:false,
 				record:{},
+				personList:[]
 			}
 		},
 		components: {uniCollapse,uniCollapseItem},
@@ -62,6 +48,31 @@
 			this.isReceived =  option.isReceived ? option.isReceived : false;
 			this.record = option.record ? JSON.parse(option.record):{};
 			this.imgList = this.record.img_url ? this.record.img_url.split('#') : [];
+			if(this.isReceived){
+				uni.request({
+					 url: getApp().globalData.ip + '/getNoticeDetail',
+					 data: {
+						user_id: getApp().globalData.uid,
+						notice_id:this.record.id,
+					},
+					 method:'POST',
+					 success: (res) => {}
+				});
+			}else{
+				uni.request({
+					 url: getApp().globalData.ip + '/getNoticeReceiverUserList',
+					 data: {
+						notice_id:this.record.id,
+					},
+					 method:'POST',
+					 success: (res) => {
+						console.log('detail=====>',res.data);
+						if(res.data){
+							this.personList = res.data.data ? res.data.data : [];
+						}
+					 }
+				});
+			}
 		},
 		methods: {
 				getBigImg:function(urls,current){

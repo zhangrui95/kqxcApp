@@ -13,7 +13,9 @@
 							</view>
 							<view class="msgBox">
 								<text class="bzBox">时间：{{item.cjsj.substring(0,10)}}</text>
-								<view class="wdbj" v-if="item.type=='0'"></view>
+								<!-- <view class="wdbj" v-if="item.is_read=='0'"></view> -->
+								<view class="wdbj" v-if="item.is_read=='0'">未读</view>
+								<view class="ydbj" v-if="item.is_read=='1'">已读</view>
 							</view>
 						</view>
 					</uni-list-item>
@@ -178,12 +180,20 @@
 	}
 	.wdbj{
 		position: absolute;
-		bottom:15px;
+		bottom:16px;
 		right: 15px; 
-		width: 10px;
-		height: 10px;
+		/* width: 10px;
+		height: 10px; */
 		border-radius: 20px;
-		background: #F45151;
+		/* background: #F45151; */
+		color: #F45151;
+	}
+	.ydbj{
+		position: absolute;
+		bottom:16px;
+		right: 15px; 
+		border-radius: 20px; 
+		color: #999; 
 	}
 	.btnBox button{
 		    line-height: 1.8;

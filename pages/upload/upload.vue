@@ -20,7 +20,7 @@
 		onShow: function (option) { //option为object类型，会序列化上个页面传递的参数
 		getWtData(` SELECT A.*, B.dz, B.mc, C.xm as wtr_xm, C.lxdh as wtr_lxdh FROM wtData A
 		LEFT JOIN ksData B ON A.ks_id = B.id
-		LEFT JOIN usersData C ON A.fqr_id = C.id
+		LEFT JOIN usersAllData C ON A.fqr_id = C.id
 		WHERE A.bwtr_id = '${getApp().globalData.uid}' ORDER BY A.wt_sj DESC`,(data)=>{
 				  this.num = 0;
 					data.map((item)=>{
@@ -46,9 +46,9 @@
 				 D.xm as fzr_xm
 				FROM
 				 xjDataUpLoad A
-				 LEFT JOIN usersData B ON A.users_id = B.id
+				 LEFT JOIN usersAllData B ON A.users_id = B.id
 				 LEFT JOIN ksData C ON A.ks_id = C.id
-				 LEFT JOIN usersData D ON C.fzr_id = D.id
+				 LEFT JOIN usersAllData D ON C.fzr_id = D.id
 				ORDER BY
 				 dk_sj DESC`,(data)=>{
 						// console.log('待上传======================callback====================>',data)
@@ -112,7 +112,7 @@
 																		setTimeout(()=>{
 																			 item.jj_zp_net = imgsJNet.join('#');
 																			 item.yj_zp_net = imgsNet.join('#');
-																			 item.dsp_net = videoNet.join('#');
+																			 item.dsp_net = item.dsp&&videoNet&&videoNet.length > 0 ? videoNet.join('#') : '';
 																			 let uidId = item.users_id;
 																			 let {users_id, ...dataItem} = item;
 																			 dataItem.uid = uidId;

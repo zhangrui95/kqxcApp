@@ -261,7 +261,7 @@
 																			setTimeout(()=>{
 																				 item.jj_zp_net = imgsJNet.join('#');
 																				 item.yj_zp_net = imgsNet.join('#');
-																				 item.dsp_net = videoNet.join('#');
+																				 item.dsp_net = item.dsp&&videoNet&&videoNet.length > 0 ? videoNet.join('#') : '';
 																				 // console.log('item.jj_zp_net,item.yj_zp_net',item.jj_zp_net,item.yj_zp_net);
 																				 // console.log('item==========>',item);
 																				 let uidId = item.users_id;

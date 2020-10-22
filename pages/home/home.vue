@@ -7,6 +7,7 @@
 		<view  class="box2" @click="getNotice()">
 			<image src='/static/tz.png' class="img1"></image>
 			通知通告
+			<uni-badge v-if="numTz > 0" :text="numTz" type="error" class="badge"></uni-badge>
 		</view>
 		<tabBar :pagePath="'/pages/home/home'" :num="num"></tabBar>
 	</view>
@@ -17,6 +18,7 @@
 	import uniList from "@/components/uni-list/uni-list.vue"
 	import uniListItem from "@/components/uni-list-item/uni-list-item.vue"
 	import uniTag from "@/components/uni-tag/uni-tag.vue"
+	import uniBadge from "@/components/uni-badge/uni-badge.vue"
 	import uniNoticeBar from '@/components/uni-notice-bar/uni-notice-bar.vue'
 	import {deleteUpLoad,getXjDataUpLoad,getKsData,setKsData,getConfig,getXjData,setXjData,getWtData,setWtData,getUsersData,setUsersData,setKsAllData,setXjAllData} from '../common/env.js'
 	export default {
@@ -54,6 +56,7 @@
 				isOk:false,
 				days:2,
 				is_notice:'0',
+				numTz:0,
 			}
 		},
 		onLoad(){
@@ -120,6 +123,18 @@
 			this.getListKs();
 			this.getListXj();
 			let that = this;
+			uni.request({
+				 url: getApp().globalData.ip + '/getNoticeReceiveList',
+				 data: {
+					user_id: getApp().globalData.uid,
+				},
+				 method:'POST',
+				 success: (res) => {
+					if(res.data&&res.data.totalUnreadCnt){
+						that.numTz = res.data.totalUnreadCnt;
+					}
+				 }
+			});
 			uni.getStorage({
 			    key: 'userData',
 			    success: function (res) {
@@ -243,7 +258,7 @@
 																			setTimeout(()=>{
 																				 item.jj_zp_net = imgsJNet.join('#');
 																				 item.yj_zp_net = imgsNet.join('#');
-																				 item.dsp_net = videoNet.join('#');
+																				 item.dsp_net = item.dsp&&videoNet&&videoNet.length > 0 ? videoNet.join('#') : '';
 																				 // console.log('item.jj_zp_net,item.yj_zp_net',item.jj_zp_net,item.yj_zp_net);
 																				 // console.log('item==========>',item);
 																				 let uidId = item.users_id;
@@ -562,6 +577,11 @@
 </script>
 
 <style>
+	.badge{
+		position: absolute;
+		top: -8px;
+		right: 5px;
+	}
 	.box1{
 		width: 80%;
 		height: 120px;
@@ -585,6 +605,7 @@
 		text-align: center;
 		font-size: 28px;
 		box-shadow: 0 0 10px #aaa;
+		position: relative;
 	}
 	.img1{
 		width: 70px;

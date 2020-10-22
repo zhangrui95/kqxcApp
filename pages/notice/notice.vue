@@ -48,6 +48,19 @@
 		},
 		onShow: function () { //option为object类型，会序列化上个页面传递的参数
 			this.getList();
+			let that = this;
+			uni.request({
+				 url: getApp().globalData.ip + '/getNoticeReceiveList',
+				 data: {
+					user_id: getApp().globalData.uid,
+				},
+				 method:'POST',
+				 success: (res) => {
+					if(res.data&&res.data.totalUnreadCnt){
+						that.num = res.data.totalUnreadCnt;
+					}
+				 }
+			});
 		}, 
 		methods: {
 			getList:function(){

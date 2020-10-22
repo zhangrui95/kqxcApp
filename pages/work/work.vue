@@ -3,22 +3,27 @@
 		  <view class="pageBody">
 			 <uni-segmented-control :current="current" :values="items" @clickItem="onClickItem" style-type="button" active-color="#172f87"></uni-segmented-control>
 			    <view v-if="current === 0" class="listBox">
-					<uni-search-bar ></uni-search-bar>
-					<view v-if="jzList && jzList.length>0" class="titleTop">
+					<uni-search-bar  @input="input"></uni-search-bar>
+					<view v-if="jzList && jzList.length>0 &&!searchValue" class="titleTop">
 						<text @click="getBack(item)" v-for="(item,index) in jzList" :style="index+1 === jzList.length ? {color:'#172f87'} : {}">{{item.name}} {{index+1 === jzList.length ? '' : ' > '}} </text>
 					</view>
-					<uni-list v-if="listZzJg&&listZzJg.length > 0">
+					<uni-list v-if="listZzJg&&listZzJg.length > 0&&!searchValue">
 						<uni-list-item v-for="(item) in listZzJg" class="nohover">
 							<view class="msgBox" @click="getZzjg(item)">{{item.name}}</view> 
 						</uni-list-item>
 					</uni-list>
-					<view v-if="usersList && usersList.length > 0 && listZzJg.length > 0" class="titleTop">成员</view>
-					<uni-list v-if="usersList&&usersList.length > 0">
+					<view v-if="usersList && usersList.length > 0 && listZzJg.length > 0 &&!searchValue" class="titleTop">成员</view>
+					<uni-list v-if="usersList&&usersList.length > 0 &&!searchValue">
 						<uni-list-item v-for="(item) in usersList" class="nohover" @click="getList(item.id)">
 							<view class="msgBox">{{item.xm}}</view>
 						</uni-list-item>
 					</uni-list>
-					 <view class="noList" v-if="usersList.length == 0 && listZzJg.length == 0">暂无数据</view> 
+					<uni-list v-if="usersListSearch&&usersListSearch.length > 0">
+						<uni-list-item v-for="(item) in usersListSearch" class="nohover" @click="getList(item.id)">
+							<view class="msgBox">{{item.xm}}({{item.org_name}})</view>
+						</uni-list-item>
+					</uni-list>
+					 <view class="noList" v-if="(usersList.length == 0 && listZzJg.length == 0 &&!searchValue) || (searchValue && usersListSearch.length==0)">暂无数据</view> 
 				</view>
 				<view class="page-section page-section-gap" v-if="current === 1">
 					 <map :style="{height:height+ 'px'}" scale="12" style="width: 100%; position: relative;" :latitude="latitude" :longitude="longitude" :markers="covers" @markertap='listShow' @labeltap='listShow'>
@@ -69,6 +74,9 @@
 				listZzJg:[],
 				usersList:[],
 				jzList:[],
+				usersListSearch:[],
+				track_code:'',
+				searchValue:'',
 			}
 		},
 		 components: {
@@ -200,7 +208,7 @@
 			    success: function (res) {
 					if(res.data){
 						if(JSON.parse(res.data).org_id){
-							that.getZzjg({id:JSON.parse(res.data).org_id,name:JSON.parse(res.data).org_name || '组织架构'});
+							that.getZzjg({id:JSON.parse(res.data).org_id,name:JSON.parse(res.data).org_name || '组织架构'},false);
 						}
 					}
 				},
@@ -220,8 +228,31 @@
 					});
 		},
 		methods: {
+			input:function(e){
+				console.log('e====>',e.value,this.track_code);
+				this.searchValue = e.value;
+				if(e.value){
+					uni.request({
+						 url: getApp().globalData.ip + '/searchUserInOrgTree',
+						 data: {
+							track_code: this.track_code,
+							query_string: e.value
+						},
+						 method:'POST',
+						 success: (res) => {
+							 console.log('搜索',res.data);
+							 if(res.data && res.data.data){
+								 this.usersListSearch = res.data.data;
+							 }
+						 }
+					});
+				}else{
+					this.usersListSearch = [];
+				}
+				
+			},
 			getList:function(uid){
-				uni.navigateTo({
+				uni.navigateTo({ 
 					url:'../inspectionList/inspectionList?uid='+uid,
 				}) 
 			},
@@ -246,6 +277,10 @@
 							 this.usersList = res.data.data.users ? res.data.data.users : [];
 							 if(!isUnPush){
 								 this.jzList.push(item);
+							 }
+							 let parent = res.data.data.parent ? res.data.data.parent : {};
+							 if(parent && parent.track_code){
+							 		this.track_code = parent.track_code;
 							 }
 						 }
 					 }

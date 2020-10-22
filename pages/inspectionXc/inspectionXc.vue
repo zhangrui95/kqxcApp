@@ -391,13 +391,13 @@
 									that.video = video;
 							      }
 							    });
-								uni.showLoading({
-								    title: '视频存储中…',
-									mask:true,
-								});
 								uni.getNetworkType({
 								    success: function (res) {
 										if(res.networkType !== 'none' &&  res.networkType !== '2g' &&  res.networkType !== '3g'){
+											uni.showLoading({
+											    title: '视频存储中…',
+												mask:true,
+											});
 											uni.uploadFile({
 												url: getApp().globalData.weedIp, //仅为示例，非真实的接口地址
 												filePath: resImg.tempFilePath,

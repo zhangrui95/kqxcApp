@@ -111,7 +111,7 @@
 								jjList.push('http://'+ item);
 							}
 						});
-						detail.dsp_net.split('#').map((item)=>{
+						detail.dsp_net&&detail.dsp_net.split('#').map((item)=>{
 							console.log('item???',item)
 							if(item.includes('http')){
 								videoList.push(item);
