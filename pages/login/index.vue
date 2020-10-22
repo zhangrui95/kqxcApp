@@ -69,7 +69,7 @@
 									    success: (res) => {
 											console.log('/getConfig',res);
 											if(res.data.data && !res.data.error){
-												if(!(res.data.data.must_update === '1' &&  (that.toNum(getApp().globalData.version) < that.toNum(res.data.data.last_version)))){
+												if(dataRes.version && dataRes.version === getApp().globalData.version && !(res.data.data.must_update === '1' &&  (that.toNum(getApp().globalData.version) < that.toNum(res.data.data.last_version)))){
 													that.getYh(dataRes.id,dataRes.is_admin);
 													uni.redirectTo({
 														url: '../home/home'
@@ -130,6 +130,10 @@
 															if (res.statusCode === 200) {
 																that.delDb();
 																that.load = false; 
+																uni.removeStorage({
+																    key: 'userData',
+																    success: function (res) {}
+																});
 																plus.runtime.install(res.tempFilePath);
 																console.log('下载成功');
 															}
@@ -169,7 +173,7 @@
 			  return res; 
 			},
 			delDb(){
-				let dirPath = '_doc/kqxjList.db';
+				let dirPath = '_doc'+getApp().globalData.version+'/kqxjList.db';
 				plus.io.resolveLocalFileSystemURL(dirPath, function(entry) {
 					entry.remove( function ( entry ) {
 						console.log('删除成功回调')
@@ -177,8 +181,8 @@
 						alert( e.message );
 					} );
 				});
-				let dirPath1 = '_doc/kqxjList.db-journal';
-				plus.io.resolveLocalFileSystemURL(dirPath1, function(entry) {
+				let dirPath1 = '_doc'+getApp().globalData.version+'/kqxjList.db-journal';
+				plus.io.resolveLocalFileSystemURL(dirPath1, function(entry) { 
 					entry.remove( function ( entry ) {
 						console.log('删除成功回调')
 					}, function ( e ) {
@@ -190,7 +194,7 @@
 					// console.log('是否打开数据库');  
 					var isOpen = plus.sqlite.isOpenDatabase({  
 						name: 'kqxj', //数据库的名字  
-						path: '_doc/kqxjList.db' //地址  
+						path: '_doc'+getApp().globalData.version+'/kqxjList.db' //地址  
 					});  
 					// console.log(!isOpen);  
 	
@@ -204,8 +208,9 @@
 					}  
 			},  
 			openDB() {  
+				let path = '_doc'+getApp().globalData.version+'/kqxjList.db';
 				//SQLite      
-				openComDB('kqxj', '_doc/kqxjList.db', res => {   
+				openComDB('kqxj', path, res => {   
 					// console.log('打开数据库');  
 					this.isNet();  
 				});  
@@ -256,6 +261,7 @@
 						    success: (res) => {
 								// console.log('res.data',res.data);
 								if(res.data.data && !res.data.error){
+									res.data.data.version = getApp().globalData.version;
 									getApp().globalData.is_admin = res.data.data.is_admin;
 									getApp().globalData.uid = res.data.data.id;
 									getApp().globalData.is_zz = res.data.data.is_zz;

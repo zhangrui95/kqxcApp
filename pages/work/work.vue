@@ -18,9 +18,9 @@
 							<view class="msgBox">{{item.xm}}</view>
 						</uni-list-item>
 					</uni-list>
-					<uni-list v-if="usersListSearch&&usersListSearch.length > 0">
+					<uni-list v-if="searchValue&&usersListSearch&&usersListSearch.length > 0">
 						<uni-list-item v-for="(item) in usersListSearch" class="nohover" @click="getList(item.id)">
-							<view class="msgBox">{{item.xm}}({{item.org_name}})</view>
+							<view class="msgBox">{{item.xm ? item.xm : ''}}({{item.org_name ? item.org_name : ''}})</view>
 						</uni-list-item>
 					</uni-list>
 					 <view class="noList" v-if="(usersList.length == 0 && listZzJg.length == 0 &&!searchValue) || (searchValue && usersListSearch.length==0)">暂无数据</view> 

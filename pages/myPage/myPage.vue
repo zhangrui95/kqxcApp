@@ -144,6 +144,10 @@
 														    success: (res) => {
 														        if (res.statusCode === 200) {
 																	that.load = false; 
+																	uni.removeStorage({
+																	    key: 'userData',
+																	    success: function (res) {}
+																	});
 																	plus.runtime.install(res.tempFilePath);
 														            console.log('下载成功');
 														        }

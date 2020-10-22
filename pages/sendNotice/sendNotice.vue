@@ -71,14 +71,25 @@
 			},
 			getSave:function(){
 				let that = this;
-				uni.getStorage({
-				    key: 'userData',
+				uni.getNetworkType({
 				    success: function (res) {
-						if(res.data){
-							console.log('JSON.parse(res.data)',JSON.parse(res.data))
-							if(JSON.parse(res.data).org_id){
-								that.getZzjg({id:JSON.parse(res.data).org_id,name:JSON.parse(res.data).org_name || '组织架构'});
-							}
+						if(res.networkType !== 'none' &&  res.networkType !== '2g' &&  res.networkType !== '3g'){
+							uni.getStorage({
+							    key: 'userData',
+							    success: function (res) {
+									if(res.data){
+										console.log('JSON.parse(res.data)',JSON.parse(res.data))
+										if(JSON.parse(res.data).org_id){
+											that.getZzjg({id:JSON.parse(res.data).org_id,name:JSON.parse(res.data).org_name || '组织架构'});
+										}
+									}
+								},
+							});
+						}else{
+							uni.showToast({
+								title:'当前网络异常，请重新操作',
+								icon:'none'
+							});
 						}
 					},
 				});
@@ -108,7 +119,7 @@
 					 data: {
 						title: this.title,
 						text: this.nr,
-						img_url: this.imgs&&this.imgs.length > 0 ? this.imgs.join('#') : '',
+						img_url: this.imgsNet&&this.imgsNet.length > 0 ? this.imgsNet.join('#') : '',
 						poster_user_id: getApp().globalData.uid,
 						track_code: track_code
 					},

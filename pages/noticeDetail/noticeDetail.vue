@@ -47,6 +47,7 @@
 		onLoad:function(option){
 			this.isReceived =  option.isReceived ? option.isReceived : false;
 			this.record = option.record ? JSON.parse(option.record):{};
+			console.log('this.record.img_url',this.record.img_url);
 			this.imgList = this.record.img_url ? this.record.img_url.split('#') : [];
 			if(this.isReceived){
 				uni.request({
