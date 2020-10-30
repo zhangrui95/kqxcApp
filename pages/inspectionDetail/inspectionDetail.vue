@@ -15,7 +15,7 @@
 			</uni-list-item>
 			<uni-list-item :showArrow="false">
 				<!-- <view class="address">巡查结果：<text :style="{color:item.kczt_dm === '02' ? '#747474' : '#2de17e'}">{{item.kczt_dm === '02' ? '未开采' : '开采中'}}</text></view> -->
-				<view class='address'>异常说明：<text :style="{color:item.yczt_dm === '02' ? '#747474' : '#ee4c26'}">{{item.yczt_dm === '02' ? '无异常' : '有异常'}}</text></view>
+				<view class='address'>巡查结果：<text :style="{color:item.yczt_dm === '02' ? '#747474' : '#ee4c26'}">{{item.yczt_dm === '02' ? '未发现异常' : '发现异常'}}</text></view>
 			</uni-list-item>
 			<uni-list-item :showArrow="false">
 				<view class="address">是否对周边进行地毯式巡查：{{item.is_dtxc == '1' ? '是' : '否'}}</view>
@@ -29,14 +29,14 @@
 			<uni-list-item :showArrow="false">
 				<view class="address">备注说明：{{item.bz}}</view>
 			</uni-list-item>
-			<uni-list-item :showArrow="false" >
+			<!-- <uni-list-item :showArrow="false" >
 			    <view>远景照片：{{yjList.length}}张</view>
 				<view class="img-list">
 					<image :src="item" class="imgItem" @click="getBigImg(yjList,index)" v-for="(item,index) in yjList"></image>
 				</view>
-			</uni-list-item> 
+			</uni-list-item> -->
 			<uni-list-item :showArrow="false">
-			    <view>近景照片：{{jjList.length}}张</view>
+			    <view>拍摄照片：{{jjList.length}}张</view>
 			    <view class="img-list">
 			    	<image :src="item" class="imgItem" @click="getBigImg(jjList,index)" v-for="(item,index) in jjList"></image>
 			    </view>

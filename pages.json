@@ -175,7 +175,10 @@
         ,{
             "path" : "pages/home/home",
             "style" : {
-				"navigationBarTitleText": "首页"
+				"navigationBarTitleText": "首页",
+				"app-plus": {  
+				        // "titleNView": false //禁用原生导航栏  
+				    }  
 			}
         }
         ,{
@@ -200,6 +203,18 @@
             "path" : "pages/noticeDetail/noticeDetail",
             "style" : {
 				"navigationBarTitleText": "通知详情"
+			}
+        }
+        ,{
+            "path" : "pages/success/success",
+            "style" : {
+				"navigationBarTitleText": "提示"
+			}
+        }
+        ,{
+            "path" : "pages/tjDownload/tjDownload",
+            "style" : {
+				"navigationBarTitleText": "推荐下载"
 			}
         }
     ],

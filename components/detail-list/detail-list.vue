@@ -9,8 +9,8 @@
 						<text class="rightBox">巡查人：{{item.xm}}</text>
 					</view>
 					<view class="msgBox">
-						<text class="leftBox">巡查结果：<text :style="{color:item.kczt_dm === '02' ? '#747474' : '#2de17e'}">{{item.kczt_dm === '02' ? '未开采' : '开采中'}}</text></text>
-						<text class="rightBox">矿山状态：<text :style="{color:item.yczt_dm === '02' ? '#747474' : '#ee4c26'}">{{item.yczt_dm === '02' ? '无异常' : '有异常'}}</text>
+						<!-- <text class="leftBox">巡查结果：<text :style="{color:item.kczt_dm === '02' ? '#747474' : '#2de17e'}">{{item.kczt_dm === '02' ? '未开采' : '开采中'}}</text></text> -->
+						<text class="rightBox">巡查结果：<text :style="{color:item.yczt_dm === '02' ? '#747474' : '#ee4c26'}">{{item.yczt_dm === '02' ? '未发现异常' : '发现异常'}}</text>
 						<text style="margin-left: 5px;">{{item.yj_zp.split('#').length + item.jj_zp.split('#').length}}照片</text></text> 
 					</view>
 					<view class="msgBox">

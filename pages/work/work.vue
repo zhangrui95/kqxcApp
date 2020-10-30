@@ -96,7 +96,7 @@
 			let that = this;
 			uni.getSystemInfo({
 				success:function(res) {
-					that.height = res.windowHeight - 86 
+					that.height = res.windowHeight - 106 
 				}
 			});
 			getConfig('select * from config',(data)=>{
@@ -207,6 +207,7 @@
 			    key: 'userData',
 			    success: function (res) {
 					if(res.data){
+						console.log('JSON.parse(res.data)',JSON.parse(res.data))
 						if(JSON.parse(res.data).org_id){
 							that.getZzjg({id:JSON.parse(res.data).org_id,name:JSON.parse(res.data).org_name || '组织架构'},false);
 						}
@@ -347,8 +348,12 @@
 </script>
 
 <style>
+	.segmented-control{
+		width:90%;
+		margin:10px 5%;
+	}
 	.segmented-control__item--button{
-		border-radius: 0!important;
+		/* border-radius: 0!important; */
 		position: absolute;
 		top: 0;
 	}
@@ -365,7 +370,7 @@
 	.kdNumberBoxAll{
 		background: rgba(255,255,255,0.85);
 		position: fixed!important;
-		top: 50px!important;
+		top: 70px!important;
 		right: -10px!important;
 		z-index: 999;
 		font-size: 14px;
@@ -377,7 +382,7 @@
 	}
 	.kdNumberBox{
 		position: fixed!important;
-		top: 57px!important;
+		top: 77px!important;
 		right: 10px!important;
 		border-radius: 10px 0 0 10px;
 		z-index: 999;
@@ -387,7 +392,7 @@
 	}
 	.kdNumberBox1{
 		position: fixed!important;
-		top:77px!important;
+		top:97px!important;
 		right: 10px!important;
 		z-index: 999;
 		font-size: 14px;
@@ -397,7 +402,7 @@
 	}
 	.kdNumberBox2{
 		position: fixed!important;
-		top: 97px!important;
+		top: 117px!important;
 		right: 10px!important;
 		border-radius: 0 0 0 10px;
 		z-index: 999;
@@ -408,7 +413,7 @@
 	}
 	.kdNumberBox3{
 		position: fixed!important;
-		top: 97px!important;
+		top: 117px!important;
 		right: 10px!important;
 		border-radius: 0 0 0 10px;
 		z-index: 999;

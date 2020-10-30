@@ -1,5 +1,5 @@
 <template>
-	<view @click="hide">
+	<view>
 		<view class="searchTime">
 			<view class="time" @click="show"> 
 				<picker mode="date" :value="date" :start="startDate" :end="endDate" @change="bindDateChange" fields='month' class="timePicker">

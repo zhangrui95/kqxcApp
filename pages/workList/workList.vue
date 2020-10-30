@@ -28,7 +28,7 @@
 					                 <uni-list-item @click="getDetail(item)" v-for="(item) in list">
 					                 	<view class="msgBox">
 					                 						<view style="float: left;">{{item.dk_sj}} <text style="margin: 0 10px;">{{item.is_ycdk == '1' ? '定位异常':item.is_ycdk == '2' ? '无定位' : '正常'}}打卡</text> 巡查人：{{item.xm}}</view>
-					                 						<uni-tag v-if="item.yczt_dm === '01'" text="有异常" type="error"></uni-tag></view>
+					                 						<uni-tag v-if="item.yczt_dm === '01'" text="发现异常" type="error"></uni-tag></view>
 					                 </uni-list-item>
 									 <view class="noList" v-if="list.length == 0">暂无历史巡查记录</view> 
 					             </view>
@@ -136,8 +136,8 @@
 								// console.log('res.data.data=====>',res.data.data);
 								let hash = {};
 								const data2 = res.data.data.reduce((preVal, curVal) => {
-								    hash[curVal.users_id] ? '' : hash[curVal.users_id] = true && preVal.push(curVal); 
-								    return preVal 
+								    hash[curVal.users_id] ? '' : hash[curVal.users_id] = true && preVal.push(curVal); 
+								    return preVal 
 								}, []);
 								this.yhList = data2;
 								let list = [];

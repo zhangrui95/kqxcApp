@@ -12,14 +12,15 @@
 				<form @submit="formSubmit">
 					<view class="uni-form-item uni-column">
 						<view class="title">用户名</view>
-						<input class="uni-input" name="username" placeholder="请输入用户名" />
+						<input :value="name" class="uni-input" name="username" placeholder="请输入用户名" />
 					</view>
 					<view class="uni-form-item uni-column">
 						<view class="title">密码</view>
-						<input class="uni-input" name="password" password='true'  placeholder="请输入密码" />
+						<input :value="password" class="uni-input" name="password" password='true'  placeholder="请输入密码" />
 					</view>
 					<view class="uni-btn-v">
 						<button form-type="submit" class="loginBtn">登录</button> 
+						<button form-type="submit" class="loginBtnXj">离线巡检</button> 
 					</view>
 				</form>
 			</view>
@@ -44,6 +45,8 @@
 				progress:0,
 				load:false,
 				showLogin:false,
+				name:'',
+				password:'',
 			}
 		},
 		onLoad() {
@@ -52,11 +55,13 @@
 			    key: 'userData',
 			    success: function (res) {
 					if(res.data){
-						that.showLogin = false;
+						that.showLogin = true;
 						getApp().globalData.is_admin = JSON.parse(res.data).is_admin;
 						getApp().globalData.uid = JSON.parse(res.data).id;
 						getApp().globalData.is_zz = JSON.parse(res.data).is_zz;
 						let dataRes = JSON.parse(res.data);
+						that.name = dataRes.lxdh;
+						that.password = dataRes.mm;
 						uni.hideLoading();
 						uni.getNetworkType({
 						    success: function (res) {
@@ -67,13 +72,13 @@
 									    data: {},
 										method:'POST',
 									    success: (res) => {
-											console.log('/getConfig',res);
+											console.log('dataRes',dataRes);
 											if(res.data.data && !res.data.error){
 												if(dataRes.version && dataRes.version === getApp().globalData.version && !(res.data.data.must_update === '1' &&  (that.toNum(getApp().globalData.version) < that.toNum(res.data.data.last_version)))){
 													that.getYh(dataRes.id,dataRes.is_admin);
-													uni.redirectTo({
-														url: '../home/home'
-													});
+													// uni.redirectTo({
+													// 	url: '../home/home'
+													// });
 												}else{
 													that.showLogin = true;
 												}
@@ -82,9 +87,9 @@
 									});
 								}else{
 									that.getYh(dataRes.id,dataRes.is_admin);
-									uni.redirectTo({
-										url: '../home/home'
-									});
+									// uni.redirectTo({
+									// 	url: '../home/home'
+									// });
 								}
 							},
 						});
@@ -241,7 +246,6 @@
 					data: {},
 					method:'POST',
 					success: (res) => {	
-						console.log('res=====>用户All',res)
 						if(res.data.data && !res.data.error){
 						 setUsersAllData(res.data.data,(res)=>{});
 						} 
@@ -382,7 +386,7 @@
 	
 	.loginBtn{
 		width: 100%;
-		height: 40px;
+		height: 50px;
 		background: linear-gradient(45deg, #0055ff, #00eaff);
 		border-radius: 50upx;
 		margin-top: 50px;
@@ -390,6 +394,18 @@
 		justify-content: center;
 		align-items: center;
 		color: #fff;
+	}
+	.loginBtnXj{
+		width: 100%;
+		height: 50px;
+		background: linear-gradient(45deg, rgba(23, 54, 211, 0.5), rgba(45, 80, 193, 0.5));
+		border-radius: 50upx;
+		margin-top: 25px;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		color: #00DEFF;
+        border: 1px solid rgba(26, 225, 255, 0.5);
 	}
 	.forgotBtn{
 		text-align: center;
@@ -412,7 +428,7 @@
 	}
 	.uni-btn-v{
 		position: absolute;
-		bottom: -20px;
+		bottom: -100px;
 		width: 60%;
 		margin-left: 15%;
 	}

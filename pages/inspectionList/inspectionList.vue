@@ -1,5 +1,11 @@
 <template>
 	<view>
+		<view class="title" v-if="uid !== userid && !isDate">联系方式</view>
+		<view class="btnBox" v-if="uid !== userid && !isDate">
+			<view class="lxfs" @click="sendMsg"><uni-icons type="chat" class="iconLxfs" size="20" color="#00B7F0"></uni-icons> 发送消息</view>
+			<view class="lxfs" @click="getPhone" style="color: #f19049;"><uni-icons type="phone" class="iconLxfs" size="20" color="#f19049"></uni-icons> 拨打电话</view>
+		</view>
+		<view class="title" v-if="uid !== userid && !isDate">巡检历史</view>
 		<view class="searchTime" v-if="isDate">
 			<view class="time" @click="show"> 
 				<picker mode="date" :value="date" :start="startDate" :end="endDate" @change="bindDateChange" fields='month' class="timePicker">
@@ -13,8 +19,14 @@
 			 <uni-list>
 				<uni-list-item @click="getDetail(item)" v-for="(item) in list">
 					<view class="msgBox">
-										<view style="float: left;">{{item.dk_sj}} <text style="margin: 0 10px;">{{item.is_ycdk == '1' ? '定位异常':item.is_ycdk == '2' ? '无定位' : '正常'}}打卡</text> 巡查人：{{item.xm}}</view>
-										<uni-tag v-if="item.yczt_dm === '01'" text="有异常" type="error"></uni-tag></view>
+							<view style="float: left;">
+									<text style="margin: 0 3px;float: left;">{{item.dk_sj.substring(0,10)}}</text>
+									<text style="margin: 0 3px;" class="ksmc" v-if="item.mc">{{item.mc}}</text>
+									<text style="margin: 0 3px;">{{item.is_ycdk == '1' ? '定位异常':item.is_ycdk == '2' ? '无定位' : '正常'}}打卡</text>
+									<text style="margin: 0 3px;">{{item.xm}}</text>
+									<text style="margin: 0 3px;">{{item.yczt_dm === '01' ? "【发现异常】" : "【未发现异常】"}}</text>
+							</view>
+					</view>
 				</uni-list-item>
 			 </uni-list>
 			<view class="noList" v-if="list.length == 0">暂无历史巡查记录</view> 
@@ -41,6 +53,8 @@
 					date: currentDate,
 					data:[],
 					isDate:false,
+					uid:'',
+					userid: getApp().globalData.uid,
 			}
 		},
 		computed: {
@@ -54,7 +68,9 @@
 		onLoad: function (option) { //option为object类型，会序列化上个页面传递的参数
 				let that = this;
 				let uid = option.uid ? option.uid : getApp().globalData.uid;
+				this.uid = uid;
 				getXjData(`SELECT A.*, B.xm, C.mc FROM xjAllData A LEFT JOIN usersAllData B ON A.users_id = B.id LEFT JOIN ksAllData C ON A.ks_id = C.id  WHERE A.users_id = '${uid}'  ORDER BY dk_sj DESC`,(data)=>{
+					console.log('data？？？？',data)
 					this.list = data;
 					this.data = data;
 				});
@@ -87,6 +103,20 @@
 				uni.navigateTo({
 					url:'../inspectionDetail/inspectionDetail?detail='+JSON.stringify(item),
 				}) 
+			},
+			sendMsg:function(item){
+				getUsersAllData(`select * from usersAllData WHERE id='${this.uid}'`,(res)=>{
+					uni.navigateTo({
+						url:'../sendMsg/sendMsg?record='+JSON.stringify(res[0]),
+					})
+				});
+			},
+			getPhone:function(){
+				getUsersAllData(`select * from usersAllData WHERE id='${this.uid}'`,(res)=>{
+					uni.makePhoneCall({
+						phoneNumber: res[0].lxdh //仅为示例  
+					});
+				});
 			},
 			onNavigationBarButtonTap:function(e){
 				    this.isDate = !this.isDate;
@@ -135,6 +165,38 @@
 </script>
 
 <style>
+	.ksmc{
+		overflow: hidden;
+		text-overflow:ellipsis;
+		white-space: nowrap;
+		width: 20%;
+		display: block;
+		float: left;
+	}
+	.iconLxfs{
+		margin-right: 5px;
+	}
+	.lxfs{
+		width: 50%;
+		float: left;
+		height: 50px;
+		text-align: center;
+		line-height: 50px;
+		font-size: 18px;
+		color:#00B7F0;
+	}
+	.btnBox{
+		background: #fff;
+		width: 100%;
+		overflow: hidden;
+	}
+	.title{
+		font-size: 16px;
+		height: 30px;
+		line-height: 30px;
+		color: #666;
+		padding: 0 16px;
+	}
 	.uni-tag--error{
 		float: right;
 		background: #f7e8e5!important;

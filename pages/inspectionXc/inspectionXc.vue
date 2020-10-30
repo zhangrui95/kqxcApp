@@ -45,7 +45,7 @@
 					  <textarea placeholder='请输入异常说明或备注' style="height: 80px;margin-top: 10px;" placeholder-style="color:#ccc" @input="getTextarea"/>
 				</view>
 		    </uni-list-item>
-			<uni-list-item :showArrow="false">
+			<!-- <uni-list-item :showArrow="false">
 			    <view>远景照片（{{imgs.length}}）</view>
 				<view class="img-list">
 					<image src="../../static/picter.png" class="imgItem" @click="upImg1"></image>
@@ -56,9 +56,9 @@
 						</view>
 					</view>
 				</view>
-			</uni-list-item> 
+			</uni-list-item> -->
 			<uni-list-item :showArrow="false">
-			    <view>近景照片（{{imgsJ.length}}）</view>
+			    <view>拍摄照片（{{imgsJ.length}}）</view>
 			    <view class="img-list">
 					<image src="../../static/picter.png" class="imgItem" @click="upImg2"></image>
 			    	<view v-for="(item,index) in imgsJ" class="threeImg">
@@ -81,12 +81,24 @@
 			    	</view>
 			    </view>
 			</uni-list-item>
+<!-- 			<uni-list-item :showArrow="false">
+			    <view>上传音频</view>
+			    <view class="img-list">
+					<button v-if="!voicePath" @click="startRecorder ? stopAudio() : upAudio()">{{startRecorder ? '结束录音' : '开始录音'}}</button>
+			    	<view class="threeImg" v-if="voicePath">
+						<view class="imgItemBox">
+							<audio :src="voicePath" class="imgItem" @play="bigVideo(item)" v-if="!playUrl"></audio>
+							<image src="../../static/del.png" class="del" @click="getDelAudio(index)"></image>
+						</view>
+			    	</view>
+			    </view>
+			</uni-list-item> -->
 		</uni-list>
 		<view class="videoBox" v-if="playUrl">
 			<video :src="playUrl" autoplay="true" class="videoItem"></video>
 		</view>
 		<view class="btnBox">
-			   <button type="primary" :disabled="!(imgs.length > 0 && imgsJ.length > 0 && (is_yczt ? true : bz))" @click="getSave">提交</button>
+			   <button type="primary" :disabled="!(imgsJ.length > 0 && (is_yczt ? true : bz))" @click="getSave">提交</button>
 		</view>
 		<uni-popup ref="popup" type="dialog">
 		    <uni-popup-dialog type="input" :title='"上级负责人联系方式"+sjLxfs+"确定将联系上级负责人反馈？"' okText="确定" :duration="2000" :before-close="true" @close="close" @confirm="confirm"></uni-popup-dialog>
@@ -104,6 +116,9 @@
 	import {getConfig, setXjData,setXjDataUpLoad,setXjAllData,getWtData,setWtData,getUsersAllData} from '../common/env.js'
 	let latreg = /^(\-|\+)?([0-8]?\d{1}\.\d{0,15}|90\.0{0,15}|[0-8]?\d{1}|90)$/
 	let longrg = /^(\-|\+)?(((\d|[1-9]\d|1[0-7]\d|0{1,3})\.\d{0,15})|(\d|[1-9]\d|1[0-7]\d|0{1,3})|180\.0{0,15}|180)$/
+	const recorderManager = uni.getRecorderManager();
+	const innerAudioContext = uni.createInnerAudioContext();
+	innerAudioContext.autoplay = true;
 	export default {
 		data() {
 			return {
@@ -119,6 +134,8 @@
 				imgsJNet:[],
 				video:[],
 				videoNet:[],
+				audio:[],
+				audioNet:[],
 				setXjDataUpLoad:[],
 				bz:'',
 				wtList:[],
@@ -130,6 +147,8 @@
 				playUrl:'',
 				is_yczt:true,
 				sjLxfs:'',
+				startRecorder: false,
+				voicePath:''
 			}
 		},
 		components: {
@@ -147,6 +166,11 @@
 			}
 		},
 		onLoad: function (option) { //option为object类型，会序列化上个页面传递的参数
+			       let self = this;
+					recorderManager.onStop(function (res) {
+						console.log('recorder stop' + JSON.stringify(res));
+						self.voicePath = res.tempFilePath;
+					});
 					this.record = option&&option.record && JSON.parse(option.record) ? JSON.parse(option.record) : '';
 					this.is_yczt = option.is_yczt ? false : true;
 					if(option.is_yczt){
@@ -375,6 +399,55 @@
 				    }
 				});
 			},
+			stopAudio:function(e){
+				recorderManager.stop();
+				this.startRecorder = false;
+			},
+			upAudio:function(e){ 
+				let that = this;
+				 recorderManager.start();
+				 this.startRecorder = true;
+				// uni.chooseVideo({
+				//     count: 1, //默认9 
+				//     sourceType: ['camera'], //从相册选择
+				// 	maxDuration:15,
+				//     success: function (resImg) {
+				// 			  uni.saveFile({
+				// 			      tempFilePath: resImg.tempFilePath,
+				// 			      success: function (res) {
+				// 			        let savedFilePath = res.savedFilePath;
+				// 					let video = that.video;
+				// 					video.push(savedFilePath);
+				// 					that.video = video;
+				// 			      }
+				// 			    });
+				// 				uni.getNetworkType({
+				// 				    success: function (res) {
+				// 						if(res.networkType !== 'none' &&  res.networkType !== '2g' &&  res.networkType !== '3g'){
+				// 							uni.showLoading({
+				// 							    title: '视频存储中…',
+				// 								mask:true,
+				// 							});
+				// 							uni.uploadFile({
+				// 								url: getApp().globalData.weedIp, //仅为示例，非真实的接口地址
+				// 								filePath: resImg.tempFilePath,
+				// 								name: 'file',
+				// 								formData: {
+				// 								    'user': 'test'
+				// 								},
+				// 								success: (uploadFileRes) => {
+				// 									let videoNet = that.videoNet;
+				// 									videoNet.push(JSON.parse(uploadFileRes.data).fileUrl);
+				// 									that.videoNet = videoNet;
+				// 									uni.hideLoading();
+				// 								}
+				// 							});
+				// 						}
+				// 				    }
+				// 				});
+				//     }
+				// });
+			},
 			upVideo:function(e){
 				let that = this;
 				uni.chooseVideo({
@@ -508,12 +581,15 @@
 												    key: 'userData',
 												    success: function (res) {
 														if(res.data && !that.is_yczt){
+															console.log('JSON.parse(res.data)',JSON.parse(res.data))
 															if(JSON.parse(res.data).fkr_id){
 																getUsersAllData(`select * from usersAllData WHERE id='${JSON.parse(res.data).fkr_id}'`,(res)=>{
 																	that.sjLxfs = res[0].lxdh;
-																	that.$refs.popup.open();
 																});
 															}
+															uni.navigateTo({
+															    url: '../success/success?fkr_id='+JSON.parse(res.data).fkr_id
+															});
 														}
 													},
 												});
@@ -540,11 +616,20 @@
 				 	delta: 1
 				 });
 			},
+			close1:function(){
+				 this.$refs.popup1.close();
+				 uni.navigateBack({
+				 	delta: 1
+				 });
+			},
+			confirm1:function(){
+				this.close1();
+			},
 			confirm:function(){
 				let that = this;
 				this.$refs.popup.close();
 				uni.makePhoneCall({
-					phoneNumber: that.sjLxfs //仅为示例 
+					phoneNumber: that.sjLxfs //仅为示例  
 				});
 				uni.navigateBack({
 					delta: 1
@@ -598,9 +683,11 @@
 												getUsersAllData(`select * from usersAllData WHERE id='${JSON.parse(res.data).fkr_id}'`,(res)=>{
 													console.log('上级？',res[0].lxdh);
 													that.sjLxfs = res[0].lxdh;
-													that.$refs.popup.open();
 												});
 											}
+											uni.navigateTo({
+											    url: '../success/success?fkr_id='+JSON.parse(res.data).fkr_id
+											});
 										}
 									},
 								});

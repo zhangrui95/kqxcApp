@@ -58,6 +58,8 @@
 				 success: (res) => {
 					if(res.data&&res.data.totalUnreadCnt){
 						that.num = res.data.totalUnreadCnt;
+					}else{
+						that.num = 0;
 					}
 				 }
 			});

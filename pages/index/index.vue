@@ -18,9 +18,9 @@
 							<text class="rightBox">巡查人：{{item && item.xm ? item.xm : '暂无'}}</text>
 						</view>
 						<view class="msgBox"> 
-							<text class="leftBox">巡查结果：<text :style="{color:item&&item.kczt_dm === '01' ? '#747474' : '#747474'}">{{item && item.kczt_dm ? item.kczt_dm === '02' ? '未开采' : '开采中' : '暂无'}}</text></text>
-							<text class="rightBox">矿山状态：
-								<text :style="{color:item&&item.yczt_dm === '01' ? '#ee4c26' : '#747474'}">{{item && item.yczt_dm ? item.yczt_dm === '02' ? '无异常' : '有异常' : '暂无'}}</text>
+							<!-- <text class="leftBox">巡查结果：<text :style="{color:item&&item.kczt_dm === '01' ? '#747474' : '#747474'}">{{item && item.kczt_dm ? item.kczt_dm === '02' ? '未开采' : '开采中' : '暂无'}}</text></text> -->
+							<text class="rightBox">巡查结果：
+								<text :style="{color:item&&item.yczt_dm === '01' ? '#ee4c26' : '#747474'}">{{item && item.yczt_dm ? item.yczt_dm === '02' ? '未发现异常' : '发现异常' : '暂无'}}</text>
 								<text style="margin-left: 5px;"> {{item && item.yj_zp &&item.jj_zp  ?
 								(item.yj_zp.split('#') && item.yj_zp.split('#').length > 0 ? item.yj_zp.split('#').length : 0) + 
 								(item.jj_zp.split('#')&&item.jj_zp.split('#').length > 0 ? item.jj_zp.split('#').length : 0) : 0}}照片</text>

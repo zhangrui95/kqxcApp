@@ -45,7 +45,7 @@
 					  <textarea placeholder='请输入异常说明或备注' style="height: 80px;margin-top: 10px;" placeholder-style="color:#ccc" @input="getTextarea"/>
 				</view>
 		    </uni-list-item>
-			<uni-list-item :showArrow="false">
+			<!-- <uni-list-item :showArrow="false">
 			    <view>远景照片（{{imgs.length}}）</view>
 				<view class="img-list">
 					<image src="../../static/picter.png" class="imgItem" @click="upImg1"></image>
@@ -56,9 +56,9 @@
 						</view>
 					</view>
 				</view>
-			</uni-list-item> 
+			</uni-list-item> -->
 			<uni-list-item :showArrow="false">
-			    <view>近景照片（{{imgsJ.length}}）</view>
+			    <view>拍摄照片（{{imgsJ.length}}）</view>
 			    <view class="img-list">
 					<image src="../../static/picter.png" class="imgItem" @click="upImg2"></image>
 			    	<view v-for="(item,index) in imgsJ" class="threeImg">
@@ -86,7 +86,7 @@
 			<video :src="playUrl" autoplay="true" class="videoItem"></video>
 		</view>
 		<view class="btnBox">
-			   <button type="primary" :disabled="!(imgs.length > 0 && imgsJ.length > 0)" @click="getSave">提交</button>
+			   <button type="primary" :disabled="!(imgsJ.length > 0)" @click="getSave">提交</button>
 		</view>
 	</view>
 </template>
@@ -228,66 +228,66 @@
 				uni.chooseImage({
 				    count: 1, //默认9
 				    sizeType: ['original'], //可以指定是原图还是压缩图，默认二者都有
-				    // sourceType: ['camera'], //调用相机
-					sourceType: ['album'], //从相册选择
+				    sourceType: ['camera'], //调用相机
+					// sourceType: ['album'], //从相册选择
 				    success: function (resImg) {
 						console.log('JSON.stringify(resImg.tempFilePaths[0])',JSON.stringify(resImg.tempFilePaths[0]))
-						  let ydJd = JSON.stringify(resImg.tempFilePaths[0]) && JSON.stringify(resImg.tempFilePaths[0]).split('-')&&JSON.stringify(resImg.tempFilePaths[0]).split('-')[1] ? JSON.stringify(resImg.tempFilePaths[0]).split('-')[1] : '';
-						  let ydWd = JSON.stringify(resImg.tempFilePaths[0])&&JSON.stringify(resImg.tempFilePaths[0]).split('-')&&JSON.stringify(resImg.tempFilePaths[0]).split('-')[2] ? JSON.stringify(resImg.tempFilePaths[0]).split('-')[2] : '';
-						  if(longrg.test(ydJd) && latreg.test(ydWd)){
-							  let ydDistance = that.distance(that.record.jd,that.record.wd,ydJd,ydWd);
-							  if(ydDistance <= that.max_dkjl){
-							  							  if(!that.ydDistance){
-							  								  that.ydDistance = ydDistance;
-							  								  that.ydJd = ydJd;
-							  								  that.ydWd = ydWd;
-							  							  }else{
-							  								  if(ydDistance < that.ydDistance){
-							  									  that.ydDistance = ydDistance;
-							  									  that.ydJd = ydJd;
-							  									  that.ydWd = ydWd;
-							  								  }
-							  							  }
+						  // let ydJd = JSON.stringify(resImg.tempFilePaths[0]) && JSON.stringify(resImg.tempFilePaths[0]).split('-')&&JSON.stringify(resImg.tempFilePaths[0]).split('-')[1] ? JSON.stringify(resImg.tempFilePaths[0]).split('-')[1] : '';
+						  // let ydWd = JSON.stringify(resImg.tempFilePaths[0])&&JSON.stringify(resImg.tempFilePaths[0]).split('-')&&JSON.stringify(resImg.tempFilePaths[0]).split('-')[2] ? JSON.stringify(resImg.tempFilePaths[0]).split('-')[2] : '';
+						  // if(longrg.test(ydJd) && latreg.test(ydWd)){
+							 //  let ydDistance = that.distance(that.record.jd,that.record.wd,ydJd,ydWd);
+							 //  if(ydDistance <= that.max_dkjl){
+								//   if(!that.ydDistance){
+								// 	  that.ydDistance = ydDistance;
+								// 	  that.ydJd = ydJd;
+								// 	  that.ydWd = ydWd;
+								//   }else{
+								// 	  if(ydDistance < that.ydDistance){
+								// 		  that.ydDistance = ydDistance;
+								// 		  that.ydJd = ydJd;
+								// 		  that.ydWd = ydWd;
+								// 	  }
+								//   }
+							 //  }
+						  uni.saveFile({
+							  tempFilePath: resImg.tempFilePaths[0],
+							  success: function (res) {
+								let savedFilePath = res.savedFilePath;
+														// console.log('savedFilePath====>',savedFilePath)
+														let imgs = that.imgs;
+														that.imgs.push(savedFilePath);
+														that.imgs = imgs;
+														// console.log('this.imgs========>',that.imgs)
 							  }
-							  uni.saveFile({
-							      tempFilePath: resImg.tempFilePaths[0],
-							      success: function (res) {
-							        let savedFilePath = res.savedFilePath;
-							  								// console.log('savedFilePath====>',savedFilePath)
-							  								let imgs = that.imgs;
-							  								that.imgs.push(savedFilePath);
-							  								that.imgs = imgs;
-							  								// console.log('this.imgs========>',that.imgs)
-							      }
-							    });
-							  							uni.getNetworkType({
-							  							    success: function (res) {
-							  							        // console.log('网络状态',res.networkType);
-							  									if(res.networkType !== 'none' &&  res.networkType !== '2g' &&  res.networkType !== '3g'){
-							  										// console.log('getApp().globalData.weedIp',getApp().globalData.weedIp,resImg.tempFilePaths[0])
-							  										uni.uploadFile({
-							  											url: getApp().globalData.weedIp, //仅为示例，非真实的接口地址
-							  											filePath: resImg.tempFilePaths[0],
-							  											name: 'file',
-							  											formData: {
-							  											    'user': 'test'
-							  											},
-							  											success: (uploadFileRes) => {
-							  												let imgsNet = that.imgsNet;
-							  												that.imgsNet.push(JSON.parse(uploadFileRes.data).fileUrl);
-							  												that.imgsNet = imgsNet;
-							  											}
-							  										});
-							  									}
-							  							    }
-							  							});
-						  }else{
-							  uni.showToast({
-							  	title:'请选择新版元道相机拍摄的现场图片',
-							  	icon:'none',
-								duration: 2000
-							  });
-						  }
+							});
+							uni.getNetworkType({
+								success: function (res) {
+									// console.log('网络状态',res.networkType);
+									if(res.networkType !== 'none' &&  res.networkType !== '2g' &&  res.networkType !== '3g'){
+										// console.log('getApp().globalData.weedIp',getApp().globalData.weedIp,resImg.tempFilePaths[0])
+										uni.uploadFile({
+											url: getApp().globalData.weedIp, //仅为示例，非真实的接口地址
+											filePath: resImg.tempFilePaths[0],
+											name: 'file',
+											formData: {
+												'user': 'test'
+											},
+											success: (uploadFileRes) => {
+												let imgsNet = that.imgsNet;
+												that.imgsNet.push(JSON.parse(uploadFileRes.data).fileUrl);
+												that.imgsNet = imgsNet;
+											}
+										});
+									}
+								}
+							});
+						  // }else{
+							 //  uni.showToast({
+							 //  	title:'请选择新版元道相机拍摄的现场图片',
+							 //  	icon:'none',
+								// duration: 2000
+							 //  });
+						  // }
 				    }
 				});
 			},
@@ -296,25 +296,26 @@
 				uni.chooseImage({
 				    count: 1, //默认9 
 				    sizeType: ['original'], //可以指定是原图还是压缩图，默认二者都有
-				    sourceType: ['album'], //从相册选择
+				    // sourceType: ['album'], //从相册选择
+					sourceType: ['camera'],
 				    success: function (resImg) {
-						let ydJd = JSON.stringify(resImg.tempFilePaths[0]) && JSON.stringify(resImg.tempFilePaths[0]).split('-')&&JSON.stringify(resImg.tempFilePaths[0]).split('-')[1] ? JSON.stringify(resImg.tempFilePaths[0]).split('-')[1] : '';
-						let ydWd = JSON.stringify(resImg.tempFilePaths[0])&&JSON.stringify(resImg.tempFilePaths[0]).split('-')&&JSON.stringify(resImg.tempFilePaths[0]).split('-')[2] ? JSON.stringify(resImg.tempFilePaths[0]).split('-')[2] : '';
-						if(longrg.test(ydJd) && latreg.test(ydWd)){
-							let ydDistance = that.distance(that.record.jd,that.record.wd,ydJd,ydWd);
-							if(ydDistance <= that.max_dkjl){
-								  if(!that.ydDistance){
-									  that.ydDistance = ydDistance;
-									  that.ydJd = ydJd;
-									  that.ydWd = ydWd;
-								  }else{
-									  if(ydDistance < that.ydDistance){
-										  that.ydDistance = ydDistance;
-										  that.ydJd = ydJd;
-										  that.ydWd = ydWd;
-									  }
-								  }
-							}
+						// let ydJd = JSON.stringify(resImg.tempFilePaths[0]) && JSON.stringify(resImg.tempFilePaths[0]).split('-')&&JSON.stringify(resImg.tempFilePaths[0]).split('-')[1] ? JSON.stringify(resImg.tempFilePaths[0]).split('-')[1] : '';
+						// let ydWd = JSON.stringify(resImg.tempFilePaths[0])&&JSON.stringify(resImg.tempFilePaths[0]).split('-')&&JSON.stringify(resImg.tempFilePaths[0]).split('-')[2] ? JSON.stringify(resImg.tempFilePaths[0]).split('-')[2] : '';
+						// if(longrg.test(ydJd) && latreg.test(ydWd)){
+						// 	let ydDistance = that.distance(that.record.jd,that.record.wd,ydJd,ydWd);
+						// 	if(ydDistance <= that.max_dkjl){
+						// 		  if(!that.ydDistance){
+						// 			  that.ydDistance = ydDistance;
+						// 			  that.ydJd = ydJd;
+						// 			  that.ydWd = ydWd;
+						// 		  }else{
+						// 			  if(ydDistance < that.ydDistance){
+						// 				  that.ydDistance = ydDistance;
+						// 				  that.ydJd = ydJd;
+						// 				  that.ydWd = ydWd;
+						// 			  }
+						// 		  }
+						// 	}
 							  uni.saveFile({
 							      tempFilePath: resImg.tempFilePaths[0],
 							      success: function (res) {
@@ -344,13 +345,13 @@
 										}
 								    }
 								});
-						}else{
-							uni.showToast({
-								title:'请选择新版元道相机拍摄的现场图片', 
-								icon:'none',
-								duration: 2000
-							});
-						}
+						// }else{
+						// 	uni.showToast({
+						// 		title:'请选择新版元道相机拍摄的现场图片', 
+						// 		icon:'none',
+						// 		duration: 2000
+						// 	});
+						// }
 				    }
 				});
 			},
@@ -609,9 +610,9 @@
 									if(dist <= that.max_dkjl){
 										that.getNetSave(longitude,latitude,'0',idx);
 									}else{
-										if(that.ydDistance&&that.ydDistance <= that.max_dkjl){
-											that.getNetSave(that.ydJd,that.ydWd,'0',idx);
-										}else{
+										// if(that.ydDistance&&that.ydDistance <= that.max_dkjl){
+										// 	that.getNetSave(that.ydJd,that.ydWd,'0',idx);
+										// }else{
 											uni.showModal({
 											    title: '您距离矿点位置'+(dist > 1000 ?  parseInt(dist/1000) + '千米' : dist + '米')+'，超出'+that.max_dkjl+'米的打卡范围，仍要打卡？',
 											    success: function (resDate) {
@@ -622,13 +623,13 @@
 											         }
 												}
 											});
-										}
+										// }
 									}
 									
 								}, function(e){
-									if(that.ydDistance&&that.ydDistance <= that.max_dkjl){
-										that.getNetSave(that.ydJd,that.ydWd,'0',idx);
-									}else{
+									// if(that.ydDistance&&that.ydDistance <= that.max_dkjl){
+									// 	that.getNetSave(that.ydJd,that.ydWd,'0',idx);
+									// }else{
 										uni.showModal({
 										    title: '未获取到您的定位，仍要确认打卡？',
 										    success: function (resDate) {
@@ -639,7 +640,7 @@
 										         }
 											}
 										});
-									}
+									// }
 								} );
 						}else{
 							plus.geolocation.getCurrentPosition(function(p){
@@ -650,9 +651,9 @@
 									if(dist <= that.max_dkjl){
 										that.getNoneNetSave(longitude,latitude,'0',idx);
 									}else{
-										if(that.ydDistance&&that.ydDistance <= that.max_dkjl){
-											that.getNetSave(that.ydJd,that.ydWd,'0',idx);
-										}else{
+										// if(that.ydDistance&&that.ydDistance <= that.max_dkjl){
+										// 	that.getNetSave(that.ydJd,that.ydWd,'0',idx);
+										// }else{
 											uni.showModal({
 											    title: '您距离矿点位置为'+(dist > 1000 ?  parseInt(dist/1000) + '千米' : dist + '米')+'，超出'+that.max_dkjl+'米的打卡范围，仍要打卡？',
 											    success: function (resDate) {
@@ -663,12 +664,12 @@
 											         }
 												}
 											});
-										}
+										// }
 									}
 								}, function(e){
-									if(that.ydDistance&&that.ydDistance <= that.max_dkjl){
-										that.getNetSave(that.ydJd,that.ydWd,'0',idx);
-									}else{
+									// if(that.ydDistance&&that.ydDistance <= that.max_dkjl){
+									// 	that.getNetSave(that.ydJd,that.ydWd,'0',idx);
+									// }else{
 										uni.showModal({
 										    title: '未获取到您的定位，仍要确认打卡？',
 										    success: function (resDate) {
@@ -679,7 +680,7 @@
 										         }
 											}
 										});
-									}
+									// }
 								} );
 						}
 				    }

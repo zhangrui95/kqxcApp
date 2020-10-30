@@ -1,6 +1,33 @@
 <template>
 	<view class="box">
-		<view class="box1" @click="getIndex()">
+		<view class="bg"></view>
+		<view class="topBox">
+			<view class="ljxj" @click="getIndex()">
+				立即巡检
+			</view>
+			<view class="lxxj" @click="getIndex()">
+				离线巡检
+			</view>
+		</view>
+		<view class="listBox">
+			<view class="itemBox">
+				<image src="../../static/dsc.png" class="itemImg"></image>
+				<view class="itemName">待上传</view>
+			</view>
+			<view class="itemBox">
+				<image src="../../static/tztg.png" class="itemImg"></image>
+				<view class="itemName">通知通告</view>
+			</view>
+			<view class="itemBox">
+				<image src="../../static/wdxx.png" class="itemImg"></image>
+				<view class="itemName">我的消息</view>
+			</view>
+			<view class="itemBox">
+				<image src="../../static/wt.png" class="itemImg"></image>
+				<view class="itemName">委托</view>
+			</view>
+		</view>
+	<!-- 	<view class="box1" @click="getIndex()">
 			<image src='/static/ks.png' class="img1"></image>
 			矿山巡查
 		</view>
@@ -8,7 +35,7 @@
 			<image src='/static/tz.png' class="img1"></image>
 			通知通告
 			<uni-badge v-if="numTz > 0" :text="numTz" type="error" class="badge"></uni-badge>
-		</view>
+		</view> -->
 		<tabBar :pagePath="'/pages/home/home'" :num="num"></tabBar>
 	</view>
 </template>
@@ -132,6 +159,8 @@
 				 success: (res) => {
 					if(res.data&&res.data.totalUnreadCnt){
 						that.numTz = res.data.totalUnreadCnt;
+					}else{
+						that.numTz = 0;
 					}
 				 }
 			});
@@ -577,34 +606,96 @@
 </script>
 
 <style>
+	.listBox{
+		background: rgba(203, 207, 231, 0.3);
+		width: calc(96% - 40px);
+		min-height: 350px;
+		margin: 0 2%;
+		border-radius: 10px;
+		padding: 20px;
+		overflow: hidden;
+	}
+	.itemBox{
+		width: 25%;
+		float: left;
+		text-align: center;
+	}
+	.itemImg{
+		width: 72px;
+		height: 72px;
+	}
+	.itemName{
+		color: #666666;
+		text-align: center;
+		font-size: 16px;
+	}
 	.badge{
 		position: absolute;
 		top: -8px;
 		right: 5px;
 	}
+	.ljxj{
+		width: 46%;
+		height: 180px;
+		background: url(../../static/zxbg.png);
+		background-size: 100% 100%;
+		margin: 20px 2%;
+		float: left;
+		color: #F2F5FF;
+		text-align: center;
+		line-height: 260px;
+		font-size: 26px;
+	}
+	.lxxj{
+		width: 46%;
+		height: 180px;
+		background: url(../../static/lxbg.png);
+		background-size: 100% 100%;
+		margin: 20px 2%;
+		float: left;
+		color: #F2F5FF;
+		text-align: center;
+		line-height: 260px;
+		font-size: 26px;
+	}
+	.topBox{
+		overflow: hidden;
+	}
+	/* .bg{
+		background: url(../../static/bg.png) no-repeat;
+		background-size: 100% 100%;
+		position: relative;
+		top: -150px;
+		height: 350px;
+		width: 100%;
+		border-radius: 100%;
+	} */
+	.box{
+		padding: 0 2%;
+	}
 	.box1{
 		width: 80%;
 		height: 120px;
-		background: linear-gradient(45deg, #5875ff 0%,#00b7f0 100%);
-		color: #fff;
+		background: #fff;/* linear-gradient(45deg, #5875ff 0%,#00b7f0 100%); */
+		color: #172f87;
 		margin: 100px 10% 50px;
 		line-height: 120px;
 		border-radius: 10px;
 		text-align: center;
 		font-size: 28px;
-		box-shadow: 0 0 10px #aaa;
+		box-shadow: 0 0 10px #ccc;
 	}
 	.box2{
 		width: 80%;
 		height: 120px;
-		background: linear-gradient(45deg, #ff5400 0%,#f19049 100%);
-		color: #fff;
-		margin: 30px 10%;
+		background: #fff;/* linear-gradient(45deg, #ff5400 0%,#f19049 100%); */
+		color: #172f87;
+		margin: 30px 10%; 
 		line-height: 120px;
 		border-radius: 10px;
 		text-align: center;
 		font-size: 28px;
-		box-shadow: 0 0 10px #aaa;
+		box-shadow: 0 0 10px #ccc;
 		position: relative;
 	}
 	.img1{

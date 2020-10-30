@@ -6,7 +6,8 @@
 		</view>
 		<uni-list style="margin-top:10px;">
 			<uni-list-item thumb="../../static/msg.png" title="我的消息" @click="myMessage" :show-badge="parseInt(allNum) > 0 ? true : false" :badge-text="allNum" badge-type="error"></uni-list-item>
-		    <uni-list-item thumb="../../static/bbjc.png" title="检测版本" @click="getUpdate"></uni-list-item>
+		    <uni-list-item thumb="../../static/tjxz.png" title="推荐下载" @click="getTj"></uni-list-item>
+			 <uni-list-item thumb="../../static/bbjc.png" title="检测版本" @click="getUpdate"></uni-list-item>
 			<!-- <uni-list-item thumb="../../static/rjxy.png" title="软件许可协议"></uni-list-item> -->
 		</uni-list>
        <!-- <uni-list style="margin-top:80px;">
@@ -84,6 +85,11 @@
 			uniPopupDialog
 		},
 		methods: {
+			getTj:function(){
+				uni.navigateTo({
+					 url: '../tjDownload/tjDownload'
+				})
+			},
 			choice:function(){
 				uni.navigateTo({
 					 url: '../choiceNumber/choiceNumber'

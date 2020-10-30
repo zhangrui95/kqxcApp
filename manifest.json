@@ -13,7 +13,8 @@
             "Speech" : {},
             "Webview-x5" : {},
             "SQLite" : {},
-            "OAuth" : {}
+            "OAuth" : {},
+            "VideoPlayer" : {}
         },
         "distribute" : {
             "android" : {
