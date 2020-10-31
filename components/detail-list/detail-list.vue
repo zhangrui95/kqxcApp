@@ -1,6 +1,8 @@
 <template name='detailList'>
 	<view>
-		<view class="noList" v-if="list.length == 0">暂无数据</view>
+		<view class="noList" v-if="list.length == 0"><image src="../../static/noList.png" style="width: 200px;height: 123px;"></image>
+				<view>暂无数据</view>
+		</view>
 		<uni-list v-if="list.length > 0">
 				<uni-list-item :show-arrow="true" @click="goDetail(item,record)" v-for="(item,index) in list">
 					<view class="listTitle"><text>{{item.dk_sj.substring(0,10)}}</text></view>
@@ -54,8 +56,8 @@
 		text-align: center;
 		font-size: 14px;
 		color: #999;
-		height: 50px;
-		line-height: 50px;
+		padding:30px 0;
+		background: #F5F5F5;
 	}
 	.uni-list-item__container{
 		border: 0!important;

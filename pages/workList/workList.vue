@@ -30,7 +30,10 @@
 					                 						<view style="float: left;">{{item.dk_sj}} <text style="margin: 0 10px;">{{item.is_ycdk == '1' ? '定位异常':item.is_ycdk == '2' ? '无定位' : '正常'}}打卡</text> 巡查人：{{item.xm}}</view>
 					                 						<uni-tag v-if="item.yczt_dm === '01'" text="发现异常" type="error"></uni-tag></view>
 					                 </uni-list-item>
-									 <view class="noList" v-if="list.length == 0">暂无历史巡查记录</view> 
+									 <view class="noList" v-if="list.length == 0">
+										 <image src="../../static/noList.png" style="width: 200px;height: 123px;"></image>
+										 <view>暂无历史巡查记录</view>
+									 </view> 
 					             </view>
 								 <view v-if="current === 1">
 									 <view class="listItem" v-for="(item) in yhList">
@@ -235,8 +238,8 @@
 		text-align: center;
 		font-size: 14px;
 		color: #999;
-		height: 50px;
-		line-height: 50px;
+		padding:30px 0;
+		background: #F5F5F5;
 	}
 	.mock{
 		position: absolute;

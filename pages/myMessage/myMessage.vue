@@ -71,7 +71,7 @@
 		text-align: center;
 		font-size: 14px;
 		color: #999;
-		height: 50px;
-		line-height: 50px;
+		padding:30px 0;
+		background: #F5F5F5;
 	}
 </style>

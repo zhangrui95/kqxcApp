@@ -1,7 +1,10 @@
 <template>
 	<view>
 		<view class="boxList">
-			<view class="noList" v-if="list.length == 0">暂无数据</view>
+			<view class="noList" v-if="list.length == 0">
+				<image src="../../static/noList.png" style="width: 200px;height: 123px;"></image>
+				<view>暂无数据</view>
+			</view>
 			<uni-list  v-if="list.length > 0">
 					<uni-list-item v-for="(item,index) in list" @click="getDetail(item)"> 
 						<view class="listTitle"><text>{{item.mc}}</text></view>
@@ -117,13 +120,13 @@
 		position: absolute;
 		top: -5px;
 		right: 2%;
-	}
+	} 
 	.noList{
 		text-align: center;
 		font-size: 14px;
 		color: #999;
-		height: 50px;
-		line-height: 50px;
+		padding:30px 0;
+		background: #F5F5F5;
 	}
 	.uni-list-item--hover{
 		background: #fff!important;

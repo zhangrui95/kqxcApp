@@ -1,7 +1,7 @@
 <template>
 	<view style="margin-bottom: 50px;">
 		<detailList :list="list"></detailList>
-		<tabBar :pagePath="'/pages/upload/upload'" :num="num"></tabBar>
+		<!-- <tabBar :pagePath="'/pages/upload/upload'" :num="num"></tabBar> -->
 	</view>
 </template>
 

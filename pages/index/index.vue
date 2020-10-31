@@ -19,7 +19,7 @@
 						</view>
 						<view class="msgBox"> 
 							<!-- <text class="leftBox">巡查结果：<text :style="{color:item&&item.kczt_dm === '01' ? '#747474' : '#747474'}">{{item && item.kczt_dm ? item.kczt_dm === '02' ? '未开采' : '开采中' : '暂无'}}</text></text> -->
-							<text class="rightBox">巡查结果：
+							<text class="bzBox">巡查结果：
 								<text :style="{color:item&&item.yczt_dm === '01' ? '#ee4c26' : '#747474'}">{{item && item.yczt_dm ? item.yczt_dm === '02' ? '未发现异常' : '发现异常' : '暂无'}}</text>
 								<text style="margin-left: 5px;"> {{item && item.yj_zp &&item.jj_zp  ?
 								(item.yj_zp.split('#') && item.yj_zp.split('#').length > 0 ? item.yj_zp.split('#').length : 0) + 
@@ -88,7 +88,7 @@
 				days:2,
 			}
 		},
-		onLoad(){
+		onLoad: function () { //isLxLogin
 			setInterval(()=>{
 				this.newTime = moment().format('HH:mm:ss')
 			},1000);
@@ -588,7 +588,7 @@
 		height: 30px;
 		line-height: 30px;
 		position: relative;
-		top: 250px;
+		top: 200px;
 	}
 	.ycBtn{
 		color: #F45151;
@@ -598,7 +598,7 @@
 		height: 40px;
 		line-height:40px;
 		position: relative;
-		top: 250px;
+		top: 200px;
 	}
 	.jtRight{
 		font-family: '宋体';
@@ -611,7 +611,7 @@
 		background:linear-gradient(to bottom, #04a4fa 0%,#0089ff 100%);
 		color: #fff;
 		position: relative;
-		top: 200px;
+		top: 150px;
 		margin-left: 50%;
 		left: -90px;
 		text-align: center;

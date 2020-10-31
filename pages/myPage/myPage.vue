@@ -5,7 +5,7 @@
 			<view class="name">{{name}}</view>
 		</view>
 		<uni-list style="margin-top:10px;">
-			<uni-list-item thumb="../../static/msg.png" title="我的消息" @click="myMessage" :show-badge="parseInt(allNum) > 0 ? true : false" :badge-text="allNum" badge-type="error"></uni-list-item>
+			<!-- <uni-list-item thumb="../../static/msg.png" title="我的消息" @click="myMessage" :show-badge="parseInt(allNum) > 0 ? true : false" :badge-text="allNum" badge-type="error"></uni-list-item> -->
 		    <uni-list-item thumb="../../static/tjxz.png" title="推荐下载" @click="getTj"></uni-list-item>
 			 <uni-list-item thumb="../../static/bbjc.png" title="检测版本" @click="getUpdate"></uni-list-item>
 			<!-- <uni-list-item thumb="../../static/rjxy.png" title="软件许可协议"></uni-list-item> -->
@@ -15,11 +15,14 @@
 				<view class="listBtn">切换账号</view>
 			</uni-list-item>
 		</uni-list> -->
-		<uni-list style="margin-top:140px;">
+		<!-- <uni-list style="margin-top:140px;">
 		    <uni-list-item :show-arrow="false" @click="getOk">
 				<view class="listBtn">退出登陆</view>
 			</uni-list-item>
-		</uni-list>
+		</uni-list> -->
+		<view class="btnBox">
+			<button type="primary" class="btn" @click="getOk">退出登陆</button>
+		</view>
 		<uni-popup ref="popup" type="dialog">
 		    <uni-popup-dialog type="input" title="确定退出登陆？" okText="确定" :duration="2000" :before-close="true" @close="close" @confirm="confirm"></uni-popup-dialog>
 		</uni-popup> 
@@ -112,14 +115,28 @@
 			confirm:function(){
 				 this.$refs.popup.close();
 				  getApp().globalData.isLogin = false;
-				  uni.removeStorage({
-				      key: 'userData',
-				      success: function (res) {
-				        uni.reLaunch({
-				            url: '../login/index'
-				        });
-				      }
+				  uni.reLaunch({
+				      url: '../login/index'
 				  });
+				  // uni.removeStorage({
+				  //     key: 'userData',
+				  //     success: function (res) {
+				  //       uni.reLaunch({
+				  //           url: '../login/index'
+				  //       });
+				  //     }
+				  // });
+			},
+			toNum(a){
+			  var a=a.toString();
+			  var c=a.split('.');
+			  var num_place=["","0","00","000","0000"],r=num_place.reverse();
+			  for (var i=0;i<c.length;i++){ 
+			     var len=c[i].length;       
+			     c[i]=r[len]+c[i];  
+			  } 
+			  var res= c.join(''); 
+			  return res; 
 			},
 			getUpdate:function(){
 				let that = this;
@@ -137,7 +154,7 @@
 							    success: (res) => {
 									// console.log('getConfig===========>',res.data);
 									if(res.data.data && !res.data.error){
-										if(getApp().globalData.version < res.data.data.last_version){
+										if(that.toNum(getApp().globalData.version) < that.toNum(res.data.data.last_version)){
 											uni.hideLoading();
 											uni.showModal({
 											    title: '检测到最新版本,是否确认更新？',
@@ -241,5 +258,12 @@
 		height: 10px;
 		background: #172f87;
 		border-radius: 50px;
+	}
+	.btn{
+		background: #172f87!important;
+	}
+	.btnBox{
+		margin-top: 90px;
+		padding: 30px;
 	}
 </style>

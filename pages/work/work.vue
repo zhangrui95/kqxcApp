@@ -23,7 +23,8 @@
 							<view class="msgBox">{{item.xm ? item.xm : ''}}({{item.org_name ? item.org_name : ''}})</view>
 						</uni-list-item>
 					</uni-list>
-					 <view class="noList" v-if="(usersList.length == 0 && listZzJg.length == 0 &&!searchValue) || (searchValue && usersListSearch.length==0)">暂无数据</view> 
+					 <view class="noList" v-if="(usersList.length == 0 && listZzJg.length == 0 &&!searchValue) || (searchValue && usersListSearch.length==0)"><image src="../../static/noList.png" style="width: 200px;height: 123px;"></image>
+				<view>暂无数据</view></view> 
 				</view>
 				<view class="page-section page-section-gap" v-if="current === 1">
 					 <map :style="{height:height+ 'px'}" scale="12" style="width: 100%; position: relative;" :latitude="latitude" :longitude="longitude" :markers="covers" @markertap='listShow' @labeltap='listShow'>
@@ -134,10 +135,10 @@
 					 LEFT JOIN usersAllData D ON A.fzr_id = D.id
 					ORDER BY A.id,B.dk_sj desc`,(data)=>{
 						 let data1 = data;
-						let hash = {}; 
+						let hash = {}; 
 						const data2 = data.reduce((preVal, curVal) => {
-						    hash[curVal.id] ? '' : hash[curVal.id] = true && preVal.push(curVal); 
-						    return preVal 
+						    hash[curVal.id] ? '' : hash[curVal.id] = true && preVal.push(curVal); 
+						    return preVal 
 						}, []);
 						this.kdNum = data2.length;
 						let yjList = [];
@@ -433,7 +434,7 @@
 		text-align: center;
 		font-size: 14px;
 		color: #999;
-		height: 50px;
-		line-height: 50px;
+		padding:30px 0;
+		background: #F5F5F5;
 	}
 </style>

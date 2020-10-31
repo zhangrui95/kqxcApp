@@ -121,7 +121,8 @@
 				ydJd:'',
 				ydWd:'',
 				ydDistance:'',
-				playUrl:''
+				playUrl:'',
+				isLx:getApp().isLx,
 			}
 		},
 		onBackPress:function(event){
@@ -263,7 +264,7 @@
 							uni.getNetworkType({
 								success: function (res) {
 									// console.log('网络状态',res.networkType);
-									if(res.networkType !== 'none' &&  res.networkType !== '2g' &&  res.networkType !== '3g'){
+									if(res.networkType !== 'none' &&  res.networkType !== '2g' &&  res.networkType !== '3g' && !isLx){
 										// console.log('getApp().globalData.weedIp',getApp().globalData.weedIp,resImg.tempFilePaths[0])
 										uni.uploadFile({
 											url: getApp().globalData.weedIp, //仅为示例，非真实的接口地址
@@ -327,7 +328,7 @@
 							    });
 								uni.getNetworkType({
 								    success: function (res) {
-										if(res.networkType !== 'none' &&  res.networkType !== '2g' &&  res.networkType !== '3g'){
+										if(res.networkType !== 'none' &&  res.networkType !== '2g' &&  res.networkType !== '3g' && !isLx){
 											// console.log('getApp().globalData.weedIp',getApp().globalData.weedIp,resImg.tempFilePaths[0])
 											uni.uploadFile({
 												url: getApp().globalData.weedIp, //仅为示例，非真实的接口地址
@@ -373,7 +374,7 @@
 							    });
 								uni.getNetworkType({
 								    success: function (res) {
-										if(res.networkType !== 'none' &&  res.networkType !== '2g' &&  res.networkType !== '3g'){
+										if(res.networkType !== 'none' &&  res.networkType !== '2g' &&  res.networkType !== '3g' && !isLx){
 											uni.showLoading({
 											    title: '视频存储中…',
 												mask:true,
@@ -601,7 +602,7 @@
 							return event.ks_id === (that.record.typeXj ? that.record.ks_id : that.record.id)
 						});
 						// console.log('idx',idx);
-						if(res.networkType !== 'none' &&  res.networkType !== '2g' &&  res.networkType !== '3g'){
+						if(res.networkType !== 'none' &&  res.networkType !== '2g' &&  res.networkType !== '3g' && !isLx){
 							plus.geolocation.getCurrentPosition(function(p){
 									let res = p.coords;
 									longitude = res&&res.longitude ? that.gcj_decrypt(res.latitude,res.longitude).lon.toFixed(6) : '';

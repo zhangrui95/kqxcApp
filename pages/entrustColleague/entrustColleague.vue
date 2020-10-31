@@ -1,6 +1,7 @@
 <template>
 	<view>
-		<view class="noList" v-if="list.length == 0">暂无数据</view>
+		<view class="noList" v-if="list.length == 0"><image src="../../static/noList.png" style="width: 200px;height: 123px;"></image>
+				<view>暂无数据</view></view>
 		<uni-list v-for="(item,index) in list">
 			<view class="listItem" v-if="item.id !== uid">
 				<uni-list-item :disabled="is_zz=='1'" :title="item.xm" thumb="/static/leftHeader.png" :showArrow="false" @click="getOk(item)">
@@ -257,11 +258,10 @@
 	height: 30px;
 }
 .noList{
-		text-align: center;
-		font-size: 14px;
-		color: #999;
-		height: 50px;
-		line-height: 50px;
-		background: #fff;
+	text-align: center;
+	font-size: 14px;
+	color: #999;
+	padding:30px 0;
+	background: #F5F5F5;
 	}
 </style>

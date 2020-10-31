@@ -10,8 +10,8 @@
 			<view class="uni-tabbar__label" :class="{'active': item.pagePath == pagePath}">
 				{{item.text}}
 			</view>
-			<uni-badge v-if="num && num > 0 && item.num" :text="num" type="error" class="badge" size='small'></uni-badge>
-			<uni-badge v-if="numAll && numAll > 0 && item.numAll" :text="numAll" type="error" class="badge" size='small'></uni-badge>
+		<!-- 	<uni-badge v-if="num && num > 0 && item.num" :text="num" type="error" class="badge" size='small'></uni-badge>
+			<uni-badge v-if="numAll && numAll > 0 && item.numAll" :text="numAll" type="error" class="badge" size='small'></uni-badge> -->
 		</view>
 	</view>
 
@@ -43,24 +43,25 @@
 						"iconPath": "/static/icon2.png",
 						"selectedIconPath": "/static/icon_2.png",
 						 "text": "工作督查"
-					}, {
-						"pagePath": "/pages/upload/upload",
-						"iconPath": "/static/icon3.png",
-						"selectedIconPath": "/static/icon_3.png",
-						"text": "待上传",
-					}, {
-						"pagePath": "/pages/entrust/entrust",
-						"iconPath": "/static/icon4.png",
-						"selectedIconPath": "/static/icon_4.png",
-						"text": "委托",
-						"num":true,
-					},
+					}, 
+					// {
+					// 	"pagePath": "/pages/upload/upload",
+					// 	"iconPath": "/static/icon3.png",
+					// 	"selectedIconPath": "/static/icon_3.png",
+					// 	"text": "待上传",
+					// }, {
+					// 	"pagePath": "/pages/entrust/entrust",
+					// 	"iconPath": "/static/icon4.png",
+					// 	"selectedIconPath": "/static/icon_4.png",
+					// 	"text": "委托",
+					// 	"num":true,
+					// },
 					{
 						"pagePath": "/pages/myPage/myPage",
 						"iconPath": "/static/icon5.png",
 						"selectedIconPath": "/static/icon_5.png",
 						"text": "我的",
-						"numAll": true,
+						// "numAll": true,
 					},
 				] : [
 					{
@@ -68,24 +69,25 @@
 						"iconPath": "/static/icon6.png",
 						"selectedIconPath": "/static/icon_6.png",
 						"text": "首页"
-					}, {
-						"pagePath": "/pages/upload/upload",
-						"iconPath": "/static/icon3.png",
-						"selectedIconPath": "/static/icon_3.png",
-						"text": "待上传"
-					}, {
-						"pagePath": "/pages/entrust/entrust",
-						"iconPath": "/static/icon4.png",
-						"selectedIconPath": "/static/icon_4.png",
-						"text": "委托",
-						"num":true,
-					},
+					}, 
+					// {
+					// 	"pagePath": "/pages/upload/upload",
+					// 	"iconPath": "/static/icon3.png",
+					// 	"selectedIconPath": "/static/icon_3.png",
+					// 	"text": "待上传"
+					// }, {
+					// 	"pagePath": "/pages/entrust/entrust",
+					// 	"iconPath": "/static/icon4.png",
+					// 	"selectedIconPath": "/static/icon_4.png",
+					// 	"text": "委托",
+					// 	"num":true,
+					// },
 					{
 						"pagePath": "/pages/myPage/myPage",
 						"iconPath": "/static/icon5.png",
 						"selectedIconPath": "/static/icon_5.png",
 						"text": "我的",
-						"numAll": true,
+						// "numAll": true,
 					},
 				]
 			};
@@ -98,9 +100,6 @@
 				immediate: true
 			}
 		},
-		mounted() {
-			this.getNum();
-		},
 		methods: {
 			changeTab(item) {
 				this.page = item.pagePath;
@@ -109,38 +108,6 @@
 					url: this.page
 				});
 			},
-			getNum:function(){
-				let that = this;
-				uni.getStorage({
-				    key: 'userData',
-				    success: function (res) {
-						if(res.data){
-							that.id = JSON.parse(res.data).lxdh; 
-							socket = io(getApp().globalData.socketIp, {
-								  query: {
-									  idcard: that.id,
-									  device: 'pc',
-								  },
-								  transports: [ 'websocket', 'polling' ], 
-								});
-								socket.on('connect', () => { 
-								  console.log('ws 已连接');
-								});
-								socket.on('chat-list', function (data) {
-									let num = 0;
-									data.map((item)=>{
-										num = num + item.unread;
-										that.numAll = num.toString();
-										that.$emit('getMsgNum', num.toString());
-									});
-								});
-								socket.on('chat-message', (data) => { 
-									that.numAll = (parseInt(that.numAll) + 1).toString();
-								});
-						}
-					},
-				});
-			}
 		}
 	}
 </script>

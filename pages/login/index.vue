@@ -20,7 +20,7 @@
 					</view>
 					<view class="uni-btn-v">
 						<button form-type="submit" class="loginBtn">登录</button> 
-						<button form-type="submit" class="loginBtnXj">离线巡检</button> 
+						<button @click="getLoginLx" class="loginBtnXj">离线巡检</button> 
 					</view>
 				</form>
 			</view>
@@ -253,6 +253,35 @@
 				});
 				// }
 			},
+			getLoginLx: function(){
+				let that = this;
+				uni.getStorage({
+					    key: 'user',
+					    success: function (res) { 
+							if(res.data){
+								if(that.name === JSON.parse(res.data).lxdh  && that.password === JSON.parse(res.data).mm){
+									getApp().globalData.is_admin = JSON.parse(res.data).is_admin;
+									getApp().globalData.uid = JSON.parse(res.data).id;
+									getApp().globalData.is_zz = JSON.parse(res.data).is_zz;
+									getApp().noNetwork = true;
+									uni.redirectTo({
+									    url: '../home/home'
+									});
+								}else{
+									uni.showToast({
+										title:'用户名或密码错误',
+										icon:'none',
+									});
+								}
+							}else{
+								uni.showToast({
+									title:'首次登陆请连接互联网',
+									icon:'none',
+								});
+							}
+					    }
+				});
+			},
 			formSubmit: function(e) {
 				// console.log('e.detail.value',e.detail.value);
 				let value = e.detail.value;
@@ -269,6 +298,7 @@
 									getApp().globalData.is_admin = res.data.data.is_admin;
 									getApp().globalData.uid = res.data.data.id;
 									getApp().globalData.is_zz = res.data.data.is_zz;
+									getApp().noNetwork = false;
 									let id = res.data.data.id || '';
 									let name = res.data.data.xm || '';
 									let password = res.data.data.mm || '';
@@ -298,34 +328,7 @@
 						    }
 						});
 					}else{
-						uni.getStorage({
-						    key: 'user',
-						    success: function (res) {
-						        // console.log(res.data);
-								if(res.data){
-									// console.log(value.username === res.data.lxdh  && value.password === res.data.mm);
-									// console.log(value.username,res.data.lxdh,value.password,res.data.mm);
-									if(value.username === JSON.parse(res.data).lxdh  && value.password === JSON.parse(res.data).mm){
-										getApp().globalData.is_admin = JSON.parse(res.data).is_admin;
-										getApp().globalData.uid = JSON.parse(res.data).id;
-										getApp().globalData.is_zz = JSON.parse(res.data).is_zz;
-										uni.redirectTo({
-										    url: '../home/home'
-										});
-									}else{
-										uni.showToast({
-											title:'用户名或密码错误',
-											icon:'none',
-										});
-									}
-								}else{
-									uni.showToast({
-										title:'首次登陆请连接互联网',
-										icon:'none',
-									});
-								}
-						    }
-						});
+						this.getLoginLx();
 					}
 					
 				}else{

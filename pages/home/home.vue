@@ -2,40 +2,35 @@
 	<view class="box">
 		<view class="bg"></view>
 		<view class="topBox">
-			<view class="ljxj" @click="getIndex()">
+			<view v-if="!isLxLogin" class="ljxj" @click="getIndex(false)">
 				立即巡检
 			</view>
-			<view class="lxxj" @click="getIndex()">
+			<view :class="isLxLogin ? 'lxxjOnly' : 'lxxj'" @click="getIndex(true)">
 				离线巡检
 			</view>
 		</view>
-		<view class="listBox">
-			<view class="itemBox">
+		<view class="listBox" :style="{'min-height':height+ 'px'}">
+			<view class="itemBox" @click="getDsc()">
 				<image src="../../static/dsc.png" class="itemImg"></image>
 				<view class="itemName">待上传</view>
+				<uni-badge v-if="numDsc > 0" :text="numDsc" type="error" class="badge"></uni-badge>
 			</view>
-			<view class="itemBox">
+			<view class="itemBox" @click="getNotice()">
 				<image src="../../static/tztg.png" class="itemImg"></image>
 				<view class="itemName">通知通告</view>
+				<uni-badge v-if="numTz > 0" :text="numTz" type="error" class="badge"></uni-badge>
 			</view>
-			<view class="itemBox">
+			<view class="itemBox" @click="myMessage()">
 				<image src="../../static/wdxx.png" class="itemImg"></image>
 				<view class="itemName">我的消息</view>
+				<uni-badge v-if="numAll > 0" :text="numAll" type="error" class="badge"></uni-badge>
 			</view>
-			<view class="itemBox">
+			<view class="itemBox" @click="getWtPage()">
 				<image src="../../static/wt.png" class="itemImg"></image>
 				<view class="itemName">委托</view>
+				<uni-badge v-if="num > 0" :text="num" type="error" class="badge"></uni-badge>
 			</view>
 		</view>
-	<!-- 	<view class="box1" @click="getIndex()">
-			<image src='/static/ks.png' class="img1"></image>
-			矿山巡查
-		</view>
-		<view  class="box2" @click="getNotice()">
-			<image src='/static/tz.png' class="img1"></image>
-			通知通告
-			<uni-badge v-if="numTz > 0" :text="numTz" type="error" class="badge"></uni-badge>
-		</view> -->
 		<tabBar :pagePath="'/pages/home/home'" :num="num"></tabBar>
 	</view>
 </template>
@@ -48,6 +43,8 @@
 	import uniBadge from "@/components/uni-badge/uni-badge.vue"
 	import uniNoticeBar from '@/components/uni-notice-bar/uni-notice-bar.vue'
 	import {deleteUpLoad,getXjDataUpLoad,getKsData,setKsData,getConfig,getXjData,setXjData,getWtData,setWtData,getUsersData,setUsersData,setKsAllData,setXjAllData} from '../common/env.js'
+	import io from '@hyoga/uni-socket.io';
+	let socket = '';
 	export default {
 		components: {uniNoticeBar},
 		data() {
@@ -83,10 +80,20 @@
 				isOk:false,
 				days:2,
 				is_notice:'0',
+				height:0,
 				numTz:0,
+				numAll:'0',
+				numDsc:0,
+				isLxLogin:getApp().noNetwork,
 			}
 		},
 		onLoad(){
+			let that = this;
+			uni.getSystemInfo({
+				success:function(res) {
+					that.height = res.windowHeight - 330 
+				}
+			});
 			getConfig('select * from config',(data)=>{
 				if(data && data[0] && data[0].xj_jzrq){
 					let startTime = data[0].xj_jzrq;
@@ -128,6 +135,7 @@
 								that.getKsAll();
 							});
 						}else{
+							that.getDscNum();
 							that.network = false; 
 							that.getListKs();
 							that.getListXj();
@@ -186,8 +194,54 @@
 						})
 					});
 		},
+		mounted() {
+			this.getNum();
+		},
 		methods: {
-			getIndex:function(){
+			getNum:function(){
+					let that = this;
+					uni.getStorage({
+					    key: 'userData',
+					    success: function (res) {
+							if(res.data){
+								that.id = JSON.parse(res.data).lxdh; 
+								socket = io(getApp().globalData.socketIp, {
+									  query: {
+										  idcard: that.id,
+										  device: 'pc',
+									  },
+									  transports: [ 'websocket', 'polling' ], 
+									});
+									socket.on('connect', () => { 
+									  console.log('ws 已连接');
+									});
+									socket.on('chat-list', function (data) {
+										let num = 0;
+										data.map((item)=>{
+											num = num + item.unread;
+											that.numAll = num.toString();
+											that.$emit('getMsgNum', num.toString());
+										});
+									});
+									socket.on('chat-message', (data) => { 
+										that.numAll = (parseInt(that.numAll) + 1).toString();
+									});
+							}
+						},
+					});
+			},
+			getDsc:function(){
+				uni.navigateTo({
+					url:'../upload/upload',
+				}) 
+			},
+			getWtPage:function(){
+				uni.navigateTo({
+					url:'../entrust/entrust',
+				}) 
+			},
+			getIndex:function(isLx){
+				getApp().isLx = isLx;
 				uni.navigateTo({
 					url:'../index/index',
 				}) 
@@ -202,6 +256,11 @@
 				uni.navigateTo({
 					url:'../inspectionList/inspectionList',
 				}) 
+			},
+			myMessage:function(){
+				uni.navigateTo({
+				    url: '../myMessage/myMessage'
+				});
 			},
 			getMore:function(){
 				uni.showModal({
@@ -220,6 +279,27 @@
 				uni.navigateTo({
 				    url: is_yczt ? '../inspectionXc/inspectionXc?is_yczt=' + is_yczt : '../inspectionXc/inspectionXc' ,
 				});
+			},
+			getDscNum:function(){
+				let that = this;
+				getXjDataUpLoad(`SELECT
+				 A.*,
+				 B.xm,
+				 C.mc,
+				 D.xm as fzr_xm
+				FROM
+				 xjDataUpLoad A
+				 LEFT JOIN usersData B ON A.users_id = B.id
+				 LEFT JOIN ksData C ON A.ks_id = C.id
+				 LEFT JOIN usersData D ON C.fzr_id = D.id
+				ORDER BY
+				 dk_sj DESC`,(data)=>{
+					 if(data.length > 0){
+						 that.numDsc = data.length;
+					 }else{
+						that.numDsc = 0;
+					 }
+				 });
 			},
 			getUpload:function(callback){
 				let that = this;
@@ -609,7 +689,7 @@
 	.listBox{
 		background: rgba(203, 207, 231, 0.3);
 		width: calc(96% - 40px);
-		min-height: 350px;
+		min-height: 150px;
 		margin: 0 2%;
 		border-radius: 10px;
 		padding: 20px;
@@ -619,10 +699,11 @@
 		width: 25%;
 		float: left;
 		text-align: center;
+		position: relative;
 	}
 	.itemImg{
-		width: 72px;
-		height: 72px;
+		width: 65px;
+		height: 65px;
 	}
 	.itemName{
 		color: #666666;
@@ -631,8 +712,8 @@
 	}
 	.badge{
 		position: absolute;
-		top: -8px;
-		right: 5px;
+		top: 0;
+		right: 2%;
 	}
 	.ljxj{
 		width: 46%;
@@ -644,7 +725,20 @@
 		color: #F2F5FF;
 		text-align: center;
 		line-height: 260px;
-		font-size: 26px;
+		font-size: 24px;
+	}
+	.lxxjOnly{
+		width: calc(96% - 70px);
+		height: 180px;
+		background: url(../../static/lxbg1.png) center;
+		background-size: 100% 100%;
+		margin: 20px 2%;
+		float: left;
+		color: #F2F5FF;
+		text-align: center;
+		line-height: 180px;
+		font-size: 24px;
+		padding-left:70px;
 	}
 	.lxxj{
 		width: 46%;
@@ -656,7 +750,7 @@
 		color: #F2F5FF;
 		text-align: center;
 		line-height: 260px;
-		font-size: 26px;
+		font-size: 24px;
 	}
 	.topBox{
 		overflow: hidden;

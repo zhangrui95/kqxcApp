@@ -29,7 +29,10 @@
 					</view>
 				</uni-list-item>
 			 </uni-list>
-			<view class="noList" v-if="list.length == 0">暂无历史巡查记录</view> 
+			<view class="noList" v-if="list.length == 0">
+				<image src="../../static/noList.png" style="width: 200px;height: 123px;"></image>
+				<view>暂无历史巡查记录</view>
+			</view> 
 		</view>
 	</view>
 </template>
@@ -233,8 +236,8 @@
 		text-align: center;
 		font-size: 14px;
 		color: #999;
-		height: 50px;
-		line-height: 50px;
+		padding:30px 0;
+		background: #F5F5F5;
 	}
 	.mock{
 		position: absolute;
