@@ -192,7 +192,8 @@
 								this.num = this.num + 1;
 							}
 						})
-					});
+			});
+			that.getDscNum();
 		},
 		mounted() {
 			this.getNum();

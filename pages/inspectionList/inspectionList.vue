@@ -2,8 +2,8 @@
 	<view>
 		<view class="title" v-if="uid !== userid && !isDate">联系方式</view>
 		<view class="btnBox" v-if="uid !== userid && !isDate">
-			<view class="lxfs" @click="sendMsg"><uni-icons type="chat" class="iconLxfs" size="20" color="#00B7F0"></uni-icons> 发送消息</view>
-			<view class="lxfs" @click="getPhone" style="color: #f19049;"><uni-icons type="phone" class="iconLxfs" size="20" color="#f19049"></uni-icons> 拨打电话</view>
+			<view class="lxfs" @click="sendMsg"><uni-icons type="chat" class="iconLxfs" size="18" color="#00B7F0"></uni-icons> 发送消息</view>
+			<view class="lxfs" @click="getPhone" style="color: #f19049;"><uni-icons type="phone" class="iconLxfs" size="18" color="#f19049"></uni-icons> 拨打电话</view>
 		</view>
 		<view class="title" v-if="uid !== userid && !isDate">巡检历史</view>
 		<view class="searchTime" v-if="isDate">
@@ -185,7 +185,7 @@
 		height: 50px;
 		text-align: center;
 		line-height: 50px;
-		font-size: 18px;
+		font-size: 16px;
 		color:#00B7F0;
 	}
 	.btnBox{
@@ -194,9 +194,9 @@
 		overflow: hidden;
 	}
 	.title{
-		font-size: 16px;
-		height: 30px;
-		line-height: 30px;
+		font-size: 14px;
+		height: 28px;
+		line-height: 28px;
 		color: #666;
 		padding: 0 16px;
 	}
