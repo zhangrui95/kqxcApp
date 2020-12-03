@@ -10,7 +10,7 @@
 		    <uni-list-item :showArrow="false">
 		        <view>通知内容(必填)</view>
 				<view>
-					  <textarea placeholder='请输入通知内容' style="height: 80px;margin-top: 10px;" placeholder-style="color:#ccc" @input="getTextarea"/>
+					  <textarea maxlength="1000" placeholder='请输入通知内容' style="height: 80px;margin-top: 10px;" placeholder-style="color:#ccc" @input="getTextarea"/>
 				</view>
 		    </uni-list-item>
 			<uni-list-item :showArrow="false">
@@ -146,7 +146,7 @@
 				let that = this;
 				uni.chooseImage({
 				    count: 1, //默认9
-				    sizeType: ['original'], //可以指定是原图还是压缩图，默认二者都有
+				    sizeType: ['compressed'], //可以指定是原图还是压缩图，默认二者都有
 				    // sourceType: ['camera'], //调用相机
 					sourceType: ['album'], //从相册选择
 				    success: function (resImg) {

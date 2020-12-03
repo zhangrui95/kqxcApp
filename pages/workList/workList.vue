@@ -5,10 +5,10 @@
 			     <map :style="{height:height+ 'px'}" style="width: 100%; position: relative;" :latitude="latitude" :longitude="longitude" :markers="covers" @markertap='listShow' @labeltap='listShow'>
 					 <cover-view class="mock"></cover-view>
 					 <cover-view class="kdNumberBoxAll"></cover-view>
-					 <cover-view class="kdNumberBox"> 当前矿点：{{kdNum}}个</cover-view>
-					 <cover-view class="kdNumberBox1">正常矿点：{{kdNum - errorNum - warnNum}}个</cover-view>
-					 <cover-view class="kdNumberBox2" v-if="week == 0">告警矿点：{{errorNum}}个</cover-view>
-					 <cover-view class="kdNumberBox3" v-if="week !== 0">预警矿点：{{warnNum}}个</cover-view>
+					 <cover-view class="kdNumberBox"> 风险点：{{kdNum}}个</cover-view>
+					 <cover-view class="kdNumberBox1">已巡检：{{kdNum - errorNum - warnNum}}个</cover-view>
+					 <cover-view class="kdNumberBox2" v-if="week == 0">未巡检：{{errorNum}}个</cover-view>
+					 <cover-view class="kdNumberBox3" v-if="week !== 0">未巡检：{{warnNum}}个</cover-view>
 					  <cover-view class="box">矿山名称：{{kdDetail.mc}}</cover-view>
 					  <cover-image src="~@/static/topJt.png" class="imageTopJt"></cover-image>
 			     </map>
@@ -239,7 +239,7 @@
 		font-size: 14px;
 		color: #999;
 		padding:30px 0;
-		background: #F5F5F5;
+		background: #fff;
 	}
 	.mock{
 		position: absolute;

@@ -86,7 +86,7 @@
 			<video :src="playUrl" autoplay="true" class="videoItem"></video>
 		</view>
 		<view class="btnBox">
-			   <button type="primary" :disabled="!(imgsJ.length > 0)" @click="getSave">提交</button>
+			   <button type="primary" :disabled="(!(imgsJ.length > 0)) || load" @click="getSave" :loading="btnLoading">提交</button>
 		</view>
 	</view>
 </template>
@@ -123,6 +123,8 @@
 				ydDistance:'',
 				playUrl:'',
 				isLx:getApp().isLx,
+				load:false,
+				btnLoading:false,
 			}
 		},
 		onBackPress:function(event){
@@ -228,7 +230,7 @@
 				let that = this;
 				uni.chooseImage({
 				    count: 1, //默认9
-				    sizeType: ['original'], //可以指定是原图还是压缩图，默认二者都有
+				    sizeType: ['compressed'], //可以指定是原图还是压缩图，默认二者都有
 				    sourceType: ['camera'], //调用相机
 					// sourceType: ['album'], //从相册选择
 				    success: function (resImg) {
@@ -296,7 +298,7 @@
 				let that = this;
 				uni.chooseImage({
 				    count: 1, //默认9 
-				    sizeType: ['original'], //可以指定是原图还是压缩图，默认二者都有
+				    sizeType: ['compressed'], //可以指定是原图还是压缩图，默认二者都有
 				    // sourceType: ['album'], //从相册选择
 					sourceType: ['camera'],
 				    success: function (resImg) {
@@ -317,15 +319,11 @@
 						// 			  }
 						// 		  }
 						// 	}
-							  uni.saveFile({
-							      tempFilePath: resImg.tempFilePaths[0],
-							      success: function (res) {
-							        let savedFilePath = res.savedFilePath;
-									let imgsJ = that.imgsJ;
-									that.imgsJ.push(savedFilePath);
-									that.imgsJ = imgsJ;
-							      }
-							    });
+						uni.showLoading({
+						    title: '图片上传中…',
+							mask:true
+						});
+						that.load = true;
 								uni.getNetworkType({
 								    success: function (res) {
 										if(res.networkType !== 'none' &&  res.networkType !== '2g' &&  res.networkType !== '3g' && !that.isLx){
@@ -341,8 +339,31 @@
 													let imgsJNet = that.imgsJNet;
 													that.imgsJNet.push(JSON.parse(uploadFileRes.data).fileUrl);
 													that.imgsJNet = imgsJNet;
+													uni.saveFile({
+													    tempFilePath: resImg.tempFilePaths[0],
+													    success: function (res) {
+													      let savedFilePath = res.savedFilePath;
+															let imgsJ = that.imgsJ;
+															that.imgsJ.push(savedFilePath);
+															that.imgsJ = imgsJ;
+															uni.hideLoading();
+															that.load = false;
+													    }
+													  });
 												}
 											});
+										}else{
+											uni.saveFile({
+											    tempFilePath: resImg.tempFilePaths[0],
+											    success: function (res) {
+											      let savedFilePath = res.savedFilePath;
+													let imgsJ = that.imgsJ;
+													that.imgsJ.push(savedFilePath);
+													that.imgsJ = imgsJ;
+													uni.hideLoading();
+													that.load = false;
+											    }
+											  });
 										}
 								    }
 								});
@@ -485,6 +506,7 @@
 										setXjAllData([data],(res)=>{});
 										setXjData([data],(res)=>{//存巡查记录
 											if(back){
+												that.btnLoading = false;
 												uni.navigateBack({
 													delta: 1
 												});
@@ -492,6 +514,7 @@
 										});
 								} else{
 									uni.hideLoading();
+									that.btnLoading = false;
 									uni.showToast({
 										title:'操作失败，请重试',
 										icon:'none'
@@ -529,6 +552,7 @@
 						// console.log('dataEnNet=========>',dataEnNet);
 						if(back){
 							uni.hideLoading();
+							that.btnLoading = false;
 							uni.showToast({
 								title: '当前网络环境较差，记录已离线保存成功',
 								icon:'none',
@@ -539,6 +563,7 @@
 						setXjAllData([dataEnNet],(res)=>{});
 						setXjData([dataEnNet],(res)=>{//存巡查记录
 							if(back){
+								that.btnLoading = false;
 								uni.navigateBack({
 									delta: 1
 								});
@@ -595,6 +620,10 @@
 				let longitude = '';
 				let latitude = '';
 				let that = this;
+				this.btnLoading = true;
+				uni.showLoading({
+				    title: '正在获取GPS信息' 
+				});
 				uni.getNetworkType({
 				    success: function (res) {
 				        // console.log('网络状态',res.networkType);
@@ -608,6 +637,7 @@
 									longitude = res&&res.longitude ? that.gcj_decrypt(res.latitude,res.longitude).lon.toFixed(6) : '';
 									latitude = res&&res.latitude ? that.gcj_decrypt(res.latitude,res.longitude).lat.toFixed(6) : '';
 									let dist = that.distance(that.record.jd,that.record.wd,longitude,latitude);
+									uni.hideLoading();
 									if(dist <= that.max_dkjl){
 										that.getNetSave(longitude,latitude,'0',idx);
 									}else{
@@ -620,7 +650,7 @@
 											         if (resDate.confirm) {
 														that.getNetSave(longitude,latitude,'1',idx);
 											         } else if (resDate.cancel) {
-											             // console.log('用户点击取消'); 
+														 that.btnLoading = false;
 											         }
 												}
 											});
@@ -631,13 +661,14 @@
 									// if(that.ydDistance&&that.ydDistance <= that.max_dkjl){
 									// 	that.getNetSave(that.ydJd,that.ydWd,'0',idx);
 									// }else{
+										uni.hideLoading();
 										uni.showModal({
 										    title: '未获取到您的定位，仍要确认打卡？',
 										    success: function (resDate) {
 										         if (resDate.confirm) {
 													that.getNetSave(longitude,latitude,'2',idx);
 										         } else if (resDate.cancel) {
-										             // console.log('用户点击取消');
+										             that.btnLoading = false;
 										         }
 											}
 										});
@@ -649,6 +680,7 @@
 									longitude = res&&res.longitude ? that.gcj_decrypt(res.latitude,res.longitude).lon.toFixed(6) : '';
 									latitude = res&&res.latitude ? that.gcj_decrypt(res.latitude,res.longitude).lat.toFixed(6) : '';
 									let dist = that.distance(that.record.jd,that.record.wd,longitude,latitude);
+									uni.hideLoading();
 									if(dist <= that.max_dkjl){
 										that.getNoneNetSave(longitude,latitude,'0',idx);
 									}else{
@@ -661,7 +693,7 @@
 											         if (resDate.confirm) {
 														that.getNoneNetSave(longitude,latitude,'1',idx);
 											         } else if (resDate.cancel) {
-											             // console.log('用户点击取消');
+											             that.btnLoading = false;
 											         }
 												}
 											});
@@ -671,13 +703,14 @@
 									// if(that.ydDistance&&that.ydDistance <= that.max_dkjl){
 									// 	that.getNetSave(that.ydJd,that.ydWd,'0',idx);
 									// }else{
+										uni.hideLoading();
 										uni.showModal({
 										    title: '未获取到您的定位，仍要确认打卡？',
 										    success: function (resDate) {
 										         if (resDate.confirm) {
 													that.getNoneNetSave(longitude,latitude,'2',idx);
 										         } else if (resDate.cancel) {
-										             // console.log('用户点击取消');
+										             that.btnLoading = false;
 										         }
 											}
 										});

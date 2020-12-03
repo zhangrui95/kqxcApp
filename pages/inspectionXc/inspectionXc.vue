@@ -98,7 +98,7 @@
 			<video :src="playUrl" autoplay="true" class="videoItem"></video>
 		</view>
 		<view class="btnBox">
-			   <button type="primary" :disabled="!(imgsJ.length > 0 && (is_yczt ? true : bz))" @click="getSave">提交</button>
+			   <button type="primary" :disabled="(!(imgsJ.length > 0 && (is_yczt ? true : bz))) || load" @click="getSave" :loading="btnLoading">提交</button>
 		</view>
 		<uni-popup ref="popup" type="dialog">
 		    <uni-popup-dialog type="input" :title='"上级负责人联系方式"+sjLxfs+"确定将联系上级负责人反馈？"' okText="确定" :duration="2000" :before-close="true" @close="close" @confirm="confirm"></uni-popup-dialog>
@@ -150,6 +150,8 @@
 				startRecorder: false,
 				voicePath:'',
 				isLx:getApp().isLx,
+				load:false,
+				btnLoading:false,
 			}
 		},
 		components: {
@@ -272,7 +274,7 @@
 				let that = this;
 				uni.chooseImage({
 				    count: 1, //默认9
-				    sizeType: ['original'], //可以指定是原图还是压缩图，默认二者都有
+				    sizeType: ['compressed'], //可以指定是原图还是压缩图，默认二者都有
 				    sourceType: ['camera'], //调用相机
 					// sourceType: ['album'], //从相册选择
 				    success: function (resImg) {
@@ -340,7 +342,7 @@
 				let that = this;
 				uni.chooseImage({
 				    count: 1, //默认9 
-				    sizeType: ['original'], //可以指定是原图还是压缩图，默认二者都有
+				    sizeType: ['compressed'], //可以指定是原图还是压缩图，默认二者都有
 				    // sourceType: ['album'], //从相册选择
 					sourceType: ['camera'], //调用相机
 				    success: function (resImg) {
@@ -361,15 +363,11 @@
 						// 			  }
 						// 		  }
 						// 	}
-							  uni.saveFile({
-							      tempFilePath: resImg.tempFilePaths[0],
-							      success: function (res) {
-							        let savedFilePath = res.savedFilePath;
-									let imgsJ = that.imgsJ;
-									that.imgsJ.push(savedFilePath);
-									that.imgsJ = imgsJ;
-							      }
-							    });
+						uni.showLoading({
+						    title: '图片上传中…',
+							mask:true
+						});
+						that.load = true;
 								uni.getNetworkType({
 								    success: function (res) {
 										if(res.networkType !== 'none' &&  res.networkType !== '2g' &&  res.networkType !== '3g' && !that.isLx){
@@ -385,8 +383,31 @@
 													let imgsJNet = that.imgsJNet;
 													that.imgsJNet.push(JSON.parse(uploadFileRes.data).fileUrl);
 													that.imgsJNet = imgsJNet;
+													uni.saveFile({
+													    tempFilePath: resImg.tempFilePaths[0],
+													    success: function (res) {
+													      let savedFilePath = res.savedFilePath;
+															let imgsJ = that.imgsJ;
+															that.imgsJ.push(savedFilePath);
+															that.imgsJ = imgsJ;
+															uni.hideLoading();
+															that.load = false;
+													    }
+													  });
 												}
 											});
+										}else{
+											uni.saveFile({
+											    tempFilePath: resImg.tempFilePaths[0],
+											    success: function (res) {
+											      let savedFilePath = res.savedFilePath;
+													let imgsJ = that.imgsJ;
+													that.imgsJ.push(savedFilePath);
+													that.imgsJ = imgsJ;
+													uni.hideLoading();
+													that.load = false;
+											    }
+											  });
 										}
 								    }
 								});
@@ -595,6 +616,7 @@
 													},
 												});
 												if(that.is_yczt){
+													that.btnLoading = false;
 													uni.navigateBack({
 														delta: 1
 													});
@@ -603,6 +625,7 @@
 										});
 								} else{
 									uni.hideLoading();
+									that.btnLoading = false;
 									uni.showToast({
 										title:'操作失败，请重试',
 										icon:'none'
@@ -665,6 +688,7 @@
 						// console.log('dataEnNet=========>',dataEnNet);
 						if(back){
 							uni.hideLoading();
+							that.btnLoading = false;
 							uni.showToast({
 								title: '当前网络环境较差，记录已离线保存成功',
 								icon:'none',
@@ -693,8 +717,9 @@
 									},
 								});
 								if(that.is_yczt){
+									that.btnLoading = false;
 									uni.navigateBack({
-										delta: 1
+										delta: 1 
 									});
 								}
 							}
@@ -750,6 +775,10 @@
 				let longitude = '';
 				let latitude = '';
 				let that = this;
+				this.btnLoading = true;
+				uni.showLoading({
+				    title: '正在获取GPS信息' 
+				});
 				uni.getNetworkType({
 				    success: function (res) {
 				        // console.log('网络状态',res.networkType);
@@ -764,6 +793,7 @@
 									latitude = res&&res.latitude ? that.gcj_decrypt(res.latitude,res.longitude).lat.toFixed(6) : '';
 									// let dist = that.distance(that.record.jd,that.record.wd,longitude,latitude);
 									// if(dist <= that.max_dkjl){
+										uni.hideLoading();
 										that.getNetSave(longitude,latitude,'0',idx);
 									// }else{
 									// 	if(that.ydDistance&&that.ydDistance <= that.max_dkjl){
@@ -786,6 +816,7 @@
 									// if(that.ydDistance&&that.ydDistance <= that.max_dkjl){
 									// 	that.getNetSave(that.ydJd,that.ydWd,'0',idx);
 									// }else{
+										uni.hideLoading();
 										uni.showModal({
 										    title: '未获取到您的定位，仍要确认打卡？',
 										    success: function (resDate) {
@@ -805,6 +836,7 @@
 									latitude = res&&res.latitude ? that.gcj_decrypt(res.latitude,res.longitude).lat.toFixed(6) : '';
 									// let dist = that.distance(that.record.jd,that.record.wd,longitude,latitude);
 									// if(dist <= that.max_dkjl){
+										uni.hideLoading();
 										that.getNoneNetSave(longitude,latitude,'0',idx);
 									// }else{
 									// 	if(that.ydDistance&&that.ydDistance <= that.max_dkjl){
@@ -826,6 +858,7 @@
 									// if(that.ydDistance&&that.ydDistance <= that.max_dkjl){
 									// 	that.getNetSave(that.ydJd,that.ydWd,'0',idx);
 									// }else{
+										uni.hideLoading();
 										uni.showModal({
 										    title: '未获取到您的定位，仍要确认打卡？',
 										    success: function (resDate) {

@@ -54,12 +54,12 @@ function getKsData(sql, callback){
 function setKsAllData(data,callback){
 	plus.sqlite.executeSql({
 		name: 'kqxj',
-		sql: 'create table if not exists ksAllData("id" CHAR(100) PRIMARY KEY,"fzr_id" CHAR(100),"dz" CHAR(100),"jd" CHAR(100),"mc" CHAR(100),"ms" CHAR(100),"wd" CHAR(100))',//id,name,password,is_admin
+		sql: 'create table if not exists ksAllData("id" CHAR(100) PRIMARY KEY,"fzr_id" CHAR(100),"dz" CHAR(100),"jd" CHAR(100),"mc" CHAR(100),"ms" CHAR(100),"wd" CHAR(100),"visible" CHAR(100),"dz_dm" CHAR(100))',//id,name,password,is_admin
 		success: function(e){
 			data.map((item)=>{
 				plus.sqlite.executeSql({
 					name: 'kqxj',
-					sql: "insert or replace into ksAllData(id,fzr_id, dz, jd, mc, ms, wd) values('" + item.id + "', '" + item.fzr_id + "', '" + item.dz + "', '" + item.jd + "', '" + item.mc+ "', '" + item.ms + "', '" + item.wd + "')",
+					sql: "insert or replace into ksAllData(id,fzr_id, dz, jd, mc, ms, wd, visible,dz_dm) values('" + item.id + "', '" + item.fzr_id + "', '" + item.dz + "', '" + item.jd + "', '" + item.mc+ "', '" + item.ms + "', '" + item.wd+ "', '" + item.visible + "', '"  + item.dz_dm + "')",
 					success: function(e){
 						callback({error:null});
 					},

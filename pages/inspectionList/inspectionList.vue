@@ -19,12 +19,14 @@
 			 <uni-list>
 				<uni-list-item @click="getDetail(item)" v-for="(item) in list">
 					<view class="msgBox">
-							<view style="float: left;">
+							<view style="float: left;width: 100%;">
 									<text style="margin: 0 3px;float: left;">{{item.dk_sj.substring(0,10)}}</text>
 									<text style="margin: 0 3px;" class="ksmc" v-if="item.mc">{{item.mc}}</text>
-									<text style="margin: 0 3px;">{{item.is_ycdk == '1' ? '定位异常':item.is_ycdk == '2' ? '无定位' : '正常'}}打卡</text>
-									<text style="margin: 0 3px;">{{item.xm}}</text>
-									<text style="margin: 0 3px;">{{item.yczt_dm === '01' ? "【发现异常】" : "【未发现异常】"}}</text>
+							</view>
+							<view style="float: left;width: 100%;">
+								<text style="margin: 0 3px;">{{item.is_ycdk == '1' ? '定位异常':item.is_ycdk == '2' ? '无定位' : '正常'}}打卡</text>
+								<text style="margin: 0 3px;">{{item.xm}}</text>
+								<text style="margin: 0 3px;color: #F06060;">{{item.yczt_dm === '01' ? "【发现异常】" : ""}}</text>
 							</view>
 					</view>
 				</uni-list-item>
@@ -169,10 +171,10 @@
 
 <style>
 	.ksmc{
-		overflow: hidden;
-		text-overflow:ellipsis;
-		white-space: nowrap;
-		width: 20%;
+		/* overflow: hidden; */
+		/* text-overflow:ellipsis; */
+		/* white-space: nowrap; */
+		/* width: 30%; */
 		display: block;
 		float: left;
 	}

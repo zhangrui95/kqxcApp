@@ -27,14 +27,38 @@
 				<view>暂无数据</view></view> 
 				</view>
 				<view class="page-section page-section-gap" v-if="current === 1">
-					 <map :style="{height:height+ 'px'}" scale="12" style="width: 100%; position: relative;" :latitude="latitude" :longitude="longitude" :markers="covers" @markertap='listShow' @labeltap='listShow'>
+					 <map :style="{height:height+ 'px'}" scale="12" style="width: 100%; position: relative;top: 56px;" :latitude="latitude" :longitude="longitude" :markers="covers" @markertap='listShow' @labeltap='listShow'>
 						 <cover-view class="kdNumberBoxAll" v-if="current === 1"></cover-view>
-						 <cover-view class="kdNumberBox" v-if="current === 1"> 当前矿点：{{kdNum}}个</cover-view>
-						 <cover-view class="kdNumberBox1" v-if="current === 1">正常矿点：{{kdNum - errorNum - warnNum}}个</cover-view>
-						 <cover-view class="kdNumberBox2" v-if="week == 0 && current === 1">告警矿点：{{errorNum}}个</cover-view>
-						 <cover-view class="kdNumberBox3" v-if="week !== 0 && current === 1">预警矿点：{{warnNum}}个</cover-view>
+						 <cover-view class="kdNumberBox" v-if="current === 1"> 风险点：{{kdNum}}个</cover-view>
+						 <cover-view class="kdNumberBox1" v-if="current === 1">已巡检：{{kdNum - errorNum - warnNum}}个</cover-view>
+						 <cover-view class="kdNumberBox2" v-if="week == 0 && current === 1">未巡检：{{errorNum}}个</cover-view>
+						 <cover-view class="kdNumberBox3" v-if="week !== 0 && current === 1">未巡检：{{warnNum}}个</cover-view>
 					 </map>
 				 </view>
+				 <view v-if="current === 2" class="listBox">
+					<view class="searchTime">
+						<view class="time"> 
+							<picker :range="searchList" mode="selector" :value="value" @change="bindDateChange" class="timePicker">
+									<view class="uni-input">{{searchList[value]}}</view>
+							</picker>  
+						    <uni-icons type="arrowdown" size="16" color="#000" class="icon"></uni-icons>
+						</view>
+						<view :class="disabled ? 'timeDisabled' : 'time'">
+							<picker :disabled="disabled" :range="areaList" mode="selector" :value="value1" @change="bindDateChange1" class="timePicker">
+									<view class="uni-input">{{areaList[value1]}}</view>
+							</picker>  
+						    <uni-icons type="arrowdown" size="16" :color="disabled ? '#999' : '#000'" class="icon"></uni-icons>
+						</view>
+						<view class="pageAll">共{{ksList.length}}条记录</view>
+					</view>
+				 	<uni-list v-if="ksList&&ksList.length > 0" style="margin-top: 100px;"> 
+				 		<uni-list-item v-for="(item) in ksList" class="nohover" @click="getDetail(item)">
+				 			<view class="msgBox"><view class="listTitle">{{item.mc}}</view> <uni-tag :text="item.zt == 'warning' ? '未巡检' : '已巡检'" :type="item.zt"></uni-tag></view> 
+				 		</uni-list-item>
+				 	</uni-list>
+				 	 <view class="noList" v-if="ksList.length == 0"><image src="../../static/noList.png" style="width: 200px;height: 123px;"></image>
+							<view>暂无数据</view></view> 
+					 </view>
 			 </uni-segmented-control>
 		  </view>
 		<tabBar :pagePath="'/pages/work/work'" :num="num"></tabBar>
@@ -46,6 +70,7 @@
 	import uniPopup from '@/components/uni-popup/uni-popup.vue'
 	import uniSearchBar from '@/components/uni-search-bar/uni-search-bar.vue'
 	import {getKsAllData,getConfig,getWtData} from '../common/env.js'
+	import uniTag from "@/components/uni-tag/uni-tag.vue"
 	export default {
 		data() {
 			 return {
@@ -67,10 +92,10 @@
 				week:moment().day(),
 				yjList:[],
 				xj_jg:'2',//时间间隔
-				xj_pc:'2',//打卡次数
+				xj_pc:'1',//打卡次数
 				xj_zq:'7',//周期
 				PI:3.14159265358979324,
-				items: ['组织架构','矿山督查'],
+				items: ['组织架构','地图展示','矿山列表'],
 				current: 0,
 				listZzJg:[],
 				usersList:[],
@@ -78,6 +103,14 @@
 				usersListSearch:[],
 				track_code:'',
 				searchValue:'',
+				ksList:[],
+				searchList:['全部', '未巡检', '已巡检'],
+				areaList:['鸡西市','鸡冠区', '恒山区','城子河区','麻山区','滴道区','梨树区','虎林市','密山市','鸡东县'],
+				areaCodeList:['2303','230302','230303','230306','230307','230304','230305','230381','230382','230321'],
+				value:0,
+				value1:0,
+				ksListAll:[],
+				disabled:false,
 			}
 		},
 		 components: {
@@ -95,6 +128,15 @@
 		},
 		onLoad() {
 			let that = this;
+			this.value1 = getApp().globalData.qh_dm ? this.areaCodeList.indexOf(getApp().globalData.qh_dm) : 0;
+			this.disabled = this.value1 > 0 ? true : false;
+			uni.getLocation({
+			    type: 'wgs84',
+			    success: function (res) {
+					that.latitude = res.latitude;
+					that.longitude = res.longitude;
+			    }
+			});
 			uni.getSystemInfo({
 				success:function(res) {
 					that.height = res.windowHeight - 106 
@@ -110,7 +152,7 @@
 					this.start = start;
 					this.end = end; 
 					this.xj_jg = data[0].xj_jg;
-					this.xj_pc = data[0].xj_pc;
+					this.xj_pc = 1;
 					this.xj_zq = data[0].xj_zq;
 					this.yj_xq_num = data[0].yj_xq_num;
 					getKsAllData(`SELECT
@@ -119,6 +161,8 @@
 					 A.jd,
 					 A.wd,
 					 A.mc,
+					 A.dz_dm,
+					 A.visible,
 					 D.xm as fzr_xm,
 					 C.xm,
 					 B.dk_sj,
@@ -129,10 +173,11 @@
 					 B.yj_zp,
 					 B.bz
 					FROM
-					 ksAllData A 
-					 LEFT JOIN (SELECT * FROM xjAllData WHERE users_id = '${getApp().globalData.uid}' AND dk_sj >= '${start} 00:00:00' ORDER BY dk_sj DESC) B ON A.id = B.ks_id
+					 ksAllData A  
+					 LEFT JOIN (SELECT * FROM xjAllData WHERE dk_sj >= '${start} 00:00:00' ORDER BY dk_sj DESC) B ON A.id = B.ks_id
 					 LEFT JOIN usersAllData C ON B.users_id = C.id
 					 LEFT JOIN usersAllData D ON A.fzr_id = D.id
+					 WHERE A.dz_dm LIKE '${getApp().globalData.qh_dm}%' AND A.visible = '0'
 					ORDER BY A.id,B.dk_sj desc`,(data)=>{
 						 let data1 = data;
 						let hash = {}; 
@@ -146,43 +191,49 @@
 						let longitude = 0;
 						let covers = [];
 						data2.map((event)=>{
+							event.pxName = event.mc.split('号')[0];
 							let nowList = data1.filter(item=>(item.id === event.id) && (moment(item.dk_sj) >= moment(this.start + ' 00:00:00')));
 							let day = moment(this.end).diff(moment(event.dk_sj),'day');
 							let week = moment().day();
-							if(nowList && (nowList.length < parseInt(this.xj_pc))){
-								if(week === 0){
-									event.zt = nowList.length === 0 ? 'errors' : 'error';
-									this.errorNum = this.errorNum + 1;
-									yjList.push({xm:nowList.length > 0 ? [nowList.length - 1].xm : '',text:nowList.length === 0 ? '还需巡检两次次' : '还需巡检一次'});
-								}else if(week >= this.yj_xq_num){
-									event.zt = nowList.length === 0 ? 'warnings' :'warning';
-									this.warnNum = this.warnNum + 1;
-									yjList.push({xm:nowList.length > 0 ? [nowList.length - 1].xm : '',text:nowList.length === 0 ? '还需巡检两次次' : '还需巡检一次'});
-								}else{
-									event.zt = nowList.length === 0 ? 'primarys' : 'primary';
-								}
+							// if(nowList && (nowList.length < parseInt(this.xj_pc))){
+							// 	if(week === 0){
+							// 		event.zt = nowList.length === 0 ? 'warnings' :'warning';
+							// 		this.errorNum = this.errorNum + 1;
+							// 		yjList.push({xm:nowList.length > 0 ? [nowList.length - 1].xm : '',text:nowList.length === 0 ? '还需巡检两次次' : '还需巡检一次'});
+							// 	}else if(week >= this.yj_xq_num){
+							// 		event.zt = nowList.length === 0 ? 'warnings' :'warning';
+							// 		this.warnNum = this.warnNum + 1;
+							// 		yjList.push({xm:nowList.length > 0 ? [nowList.length - 1].xm : '',text:nowList.length === 0 ? '还需巡检两次次' : '还需巡检一次'});
+							// 	}else{
+							// 		event.zt = nowList.length === 0 ? 'primarys' : 'primary';
+							// 	}
+							// }else{
+							// 	let days = moment(nowList[nowList.length - 1].dk_sj.substring(0,10)).diff(nowList[0].dk_sj.substring(0,10),'day');
+							// 	if(days === 0 && week === 0){
+							// 		event.zt = 'warning';
+							// 		this.errorNum = this.errorNum + 1;
+							// 		yjList.push({xm:nowList.length > 0 ? [nowList.length - 1].xm : '',text:'还需巡检一次'});
+							// 	}else if(days === 0 && week >= this.yj_xq_num){
+							// 		event.zt = 'warning';
+							// 		this.warnNum = this.warnNum + 1;
+							// 		yjList.push({xm:nowList.length > 0 ? [nowList.length - 1].xm : '',text:'还需巡检一次'});
+							// 	}else{
+							// 		if(days === 0){
+							// 			event.zt = 'primary'; 
+							// 		}else{
+							// 			event.zt = 'success'; 
+							// 		}
+							// 	}
+							// }
+							if(nowList&&nowList.length > 0){
+								event.zt = 'success'; 
 							}else{
-								let days = moment(nowList[nowList.length - 1].dk_sj.substring(0,10)).diff(nowList[0].dk_sj.substring(0,10),'day');
-								if(days === 0 && week === 0){
-									event.zt = 'error';
-									this.errorNum = this.errorNum + 1;
-									yjList.push({xm:nowList.length > 0 ? [nowList.length - 1].xm : '',text:'还需巡检一次'});
-								}else if(days === 0 && week >= this.yj_xq_num){
-									event.zt = 'warning';
-									this.warnNum = this.warnNum + 1;
-									yjList.push({xm:nowList.length > 0 ? [nowList.length - 1].xm : '',text:'还需巡检一次'});
-								}else{
-									if(days === 0){
-										event.zt = 'primary'; 
-									}else{
-										event.zt = 'success'; 
-									}
-								}
+								event.zt = 'warning'; 
+								this.warnNum = this.warnNum + 1;
 							}
 							let gps = this.gcj_encrypt(parseFloat(event.wd), parseFloat(event.jd));
 							// latitude = latitude + parseFloat(gps.lat);
 							// longitude = longitude + parseFloat(gps.lon);
-							// console.log('latitude',latitude,longitude);
 							this.ycId.map((res)=>{
 								if(res === event.id){
 									res.zt_dm = '02';
@@ -191,13 +242,14 @@
 							covers.push({
 								latitude: parseFloat(gps.lat),
 								longitude: parseFloat(gps.lon),
-								iconPath: event.zt == 'error' || event.zt == 'errors' ? '/static/map3.png' : event.zt == 'warnings' || event.zt == 'warning' ? '/static/map2.png' : '/static/map1.png',
+								iconPath: event.zt == 'error' || event.zt == 'errors' ? '/static/map3.png' : event.zt == 'warnings' || event.zt == 'warning' ? '/static/map3.png' : '/static/map1.png',
 								label:{content:event.mc},
 								id:event.id,
 							});
 							this.yjList = yjList;
 						})
-						
+						this.ksList = data2.sort((a, b) => a.pxName- b.pxName);
+						this.ksListAll = data2.sort((a, b) => a.pxName- b.pxName);
 						// this.latitude = latitude / data.length;
 						// this.longitude = longitude / data.length; 
 						this.covers = covers;
@@ -208,7 +260,6 @@
 			    key: 'userData',
 			    success: function (res) {
 					if(res.data){
-						console.log('JSON.parse(res.data)',JSON.parse(res.data))
 						if(JSON.parse(res.data).org_id){
 							that.getZzjg({id:JSON.parse(res.data).org_id,name:JSON.parse(res.data).org_name || '组织架构'},false);
 						}
@@ -230,8 +281,19 @@
 					});
 		},
 		methods: {
+			bindDateChange: function(e) {
+			   this.value = e.target.value;
+			   let zt = e.target.value === 1 ? 'warning' :  e.target.value === 2 ? 'success' : '';
+			   let list = this.ksListAll.filter(item => item.zt.indexOf(zt) > -1);
+			   this.ksList = list.filter(item => item.dz_dm.indexOf(this.areaCodeList[this.value1]) > -1);
+			},
+			bindDateChange1: function(e) {
+			 this.value1 = e.target.value;
+			 let zt = this.value === 1 ? 'warning' :  this.value === 2 ? 'success' : '';
+			 let list = this.ksListAll.filter(item => item.dz_dm.indexOf(this.areaCodeList[e.target.value]) > -1);
+			 this.ksList = list.filter(item => item.zt.indexOf(zt) > -1);
+			},
 			input:function(e){
-				console.log('e====>',e.value,this.track_code);
 				this.searchValue = e.value;
 				if(e.value){
 					uni.request({
@@ -242,7 +304,6 @@
 						},
 						 method:'POST',
 						 success: (res) => {
-							 console.log('搜索',res.data);
 							 if(res.data && res.data.data){
 								 this.usersListSearch = res.data.data;
 							 }
@@ -273,7 +334,6 @@
 					},
 					 method:'POST',
 					 success: (res) => {
-						 console.log('组织架构',res.data);
 						 if(res&&res.data&&res.data.data){
 							 this.listZzJg = res.data.data.org ? res.data.data.org : [];
 							 this.usersList = res.data.data.users ? res.data.data.users : [];
@@ -336,12 +396,22 @@
 				        return false;
 				    },
 			listShow:function(e){
-				// console.log('e:',e,e.detail.markerId);
 				let index = this.covers.findIndex((item)=>{
 					return item.id === e.detail.markerId
 				})
 				uni.navigateTo({
 				    url: '../workList/workList?cover='+JSON.stringify(this.covers[index]) + '&kdNum=' + this.kdNum + '&errorNum=' + this.errorNum+ '&warnNum=' + this.warnNum + '&start=' +  this.start+ '&end=' +  this.end
+				});
+			},
+			getDetail:function(event){
+				let gps = this.gcj_encrypt(parseFloat(event.wd), parseFloat(event.jd));
+				let covers ={latitude: parseFloat(gps.lat),
+							longitude: parseFloat(gps.lon),
+							iconPath: event.zt == 'error' || event.zt == 'errors' ? '/static/map3.png' : event.zt == 'warnings' || event.zt == 'warning' ? '/static/map3.png' : '/static/map1.png',
+							label:{content:event.mc},
+							id:event.id}
+				uni.navigateTo({
+				    url: '../workList/workList?cover='+JSON.stringify(covers) + '&kdNum=' + this.kdNum + '&errorNum=' + this.errorNum+ '&warnNum=' + this.warnNum + '&start=' +  this.start+ '&end=' +  this.end
 				});
 			}
 		}
@@ -349,9 +419,66 @@
 </script>
 
 <style>
+	.searchTime{
+		width: 94%;
+		background: #f5f5f5;
+		overflow: hidden;
+		padding: 0 3%;
+		position: fixed;
+		top: 50px!important;
+		left: 0;
+		z-index: 99;
+		height: 46px;
+	}
+	.icon{
+		position: absolute;
+		top: 0;
+		right: 15px;
+	}
+	.pageAll{
+		float: right;
+		font-size: 14px;
+		color: #aaa;
+		line-height: 46px;
+	}
+	.timePicker{
+		text-align: left;
+		padding: 0 15px;
+	}
+	.timeDisabled{
+		height: 30px;
+		background: #eee;
+		border-radius: 50px;
+		font-size: 14px;
+		line-height: 30px;
+		text-align: center;
+		width: 120px;
+		margin: 8px;
+		float: left;
+		position: relative;
+		color: #999;
+	}
+	.time{
+		height: 30px;
+		background: #fff;
+		border-radius: 50px;
+		font-size: 14px;
+		line-height: 30px;
+		text-align: center;
+		width: 120px;
+		margin: 8px;
+		float: left;
+		position: relative;
+	}
 	.segmented-control{
-		width:90%;
-		margin:10px 5%;
+		width:100%;
+		padding:10px 5%;
+		height: 56px!important;
+		position: fixed;
+		top: 0;
+		left: 0;
+		z-index: 999;
+		background: #f5f5f5;
 	}
 	.segmented-control__item--button{
 		/* border-radius: 0!important; */
@@ -367,6 +494,8 @@
 	}
 	.listBox{
 		background: #fff;
+		margin-bottom: 60px;
+		margin-top: 56px;
 	}
 	.kdNumberBoxAll{
 		background: rgba(255,255,255,0.85);
@@ -436,5 +565,53 @@
 		color: #999;
 		padding:30px 0;
 		background: #F5F5F5;
+	}
+	.uni-tag--warning{
+		float: left;
+		margin-top: 2px;
+		background: #fdf5de!important;
+		border: 1px solid #f4bb52!important;
+		padding: 0 5px!important;
+		height:20px!important;
+		line-height: 19px!important;
+		/* margin-left: 5px; */
+		transform: scale(0.70);
+	}
+	/deep/ .uni-tag--warning .uni-tag-text{
+		color: #f4bb52!important;
+		font-size: 12px;
+	}
+	.uni-tag--primary{
+		float: left;
+		margin-top: 2px;
+		background: #e6f7ff!important;
+		border: 1px solid #2db7f5!important;
+		padding: 0 5px!important;
+		height:20px!important;
+		line-height: 19px!important;
+		/* margin-left: 5px; */
+		transform: scale(0.70);
+	}
+	/deep/ .uni-tag--primary .uni-tag-text{
+		color: #2db7f5!important;
+		font-size: 12px;
+	}
+	.uni-tag--success{
+		float: left;
+		margin-top: 2px;
+		background: #effce3!important;
+		border: 1px solid #52c41a!important;
+		padding: 0 5px!important;
+		height:20px!important;
+		line-height: 19px!important;
+		/* margin-left: 5px; */
+		transform: scale(0.70);
+	}
+	/deep/ .uni-tag--success .uni-tag-text{
+		color: #52c41a!important;
+		font-size: 12px;
+	}
+	.listTitle{
+		float: left;
 	}
 </style>

@@ -298,6 +298,7 @@
 									getApp().globalData.is_admin = res.data.data.is_admin;
 									getApp().globalData.uid = res.data.data.id;
 									getApp().globalData.is_zz = res.data.data.is_zz;
+									getApp().globalData.qh_dm = res.data.data.qh_dm || '';
 									getApp().noNetwork = false;
 									let id = res.data.data.id || '';
 									let name = res.data.data.xm || '';
