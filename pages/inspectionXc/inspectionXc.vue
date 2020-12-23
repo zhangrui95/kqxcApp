@@ -160,7 +160,7 @@
 			uniPopupDialog
 		},
 		onBackPress:function(event){
-			console.log('=================执行返回================');
+			// console.log('=================执行返回================');
 			if(this.playUrl){
 				this.playUrl = '';
 				return true;
@@ -171,7 +171,7 @@
 		onLoad: function (option) { //option为object类型，会序列化上个页面传递的参数
 			       let self = this;
 					recorderManager.onStop(function (res) {
-						console.log('recorder stop' + JSON.stringify(res));
+						// console.log('recorder stop' + JSON.stringify(res));
 						self.voicePath = res.tempFilePath;
 					});
 					this.record = option&&option.record && JSON.parse(option.record) ? JSON.parse(option.record) : '';
@@ -182,7 +182,7 @@
 						});
 						this.currentYc = '01';
 					}
-					console.log('this.record',this.record)
+					// console.log('this.record',this.record)
 					getWtData(` SELECT A.*, B.dz, C.xm as wtr_xm, C.lxdh as wtr_lxdh FROM wtData A
 					LEFT JOIN ksData B ON A.ks_id = B.id
 					LEFT JOIN usersData C ON A.fqr_id = C.id
@@ -278,7 +278,7 @@
 				    sourceType: ['camera'], //调用相机
 					// sourceType: ['album'], //从相册选择
 				    success: function (resImg) {
-						console.log('JSON.stringify(resImg.tempFilePaths[0])',JSON.stringify(resImg.tempFilePaths[0]))
+						// console.log('JSON.stringify(resImg.tempFilePaths[0])',JSON.stringify(resImg.tempFilePaths[0]))
 						  // let ydJd = JSON.stringify(resImg.tempFilePaths[0]) && JSON.stringify(resImg.tempFilePaths[0]).split('-')&&JSON.stringify(resImg.tempFilePaths[0]).split('-')[1] ? JSON.stringify(resImg.tempFilePaths[0]).split('-')[1] : '';
 						  // let ydWd = JSON.stringify(resImg.tempFilePaths[0])&&JSON.stringify(resImg.tempFilePaths[0]).split('-')&&JSON.stringify(resImg.tempFilePaths[0]).split('-')[2] ? JSON.stringify(resImg.tempFilePaths[0]).split('-')[2] : '';
 						  // if(longrg.test(ydJd) && latreg.test(ydWd)){
@@ -532,7 +532,7 @@
 				// })
 			},
 			bigVideo:function(item){
-				console.log('item',item)
+				// console.log('item',item)
 				this.playUrl = item;
 			},
 			getDelImg:function(index){
@@ -789,8 +789,8 @@
 						if(res.networkType !== 'none' &&  res.networkType !== '2g' &&  res.networkType !== '3g'&& !that.isLx){
 							plus.geolocation.getCurrentPosition(function(p){
 									let res = p.coords;
-									longitude = res&&res.longitude ? that.gcj_decrypt(res.latitude,res.longitude).lon.toFixed(6) : '';
-									latitude = res&&res.latitude ? that.gcj_decrypt(res.latitude,res.longitude).lat.toFixed(6) : '';
+									longitude = res&&res.longitude ? res.longitude : '';
+									latitude = res&&res.latitude ? res.latitude : '';
 									// let dist = that.distance(that.record.jd,that.record.wd,longitude,latitude);
 									// if(dist <= that.max_dkjl){
 										uni.hideLoading();
@@ -828,12 +828,12 @@
 											}
 										});
 								// 	}
-								} );
+								},{provider:'system'} );
 						}else{
 							plus.geolocation.getCurrentPosition(function(p){
 									let res = p.coords;
-									longitude = res&&res.longitude ? that.gcj_decrypt(res.latitude,res.longitude).lon.toFixed(6) : '';
-									latitude = res&&res.latitude ? that.gcj_decrypt(res.latitude,res.longitude).lat.toFixed(6) : '';
+									longitude = res&&res.longitude ? res.longitude : '';
+									latitude = res&&res.latitude ? res.latitude : '';
 									// let dist = that.distance(that.record.jd,that.record.wd,longitude,latitude);
 									// if(dist <= that.max_dkjl){
 										uni.hideLoading();
@@ -870,7 +870,7 @@
 											}
 										});
 									// }
-								} );
+								},{provider:'system'} );
 						}
 				    }
 				});

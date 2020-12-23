@@ -35,12 +35,12 @@
 							  transports: [ 'websocket', 'polling' ], 
 							});
 							socket.on('connect', () => { 
-							  console.log('ws 已连接');
+							  // console.log('ws 已连接');
 							});
 							socket.on('chat-list', function (data) {
 								let list = [];
 								getUsersAllData('select * from usersAllData',(res)=>{
-									console.log('res',res);
+									// console.log('res',res);
 									data.map((item)=>{
 										let idx = res.findIndex((e)=> e.lxdh === item.with);
 										if(idx > -1){

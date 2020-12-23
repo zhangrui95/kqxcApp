@@ -2,7 +2,16 @@
     <view>
 		  <view class="pageBody">
 			 <uni-segmented-control :current="current" :values="items" @clickItem="onClickItem" style-type="button" active-color="#172f87"></uni-segmented-control>
-			    <view v-if="current === 0" class="listBox">
+			    <view class="page-section page-section-gap" v-if="current === 0">
+			    	 <map :style="{height:height+ 'px'}" scale="12" style="width: 100%; position: relative;top: 56px;" :latitude="latitude" :longitude="longitude" :markers="covers" @markertap='listShow' @labeltap='listShow'>
+			    		 <cover-view class="kdNumberBoxAll" v-if="current === 0"></cover-view>
+			    		 <cover-view class="kdNumberBox" v-if="current === 0"> 风险点：{{kdNum}}个</cover-view>
+			    		 <cover-view class="kdNumberBox1" v-if="current === 0">已巡检：{{kdNum - errorNum - warnNum}}个</cover-view>
+			    		 <cover-view class="kdNumberBox2" v-if="week == 0 && current === 0">未巡检：{{errorNum}}个</cover-view>
+			    		 <cover-view class="kdNumberBox3" v-if="week !== 0 && current === 0">未巡检：{{warnNum}}个</cover-view>
+			    	 </map>
+			     </view>
+				<view v-if="current === 1" class="listBox">
 					<uni-search-bar  @input="input"></uni-search-bar>
 					<view v-if="jzList && jzList.length>0 &&!searchValue" class="titleTop">
 						<text @click="getBack(item)" v-for="(item,index) in jzList" :style="index+1 === jzList.length ? {color:'#172f87'} : {}">{{item.name}} {{index+1 === jzList.length ? '' : ' > '}} </text>
@@ -26,15 +35,6 @@
 					 <view class="noList" v-if="(usersList.length == 0 && listZzJg.length == 0 &&!searchValue) || (searchValue && usersListSearch.length==0)"><image src="../../static/noList.png" style="width: 200px;height: 123px;"></image>
 				<view>暂无数据</view></view> 
 				</view>
-				<view class="page-section page-section-gap" v-if="current === 1">
-					 <map :style="{height:height+ 'px'}" scale="12" style="width: 100%; position: relative;top: 56px;" :latitude="latitude" :longitude="longitude" :markers="covers" @markertap='listShow' @labeltap='listShow'>
-						 <cover-view class="kdNumberBoxAll" v-if="current === 1"></cover-view>
-						 <cover-view class="kdNumberBox" v-if="current === 1"> 风险点：{{kdNum}}个</cover-view>
-						 <cover-view class="kdNumberBox1" v-if="current === 1">已巡检：{{kdNum - errorNum - warnNum}}个</cover-view>
-						 <cover-view class="kdNumberBox2" v-if="week == 0 && current === 1">未巡检：{{errorNum}}个</cover-view>
-						 <cover-view class="kdNumberBox3" v-if="week !== 0 && current === 1">未巡检：{{warnNum}}个</cover-view>
-					 </map>
-				 </view>
 				 <view v-if="current === 2" class="listBox">
 					<view class="searchTime">
 						<view class="time"> 
@@ -95,7 +95,7 @@
 				xj_pc:'1',//打卡次数
 				xj_zq:'7',//周期
 				PI:3.14159265358979324,
-				items: ['组织架构','地图展示','矿山列表'],
+				items: ['地图展示','组织架构','矿山列表'],
 				current: 0,
 				listZzJg:[],
 				usersList:[],
@@ -128,6 +128,12 @@
 		},
 		onLoad() {
 			let that = this;
+			uni.getSystemInfo({
+				success:function(res) {
+					that.height = uni.getStorageSync('workHeight') ? uni.getStorageSync('workHeight') : res.windowHeight - 106;
+					uni.setStorageSync('workHeight', that.height);
+				}
+			});
 			this.value1 = getApp().globalData.qh_dm ? this.areaCodeList.indexOf(getApp().globalData.qh_dm) : 0;
 			this.disabled = this.value1 > 0 ? true : false;
 			uni.getLocation({
@@ -136,11 +142,6 @@
 					that.latitude = res.latitude;
 					that.longitude = res.longitude;
 			    }
-			});
-			uni.getSystemInfo({
-				success:function(res) {
-					that.height = res.windowHeight - 106 
-				}
 			});
 			getConfig('select * from config',(data)=>{
 				if(data && data[0] && data[0].xj_jzrq){
@@ -180,6 +181,7 @@
 					 WHERE A.dz_dm LIKE '${getApp().globalData.qh_dm}%' AND A.visible = '0'
 					ORDER BY A.id,B.dk_sj desc`,(data)=>{
 						 let data1 = data;
+						 // console.log('data1===========>',data1);
 						let hash = {}; 
 						const data2 = data.reduce((preVal, curVal) => {
 						    hash[curVal.id] ? '' : hash[curVal.id] = true && preVal.push(curVal); 
@@ -248,6 +250,7 @@
 							});
 							this.yjList = yjList;
 						})
+						// console.log('data2=======>',data2);
 						this.ksList = data2.sort((a, b) => a.pxName- b.pxName);
 						this.ksListAll = data2.sort((a, b) => a.pxName- b.pxName);
 						// this.latitude = latitude / data.length;
@@ -436,8 +439,10 @@
 		right: 15px;
 	}
 	.pageAll{
-		float: right;
-		font-size: 14px;
+		/* float: right; */
+		position: absolute;
+		right: 12px;
+		font-size: 12px; 
 		color: #aaa;
 		line-height: 46px;
 	}
@@ -449,11 +454,11 @@
 		height: 30px;
 		background: #eee;
 		border-radius: 50px;
-		font-size: 14px;
+		font-size: 12px;
 		line-height: 30px;
 		text-align: center;
-		width: 120px;
-		margin: 8px;
+		width: 100px;
+		margin: 8px 5px;
 		float: left;
 		position: relative;
 		color: #999;
@@ -462,11 +467,11 @@
 		height: 30px;
 		background: #fff;
 		border-radius: 50px;
-		font-size: 14px;
+		font-size: 12px;
 		line-height: 30px;
 		text-align: center;
-		width: 120px;
-		margin: 8px;
+		width: 100px;
+		margin: 8px 5px;
 		float: left;
 		position: relative;
 	}

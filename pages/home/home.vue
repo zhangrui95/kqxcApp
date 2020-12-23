@@ -91,7 +91,8 @@
 			let that = this;
 			uni.getSystemInfo({
 				success:function(res) {
-					that.height = res.windowHeight - 330 
+					that.height = uni.getStorageSync('homeHeight') ? uni.getStorageSync('homeHeight') : res.windowHeight - 330;
+					uni.setStorageSync('homeHeight', that.height);
 				}
 			});
 			getConfig('select * from config',(data)=>{
@@ -127,9 +128,9 @@
 						if(res.networkType !== 'none' &&  res.networkType !== '2g' &&  res.networkType !== '3g'){
 							that.network = true;
 							that.getUpload(()=>{
-								that.getListYh();
-								that.getXj();
+								// that.getListYh();
 								that.getAllXj();
+								that.getXj();
 								that.getWt();
 								that.getKs();
 								that.getKsAll();
@@ -382,7 +383,7 @@
 																						 if(res.data.data && !res.data.error){
 																							 setTimeout(()=>{
 																								uni.hideLoading();
-																							 },500)
+																							 },1200)
 																							 setXjAllData([dataItem],(res)=>{});
 																							 setXjData([dataItem],(res)=>{});
 																							 deleteUpLoad(`DELETE FROM xjDataUpLoad WHERE id = '${item.id}'`,(res)=>{
@@ -412,7 +413,7 @@
 																						callback({error:null});
 																					}
 																				 }); 
-																			},500)
+																			},1200)
 																		}
 																	},
 																});
@@ -453,7 +454,7 @@
 							});
 							setTimeout(()=>{
 								uni.hideLoading();
-							},500);
+							},1200);
 						} 
 				    }
 				});
@@ -472,7 +473,7 @@
 							setKsAllData(res.data.data,(res)=>{});
 							setTimeout(()=>{
 								uni.hideLoading();
-							},500);
+							},1200);
 						} 
 				    }
 				});
@@ -581,17 +582,17 @@
 							this.text = `当前周期${this.start}~${this.end}${dh1}${yqText}${dh}${warnText}。${isWc}`;	
 						}	
 						uni.hideLoading();
-					},500);
+					},1200);
 				});
 			},
-			getListYh:function(){
-				getUsersData('select * from usersData',(data)=>{
-					this.yhList = data;
-					setTimeout(()=>{
-						uni.hideLoading();
-					},500);
-				});
-			},	
+			// getListYh:function(){
+			// 	getUsersData('select * from usersData',(data)=>{
+			// 		this.yhList = data;
+			// 		setTimeout(()=>{
+			// 			uni.hideLoading();
+			// 		},1200);
+			// 	});
+			// },	
 			getListXj:function(){
 				if(this.is_zz === '1'){
 					getXjData(`SELECT A.*, B.xm, C.mc FROM xjData A LEFT JOIN usersData B ON A.users_id = B.id LEFT JOIN ksData C ON A.ks_id = C.id WHERE A.users_id = '${getApp().globalData.uid}' ORDER BY dk_sj DESC`,(data)=>{
@@ -603,7 +604,7 @@
 						setTimeout(()=>{
 							let text = this.isOk ? '本周期巡检任务您已完成。' : '';
 							that.textZz = '当前周期：'+that.start+'~'+that.end+'。' + '当前周期内已巡检'+data.length + '次。'+text;
-						},500)
+						},1200)
 					});
 				}
 			},	
@@ -612,7 +613,7 @@
 					this.wtList = data;
 					setTimeout(()=>{
 						uni.hideLoading();
-					},500);
+					},1200);
 				});
 			},
 			getXj:function(){
@@ -636,7 +637,7 @@
 							}
 							setTimeout(()=>{
 								uni.hideLoading();
-							},500);
+							},1200);
 						} 
 				    }
 				});
@@ -656,7 +657,7 @@
 							});
 							setTimeout(()=>{
 								uni.hideLoading();
-							},500);
+							},1200);
 						} 
 				    }
 				});
@@ -677,7 +678,7 @@
 						  });
 						  setTimeout(()=>{
 						  	uni.hideLoading();
-						  },500);
+						  },1200);
 						} 
 				    }
 				});

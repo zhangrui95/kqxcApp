@@ -89,7 +89,7 @@
 					   data: datas,
 						method:'POST',
 					    success: (res) => {
-							console.log('this.userWt ===== >',res,datas)
+							// console.log('this.userWt ===== >',res,datas)
 							this.userWt = res.data.data;
 						},
 					});

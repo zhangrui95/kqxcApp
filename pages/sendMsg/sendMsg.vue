@@ -63,7 +63,7 @@
 							  transports: [ 'websocket', 'polling' ], 
 							});
 							socket.on('connect', () => { 
-							  console.log('ws 已连接');
+							  // console.log('ws 已连接');
 							});
 							 socket.emit('reset-unread', {
 							        tid:that.tid,

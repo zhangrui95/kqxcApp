@@ -17,7 +17,7 @@
 				 <uni-list>
 				     <uni-list-item :show-arrow="false" class="nohover">
 						 <view class="msgBox">
-						 	<text class="leftBox">负责人：{{kdDetail.fzr_xm}}</text>
+						 	<text class="leftBox">负责人：{{kdDetail.fzr_xm ? kdDetail.fzr_xm : '暂无'}}</text>
 						 	<!-- <text class="rightBox">巡查人：王二</text> -->
 						 </view>
 					 </uni-list-item>
@@ -192,7 +192,7 @@
 				})
 			},
 			sendMsg:function(item){
-				console.log('执行？？？',item)
+				// console.log('执行？？？',item)
 				uni.navigateTo({
 					url:'../sendMsg/sendMsg?record='+JSON.stringify(item),
 				})

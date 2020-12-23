@@ -8,10 +8,12 @@
 				<view class="address"><text style="float: left;">巡查时间：{{item.dk_sj.substring(11,19)}}</text>
 					<uni-tag :text="item.is_ycdk == '1' ? '定位异常':item.is_ycdk == '2' ? '无定位' : '正常'" :type="item.is_ycdk == '1' ? 'error' : item.is_ycdk == '2' ? 'warning' : 'primary'"></uni-tag>
 				</view>
-				<view>
-					<text class='address' style="width: 50%;float: left;">责任人：{{record&&record.fzr_xm ? record.fzr_xm : ''}}</text>
-					<text class='address' style="width: 50%;float: left;">执行人：{{item.xm}}</text>
-				</view>
+			</uni-list-item>
+			<uni-list-item :showArrow="false">
+				<view class='address'>责任人：{{record&&record.fzr_xm ? record.fzr_xm : ''}}</view>
+			</uni-list-item>
+			<uni-list-item :showArrow="false">
+				<view class='address'>执行人：{{item.xm}}</view>
 			</uni-list-item>
 			<uni-list-item :showArrow="false">
 				<!-- <view class="address">巡查结果：<text :style="{color:item.kczt_dm === '02' ? '#747474' : '#2de17e'}">{{item.kczt_dm === '02' ? '未开采' : '开采中'}}</text></view> -->
@@ -92,8 +94,8 @@
 			let that = this;
 			uni.getNetworkType({
 			    success: function (res) {
-			        console.log('网络状态',res.networkType);
-					if(res.networkType !== 'none' &&  res.networkType !== '2g' &&  res.networkType !== '3g' && !that.isUpload){
+			        // console.log('网络状态',res.networkType);
+					if(res.networkType !== 'none' &&  res.networkType !== '2g' &&  res.networkType !== '3g' && !that.isUpload && !getApp().isLx){
 						let yjList = [];
 						let jjList = [];
 						let videoList = [];
@@ -112,7 +114,7 @@
 							}
 						});
 						detail.dsp_net&&detail.dsp_net.split('#').map((item)=>{
-							console.log('item???',item)
+							// console.log('item???',item)
 							if(item.includes('http')){
 								videoList.push(item);
 							}else{
@@ -123,7 +125,7 @@
 						that.jjList = jjList;
 						that.videoList = videoList;
 					}else{
-						console.log('视频detail.dsp',detail.dsp)
+						// console.log('视频detail.dsp',detail.dsp)
 						that.yjList = detail.yj_zp.split('#');
 						that.jjList = detail.jj_zp.split('#');
 						that.videoList = detail.dsp ? detail.dsp.split('#') : [];
@@ -133,7 +135,7 @@
 		}, 
 		methods: {
 			bigVideo:function(item){
-				console.log('item',item)
+				// console.log('item',item)
 				this.playUrl = item;
 			},
 			getBigImg:function(urls,current){

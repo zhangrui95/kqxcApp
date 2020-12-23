@@ -128,7 +128,7 @@
 			}
 		},
 		onBackPress:function(event){
-			console.log('=================执行返回================');
+			// console.log('=================执行返回================');
 			if(this.playUrl){
 				this.playUrl = '';
 				return true;
@@ -234,7 +234,7 @@
 				    sourceType: ['camera'], //调用相机
 					// sourceType: ['album'], //从相册选择
 				    success: function (resImg) {
-						console.log('JSON.stringify(resImg.tempFilePaths[0])',JSON.stringify(resImg.tempFilePaths[0]))
+						// console.log('JSON.stringify(resImg.tempFilePaths[0])',JSON.stringify(resImg.tempFilePaths[0]))
 						  // let ydJd = JSON.stringify(resImg.tempFilePaths[0]) && JSON.stringify(resImg.tempFilePaths[0]).split('-')&&JSON.stringify(resImg.tempFilePaths[0]).split('-')[1] ? JSON.stringify(resImg.tempFilePaths[0]).split('-')[1] : '';
 						  // let ydWd = JSON.stringify(resImg.tempFilePaths[0])&&JSON.stringify(resImg.tempFilePaths[0]).split('-')&&JSON.stringify(resImg.tempFilePaths[0]).split('-')[2] ? JSON.stringify(resImg.tempFilePaths[0]).split('-')[2] : '';
 						  // if(longrg.test(ydJd) && latreg.test(ydWd)){
@@ -439,7 +439,7 @@
 				// })
 			},
 			bigVideo:function(item){
-				console.log('item',item)
+				// console.log('item',item)
 				this.playUrl = item;
 			},
 			getDelImg:function(index){
@@ -622,7 +622,7 @@
 				let that = this;
 				this.btnLoading = true;
 				uni.showLoading({
-				    title: '正在获取GPS信息' 
+				    title: '正在获取GPS信息'
 				});
 				uni.getNetworkType({
 				    success: function (res) {
@@ -634,8 +634,8 @@
 						if(res.networkType !== 'none' &&  res.networkType !== '2g' &&  res.networkType !== '3g' && !that.isLx){
 							plus.geolocation.getCurrentPosition(function(p){
 									let res = p.coords;
-									longitude = res&&res.longitude ? that.gcj_decrypt(res.latitude,res.longitude).lon.toFixed(6) : '';
-									latitude = res&&res.latitude ? that.gcj_decrypt(res.latitude,res.longitude).lat.toFixed(6) : '';
+									longitude = res&&res.longitude ? res.longitude : '';
+									latitude = res&&res.latitude ? res.latitude : '';
 									let dist = that.distance(that.record.jd,that.record.wd,longitude,latitude);
 									uni.hideLoading();
 									if(dist <= that.max_dkjl){
@@ -673,12 +673,12 @@
 											}
 										});
 									// }
-								} );
+								},{provider:'system'} );
 						}else{
 							plus.geolocation.getCurrentPosition(function(p){
 									let res = p.coords;
-									longitude = res&&res.longitude ? that.gcj_decrypt(res.latitude,res.longitude).lon.toFixed(6) : '';
-									latitude = res&&res.latitude ? that.gcj_decrypt(res.latitude,res.longitude).lat.toFixed(6) : '';
+									longitude = res&&res.longitude ? res.longitude : '';
+									latitude = res&&res.latitude ? res.latitude : '';
 									let dist = that.distance(that.record.jd,that.record.wd,longitude,latitude);
 									uni.hideLoading();
 									if(dist <= that.max_dkjl){
@@ -715,7 +715,7 @@
 											}
 										});
 									// }
-								} );
+								},{provider:'system'} );
 						}
 				    }
 				});

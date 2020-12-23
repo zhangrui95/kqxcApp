@@ -47,7 +47,7 @@
 		onLoad:function(option){
 			this.isReceived =  option.isReceived ? option.isReceived : false;
 			this.record = option.record ? JSON.parse(option.record):{};
-			console.log('this.record.img_url',this.record.img_url);
+			// console.log('this.record.img_url',this.record.img_url);
 			this.imgList = this.record.img_url ? this.record.img_url.split('#') : [];
 			if(this.isReceived){
 				uni.request({
@@ -67,7 +67,7 @@
 					},
 					 method:'POST',
 					 success: (res) => {
-						console.log('detail=====>',res.data);
+						// console.log('detail=====>',res.data);
 						if(res.data){
 							this.personList = res.data.data ? res.data.data : [];
 						}

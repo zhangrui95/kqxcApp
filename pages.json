@@ -217,6 +217,14 @@
 				"navigationBarTitleText": "推荐下载"
 			}
         }
+        ,{
+            "path" : "pages/myGps/myGps",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "GPS坐标"
+            }
+            
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "white",

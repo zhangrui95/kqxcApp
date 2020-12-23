@@ -112,7 +112,7 @@
 				});
 			},
 			getOk:function(item){
-				console.log('this.is_zz',this.is_zz);
+				// console.log('this.is_zz',this.is_zz);
 				if(this.is_zz!='1' && item.is_zz!='1'){
 					// console.log('item========>',item);
 					 this.item = item;
@@ -164,9 +164,9 @@
 			  return text;
 			},
 			confirm:function(){
-				console.log('this.wtList',this.wtList);
+				// console.log('this.wtList',this.wtList);
 				 this.$refs.popup.close();
-				 console.log(this.item,this.record)
+				 // console.log(this.item,this.record)
 				 let id = this.makeId(32);
 				 let data = {id:id,ks_id:this.record.id,wt_sj:moment().format('YYYY-MM-DD HH:mm:ss'),fqr_id: getApp().globalData.uid,bwtr_id:this.item.id};
 				 uni.request({
@@ -178,7 +178,7 @@
 					},
 				 	method:'POST',
 				     success: (res) => {
-						 console.log('res.data.data',res.data.data)
+						 // console.log('res.data.data',res.data.data)
 						if(res.data.data.includes(this.record.id)){
 							uni.showToast({
 								icon:'none',

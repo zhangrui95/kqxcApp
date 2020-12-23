@@ -7,7 +7,8 @@
 		<uni-list style="margin-top:10px;">
 			<!-- <uni-list-item thumb="../../static/msg.png" title="我的消息" @click="myMessage" :show-badge="parseInt(allNum) > 0 ? true : false" :badge-text="allNum" badge-type="error"></uni-list-item> -->
 		    <uni-list-item thumb="../../static/tjxz.png" title="推荐下载" @click="getTj"></uni-list-item>
-			 <uni-list-item thumb="../../static/bbjc.png" title="检测版本" @click="getUpdate"></uni-list-item>
+			<uni-list-item thumb="../../static/bbjc.png" title="检测版本" @click="getUpdate" :rightText="'v'+version"></uni-list-item>
+			<uni-list-item thumb="../../static/gps.png" title="工具箱-GPS坐标" @click="getGps"></uni-list-item>
 			<!-- <uni-list-item thumb="../../static/rjxy.png" title="软件许可协议"></uni-list-item> -->
 		</uni-list>
        <!-- <uni-list style="margin-top:80px;">
@@ -53,6 +54,7 @@
 				progress:0,
 				load:false,
 				allNum:'0',
+				version:getApp().globalData.version,
 			}
 		},
 		onLoad() {
@@ -88,6 +90,11 @@
 			uniPopupDialog
 		},
 		methods: {
+			getGps:function(){
+				uni.navigateTo({
+					 url: '../myGps/myGps'
+				})
+			},
 			getTj:function(){
 				uni.navigateTo({
 					 url: '../tjDownload/tjDownload'
@@ -157,7 +164,7 @@
 										if(that.toNum(getApp().globalData.version) < that.toNum(res.data.data.last_version)){
 											uni.hideLoading();
 											uni.showModal({
-											    title: '检测到最新版本,是否确认更新？',
+											    title: '当前版本v'+getApp().globalData.version+'检测到最新版本v'+res.data.data.last_version+',是否确认更新？',
 											    success: function (resDate) {
 											        if (resDate.confirm) {
 														that.load = true;
@@ -171,8 +178,10 @@
 																	    key: 'userData',
 																	    success: function (res) {}
 																	});
+																	uni.removeStorageSync('workHeight');
+																	uni.removeStorageSync('homeHeight');
 																	plus.runtime.install(res.tempFilePath);
-														            console.log('下载成功');
+														            // console.log('下载成功');
 														        }
 														    }
 														});
@@ -187,7 +196,7 @@
 										}else{
 											uni.hideLoading();
 											uni.showToast({
-											    title: '当前版本已是最新版本',
+											    title: '当前版本已是最新版本v'+getApp().globalData.version,
 											    duration: 2000,
 												icon:'none' 
 											});

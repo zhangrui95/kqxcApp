@@ -4,7 +4,7 @@
 		 	<canvas style="width: 200px;height: 200px;" canvas-id="couponQrcode"></canvas>
 		</view>
 		<view class="title">
-			请浏览器扫一扫上方二维码可直接下载此应用
+			请浏览器扫一扫上方二维码可直接下载此应用{{version}}
 		</view>
 	</view>
 </template>
@@ -14,7 +14,7 @@
 	export default {
 		data() {
 			return {
-				
+				version:'',
 			}
 		},
 		onLoad() {
@@ -25,8 +25,9 @@
 				method:'POST',
 			    success: (res) => {
 					if(res.data.data && !res.data.error){
-						console.log('res.data.data',res.data.data.app_down);
+						// console.log('res.data.data',res.data.data.app_down);
 						that.couponQrCodes(res.data.data.app_down);
+						that.version = '(v'+res.data.data.last_version+')';
 					}
 				},
 			});

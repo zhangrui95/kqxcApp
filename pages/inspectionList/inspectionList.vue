@@ -75,7 +75,7 @@
 				let uid = option.uid ? option.uid : getApp().globalData.uid;
 				this.uid = uid;
 				getXjData(`SELECT A.*, B.xm, C.mc FROM xjAllData A LEFT JOIN usersAllData B ON A.users_id = B.id LEFT JOIN ksAllData C ON A.ks_id = C.id  WHERE A.users_id = '${uid}'  ORDER BY dk_sj DESC`,(data)=>{
-					console.log('data？？？？',data)
+					// console.log('data？？？？',data)
 					this.list = data;
 					this.data = data;
 				});
@@ -104,7 +104,7 @@
 				this.visible= !this.visible;
 			},
 			getDetail:function(item){
-				console.log('item',item);
+				// console.log('item',item);
 				uni.navigateTo({
 					url:'../inspectionDetail/inspectionDetail?detail='+JSON.stringify(item),
 				}) 
@@ -147,7 +147,7 @@
 			},
 			bindDateChange: function(e) {
 			    this.date = e.target.value;
-				console.log('this.list',this.list)
+				// console.log('this.list',this.list)
 				let list = this.data.filter(item => item.dk_sj.indexOf(e.target.value) > -1);
 				this.list = list;
 			},

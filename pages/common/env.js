@@ -192,11 +192,11 @@ function setXjDataUpLoad(data,callback){
 					name: 'kqxj',
 					sql: "insert or replace into xjDataUpLoad(id, ks_id,is_ycdk,is_dtxc,users_id, kczt_dm, yczt_dm, bz,dk_sj,dk_jd,dk_wd,dk_device,yj_zp,jj_zp,yj_zp_net,jj_zp_net,dsp,dsp_net) values('" + item.id + "', '" + item.ks_id+ "', '" + item.is_ycdk+ "', '"+ item.is_dtxc+ "', '" + item.users_id + "', '" + item.kczt_dm + "', '" + item.yczt_dm+ "', '" + item.bz+ "', '" + item.dk_sj+ "', '" + item.dk_jd+ "', '" + item.dk_wd+ "', '" + item.dk_device+ "', '" + item.yj_zp + "', '"+ item.jj_zp + "', '"+ item.yj_zp_net + "', '" + item.jj_zp_net  + "', '" + item.dsp+ "', '" + item.dsp_net + "')",
 					success: function(e){
-						console.log(JSON.stringify(e))
+						// console.log(JSON.stringify(e))
 						callback({error:null});
 					},
 					fail: function(e){
-						console.log('error',JSON.stringify(e))
+						// console.log('error',JSON.stringify(e))
 						callback({error:JSON.stringify(e)})
 					}
 				});

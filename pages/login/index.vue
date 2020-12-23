@@ -124,7 +124,7 @@
 									console.log('getApp().globalData.version < res.data.data.last_version',that.toNum(getApp().globalData.version) < that.toNum(res.data.data.last_version),that.toNum(getApp().globalData.version) , that.toNum(res.data.data.last_version))
 									if(res.data.data.must_update === '1' && (that.toNum(getApp().globalData.version) < that.toNum(res.data.data.last_version))){
 										uni.showModal({
-										    title: '检测到新版本，与旧版本不兼容，请更新后使用。',
+										    title: '检测到新版本v'+res.data.data.last_version+'，与旧版本v'+getApp().globalData.version+'不兼容，请更新后使用。',
 											showCancel:false,
 										    success: function (resDate) {
 										         if (resDate.confirm) {
@@ -139,6 +139,8 @@
 																    key: 'userData',
 																    success: function (res) {}
 																});
+																uni.removeStorageSync('workHeight');
+																uni.removeStorageSync('homeHeight');
 																plus.runtime.install(res.tempFilePath);
 																console.log('下载成功');
 															}
@@ -181,7 +183,7 @@
 				let dirPath = '_doc'+getApp().globalData.version+'/kqxjList.db';
 				plus.io.resolveLocalFileSystemURL(dirPath, function(entry) {
 					entry.remove( function ( entry ) {
-						console.log('删除成功回调')
+						// console.log('删除成功回调')
 					}, function ( e ) {
 						alert( e.message );
 					} );
@@ -189,7 +191,7 @@
 				let dirPath1 = '_doc'+getApp().globalData.version+'/kqxjList.db-journal';
 				plus.io.resolveLocalFileSystemURL(dirPath1, function(entry) { 
 					entry.remove( function ( entry ) {
-						console.log('删除成功回调')
+						// console.log('删除成功回调')
 					}, function ( e ) {
 						alert( e.message );
 					} );
@@ -233,7 +235,7 @@
 					data: {"uid": uid},
 					method:'POST',
 					success: (res) => {	
-						console.log('res=====>用户',res)
+						// console.log('res=====>用户',res)
 						if(res.data.data && !res.data.error){
 						 getUsersData(`DELETE FROM usersData`,(res)=>{});
 						 setUsersData(res.data.data,(res)=>{});
@@ -265,7 +267,7 @@
 									getApp().globalData.is_zz = JSON.parse(res.data).is_zz;
 									getApp().noNetwork = true;
 									uni.redirectTo({
-									    url: '../home/home'
+									    url: JSON.parse(res.data).is_admin=='1'?'../work/work':'../home/home'
 									});
 								}else{
 									uni.showToast({
@@ -315,7 +317,7 @@
 									    data: JSON.stringify(res.data.data),
 									    success: function () {
 									       uni.redirectTo({
-									           url: '../home/home'
+									           url: res.data.data.is_admin == 1 ?'../work/work' : '../home/home'
 									       });
 									    }
 									});

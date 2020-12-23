@@ -61,7 +61,7 @@
 					},
 					 method:'POST',
 					 success: (res) => {
-						console.log('res=====>',res.data);
+						// console.log('res=====>',res.data);
 						if(res.data&&res.data.data){
 							this.list = res.data.data;
 						}

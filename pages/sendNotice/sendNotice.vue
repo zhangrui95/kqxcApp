@@ -102,11 +102,11 @@
 					},
 					 method:'POST',
 					 success: (res) => {
-						 console.log('组织架构',res.data);
+						 // console.log('组织架构',res.data);
 						 if(res&&res.data&&res.data.data){
 							 let parent = res.data.data.parent ? res.data.data.parent : {};
 							 if(parent && parent.track_code){
-								 console.log('parent.track_code',parent.track_code);
+								 // console.log('parent.track_code',parent.track_code);
 								 this.getSend(parent.track_code);
 							 }
 						 }
@@ -125,7 +125,7 @@
 					},
 					 method:'POST',
 					 success: (res) => {
-						console.log('res=====>',res.data);
+						// console.log('res=====>',res.data);
 						if(!res.data.error){
 							uni.showToast({
 								title: '下发成功',
@@ -150,7 +150,7 @@
 				    // sourceType: ['camera'], //调用相机
 					sourceType: ['album'], //从相册选择
 				    success: function (resImg) {
-						console.log('JSON.stringify(resImg.tempFilePaths[0])',JSON.stringify(resImg.tempFilePaths[0]))
+						// console.log('JSON.stringify(resImg.tempFilePaths[0])',JSON.stringify(resImg.tempFilePaths[0]))
 							  uni.saveFile({
 							      tempFilePath: resImg.tempFilePaths[0],
 							      success: function (res) {
