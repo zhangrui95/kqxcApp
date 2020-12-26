@@ -9,6 +9,7 @@
 			    		 <cover-view class="kdNumberBox1" v-if="current === 0">已巡检：{{kdNum - errorNum - warnNum}}个</cover-view>
 			    		 <cover-view class="kdNumberBox2" v-if="week == 0 && current === 0">未巡检：{{errorNum}}个</cover-view>
 			    		 <cover-view class="kdNumberBox3" v-if="week !== 0 && current === 0">未巡检：{{warnNum}}个</cover-view>
+						 <cover-view class="buttonChart" v-if="current === 0" @click="goChart">统计分析</cover-view>
 			    	 </map>
 			     </view>
 				<view v-if="current === 1" class="listBox">
@@ -317,6 +318,11 @@
 				}
 				
 			},
+			goChart:function(){
+				uni.navigateTo({
+					url:'../chartsPage/chartsPage',
+				})
+			},
 			getList:function(uid){
 				uni.navigateTo({ 
 					url:'../inspectionList/inspectionList?uid='+uid,
@@ -501,6 +507,21 @@
 		background: #fff;
 		margin-bottom: 60px;
 		margin-top: 56px;
+	}
+	.buttonChart{
+		background: rgba(82,190,223,0.85);
+		position: fixed!important;
+		top: 170px!important;
+		right: -10px!important;
+		z-index: 999;
+		font-size: 16px;
+		color: #fff;
+		width: 130px;
+		height: 40px;
+		text-align: center;
+		line-height: 36px;
+		box-shadow:0px 0px 38px 0px rgba(194, 194, 194, 0.35);
+		border-radius: 10px;
 	}
 	.kdNumberBoxAll{
 		background: rgba(255,255,255,0.85);

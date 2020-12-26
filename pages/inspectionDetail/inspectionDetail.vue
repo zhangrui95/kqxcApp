@@ -10,7 +10,7 @@
 				</view>
 			</uni-list-item>
 			<uni-list-item :showArrow="false">
-				<view class='address'>责任人：{{record&&record.fzr_xm ? record.fzr_xm : ''}}</view>
+				<view class='address'>责任人：{{record&&record.fzr_xm ? record.fzr_xm : '暂无'}}</view>
 			</uni-list-item>
 			<uni-list-item :showArrow="false">
 				<view class='address'>执行人：{{item.xm}}</view>

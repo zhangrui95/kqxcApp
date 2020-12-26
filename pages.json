@@ -225,6 +225,14 @@
             }
             
         }
+        ,{
+            "path" : "pages/chartsPage/chartsPage",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "统计"
+            }
+            
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "white",
