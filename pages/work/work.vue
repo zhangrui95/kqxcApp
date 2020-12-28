@@ -9,6 +9,7 @@
 			    		 <cover-view class="kdNumberBox1" v-if="current === 0">已巡检：{{kdNum - errorNum - warnNum}}个</cover-view>
 			    		 <cover-view class="kdNumberBox2" v-if="week == 0 && current === 0">未巡检：{{errorNum}}个</cover-view>
 			    		 <cover-view class="kdNumberBox3" v-if="week !== 0 && current === 0">未巡检：{{warnNum}}个</cover-view>
+						 <cover-image src="../../static/beijing.png" class="buttonChartBg"></cover-image>
 						 <cover-view class="buttonChart" v-if="current === 0" @click="goChart">统计分析</cover-view>
 			    	 </map>
 			     </view>
@@ -508,20 +509,29 @@
 		margin-bottom: 60px;
 		margin-top: 56px;
 	}
+	.buttonChartBg{
+		position: fixed!important;
+		top: 170px!important;
+		right: 0px!important;
+		z-index: 998;
+		width: 125px;
+		height: 42px;
+		right: -5px!important;
+	}
 	.buttonChart{
-		background: rgba(82,190,223,0.85);
 		position: fixed!important;
 		top: 170px!important;
 		right: -10px!important;
 		z-index: 999;
-		font-size: 16px;
+		font-size: 15px;
 		color: #fff;
 		width: 130px;
-		height: 40px;
+		height: 42px;
 		text-align: center;
-		line-height: 36px;
+		line-height: 38px;
 		box-shadow:0px 0px 38px 0px rgba(194, 194, 194, 0.35);
 		border-radius: 10px;
+		padding-left: 5px;
 	}
 	.kdNumberBoxAll{
 		background: rgba(255,255,255,0.85);

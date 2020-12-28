@@ -482,8 +482,8 @@
 								yj_zp:that.imgs.join('#'),
 								jj_zp:that.imgsJ.join('#'),
 								dsp:that.video ? that.video.join('#') : '',
-								yj_zp_net:that.imgsNet.join('#'),
-								jj_zp_net:that.imgsJNet.join('#'),
+								yj_zp_net:that.imgsNet && that.imgsNet.length > 0 ? that.imgsNet.join('#') : '',
+								jj_zp_net:that.imgsJNet && that.imgsJNet.length > 0 ? that.imgsJNet.join('#') : '',
 								dsp_net:that.videoNet ? that.videoNet.join('#') : '',
 								is_ycdk:is_ycdk,
 						};
@@ -544,8 +544,8 @@
 								yj_zp:that.imgs.join('#'),
 								jj_zp:that.imgsJ.join('#'),
 								dsp:that.video ? that.video.join('#') : '',
-								yj_zp_net:that.imgsNet.join('#'),
-								jj_zp_net:that.imgsJNet.join('#'),
+								yj_zp_net:that.imgsNet && that.imgsNet.length > 0 ? that.imgsNet.join('#') : '',
+								jj_zp_net:that.imgsJNet && that.imgsJNet.length > 0 ? that.imgsJNet.join('#') : '',
 								dsp_net:that.videoNet ? that.videoNet.join('#') : '',
 								is_ycdk:is_ycdk,
 						};

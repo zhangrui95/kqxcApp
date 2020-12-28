@@ -100,7 +100,7 @@
 						let jjList = [];
 						let videoList = [];
 						detail.yj_zp_net.split('#').map((item)=>{
-							if(item.includes('http')){
+							if(item.includes('http')){ 
 								yjList.push(item)
 							}else{
 								yjList.push('http://'+ item);

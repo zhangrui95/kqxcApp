@@ -42,7 +42,7 @@
 	import uniTag from "@/components/uni-tag/uni-tag.vue"
 	import uniBadge from "@/components/uni-badge/uni-badge.vue"
 	import uniNoticeBar from '@/components/uni-notice-bar/uni-notice-bar.vue'
-	import {deleteUpLoad,getXjDataUpLoad,getKsData,setKsData,getConfig,getXjData,setXjData,getWtData,setWtData,getUsersData,setUsersData,setKsAllData,setXjAllData} from '../common/env.js'
+	import {deleteUpLoad,getXjDataUpLoad,getKsData,setKsData,getConfig,getXjData,setXjData,getWtData,setWtData,getUsersData,setKsAllData,setXjAllData} from '../common/env.js'
 	import io from '@hyoga/uni-socket.io';
 	let socket = '';
 	export default {
@@ -128,7 +128,7 @@
 						if(res.networkType !== 'none' &&  res.networkType !== '2g' &&  res.networkType !== '3g'){
 							that.network = true;
 							that.getUpload(()=>{
-								// that.getListYh();
+								// that.getListYh(); 
 								that.getAllXj();
 								that.getXj();
 								that.getWt();
@@ -381,9 +381,6 @@
 																					method:'POST',
 																					 success: (res) => {
 																						 if(res.data.data && !res.data.error){
-																							 setTimeout(()=>{
-																								uni.hideLoading();
-																							 },1200)
 																							 setXjAllData([dataItem],(res)=>{});
 																							 setXjData([dataItem],(res)=>{});
 																							 deleteUpLoad(`DELETE FROM xjDataUpLoad WHERE id = '${item.id}'`,(res)=>{
@@ -452,9 +449,6 @@
 							setKsData(res.data.data,(res)=>{//存矿山
 								this.getListKs();
 							});
-							setTimeout(()=>{
-								uni.hideLoading();
-							},1200);
 						} 
 				    }
 				});
@@ -470,10 +464,9 @@
 					method:'POST',
 				    success: (res) => {
 						if(res.data.data && !res.data.error){
-							setKsAllData(res.data.data,(res)=>{});
-							setTimeout(()=>{
+							setKsAllData(res.data.data,(res)=>{
 								uni.hideLoading();
-							},1200);
+							});
 						} 
 				    }
 				});
@@ -582,7 +575,7 @@
 							this.text = `当前周期${this.start}~${this.end}${dh1}${yqText}${dh}${warnText}。${isWc}`;	
 						}	
 						uni.hideLoading();
-					},1200);
+					},800);
 				});
 			},
 			// getListYh:function(){
@@ -611,9 +604,6 @@
 			getListWt:function(){
 				getWtData('select * from wtData',(data)=>{
 					this.wtList = data;
-					setTimeout(()=>{
-						uni.hideLoading();
-					},1200);
 				});
 			},
 			getXj:function(){
@@ -635,9 +625,6 @@
 								let text = this.isOk ? '本周期巡检任务您已完成。' : '';
 								this.textZz = '当前周期：'+this.start+'~'+this.end+'。' + '当前周期内已巡检'+res.data.data.length + '次。' + text;
 							}
-							setTimeout(()=>{
-								uni.hideLoading();
-							},1200);
 						} 
 				    }
 				});
@@ -655,9 +642,6 @@
 						if(res.data.data && !res.data.error){
 							setXjAllData(res.data.data,(res)=>{//存巡查记录
 							});
-							setTimeout(()=>{
-								uni.hideLoading();
-							},1200);
 						} 
 				    }
 				});
@@ -676,9 +660,6 @@
 						  setWtData(res.data.data,(res)=>{//存委托
 						  	this.getListWt();
 						  });
-						  setTimeout(()=>{
-						  	uni.hideLoading();
-						  },1200);
 						} 
 				    }
 				});

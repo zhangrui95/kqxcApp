@@ -15,22 +15,24 @@ function openComDB(name, path, callback) {
 
 // setKsData 矿山列表
 function setKsData(data,callback){
+	let list = [];
+	data.map((item)=>{
+		list.push("('" + item.id + "', '" + item.fzr_id + "', '" + item.dz + "', '" + item.jd + "', '" + item.mc+ "', '" + item.ms + "', '" + item.wd + "')");
+	});
 	plus.sqlite.executeSql({
 		name: 'kqxj',
 		sql: 'create table if not exists ksData("id" CHAR(100) PRIMARY KEY,"fzr_id" CHAR(100),"dz" CHAR(100),"jd" CHAR(100),"mc" CHAR(100),"ms" CHAR(100),"wd" CHAR(100))',//id,name,password,is_admin
 		success: function(e){
-			data.map((item)=>{
-				plus.sqlite.executeSql({
-					name: 'kqxj',
-					sql: "insert or replace into ksData(id,fzr_id, dz, jd, mc, ms, wd) values('" + item.id + "', '" + item.fzr_id + "', '" + item.dz + "', '" + item.jd + "', '" + item.mc+ "', '" + item.ms + "', '" + item.wd + "')",
-					success: function(e){
-						callback({error:null});
-					},
-					fail: function(e){
-						callback({error:JSON.stringify(e)})
-					}
-				});
-			})
+			plus.sqlite.executeSql({
+				name: 'kqxj',
+				sql: "insert or replace into ksData(id,fzr_id, dz, jd, mc, ms, wd) values" + list.toString(),
+				success: function(e){
+					callback({error:null});
+				},
+				fail: function(e){
+					callback({error:JSON.stringify(e)})
+				}
+			});
 		}, 
 		fail: function(e){
 		
@@ -52,22 +54,24 @@ function getKsData(sql, callback){
 }	
 // setKsData 全部矿山列表
 function setKsAllData(data,callback){
+	let list = [];
+	data.map((item)=>{
+		list.push("('" + item.id + "', '" + item.fzr_id + "', '" + item.dz + "', '" + item.jd + "', '" + item.mc+ "', '" + item.ms + "', '" + item.wd+ "', '" + item.visible + "', '"  + item.dz_dm + "')");
+	});
 	plus.sqlite.executeSql({
 		name: 'kqxj',
 		sql: 'create table if not exists ksAllData("id" CHAR(100) PRIMARY KEY,"fzr_id" CHAR(100),"dz" CHAR(100),"jd" CHAR(100),"mc" CHAR(100),"ms" CHAR(100),"wd" CHAR(100),"visible" CHAR(100),"dz_dm" CHAR(100))',//id,name,password,is_admin
 		success: function(e){
-			data.map((item)=>{
-				plus.sqlite.executeSql({
-					name: 'kqxj',
-					sql: "insert or replace into ksAllData(id,fzr_id, dz, jd, mc, ms, wd, visible,dz_dm) values('" + item.id + "', '" + item.fzr_id + "', '" + item.dz + "', '" + item.jd + "', '" + item.mc+ "', '" + item.ms + "', '" + item.wd+ "', '" + item.visible + "', '"  + item.dz_dm + "')",
-					success: function(e){
-						callback({error:null});
-					},
-					fail: function(e){
-						callback({error:JSON.stringify(e)})
-					}
-				});
-			})
+			plus.sqlite.executeSql({
+				name: 'kqxj',
+				sql: "insert or replace into ksAllData(id,fzr_id, dz, jd, mc, ms, wd, visible,dz_dm) values" + list.toString(),
+				success: function(e){
+					callback({error:null});
+				},
+				fail: function(e){
+					callback({error:JSON.stringify(e)})
+				}
+			});
 		}, 
 		fail: function(e){
 		}
@@ -122,22 +126,24 @@ function getConfig(sql, callback){
 }		
 // setXjData巡查记录
 function setXjData(data,callback){ 
+	let list = [];
+	data.map((item)=>{
+		list.push("('" + item.id + "', '" + item.ks_id+ "', '"+ item.is_ycdk+ "', '"+ item.is_dtxc+ "', '" + item.users_id + "', '" + item.kczt_dm + "', '" + item.yczt_dm+ "', '" + item.bz+ "', '" + item.dk_sj+ "', '" + item.dk_jd+ "', '" + item.dk_wd+ "', '" + item.dk_device+ "', '" + item.yj_zp + "', '"+ item.jj_zp + "', '"+ item.yj_zp_net + "', '" + item.jj_zp_net+ "', '" + item.dsp+ "', '" + item.dsp_net + "')");
+	});
 	plus.sqlite.executeSql({
 		name: 'kqxj',
 		sql: 'create table if not exists xjData("id" CHAR(100) PRIMARY KEY,"ks_id" CHAR(100),"is_ycdk" CHAR(100),"is_dtxc" CHAR(100),"users_id" CHAR(100),"kczt_dm" CHAR(100),"yczt_dm" CHAR(100),"bz" CHAR(100),"dk_sj" CHAR(100),"dk_jd" CHAR(100),"dk_wd" CHAR(100),"dk_device" CHAR(100),"yj_zp" CHAR(100),"jj_zp" CHAR(100),"yj_zp_net" CHAR(100),"jj_zp_net" CHAR(100),"dsp" CHAR(100),"dsp_net" CHAR(100))',//id,name,password,is_admin
 		success: function(e){
-			data.map((item)=>{
-				plus.sqlite.executeSql({
-					name: 'kqxj',
-					sql: "insert or replace into xjData(id, ks_id, is_ycdk, is_dtxc, users_id, kczt_dm, yczt_dm, bz,dk_sj,dk_jd,dk_wd,dk_device,yj_zp,jj_zp,yj_zp_net,jj_zp_net,dsp,dsp_net) values('" + item.id + "', '" + item.ks_id+ "', '"+ item.is_ycdk+ "', '"+ item.is_dtxc+ "', '" + item.users_id + "', '" + item.kczt_dm + "', '" + item.yczt_dm+ "', '" + item.bz+ "', '" + item.dk_sj+ "', '" + item.dk_jd+ "', '" + item.dk_wd+ "', '" + item.dk_device+ "', '" + item.yj_zp + "', '"+ item.jj_zp + "', '"+ item.yj_zp_net + "', '" + item.jj_zp_net+ "', '" + item.dsp+ "', '" + item.dsp_net + "')",
-					success: function(e){
-						callback({error:null});
-					},
-					fail: function(e){
-						callback({error:JSON.stringify(e)})
-					}
-				});
-			})
+			plus.sqlite.executeSql({
+				name: 'kqxj',
+				sql: "insert or replace into xjData(id, ks_id, is_ycdk, is_dtxc, users_id, kczt_dm, yczt_dm, bz,dk_sj,dk_jd,dk_wd,dk_device,yj_zp,jj_zp,yj_zp_net,jj_zp_net,dsp,dsp_net) values"+list.toString(),
+				success: function(e){
+					callback({error:null});
+				},
+				fail: function(e){
+					callback({error:JSON.stringify(e)})
+				}
+			});
 		}, 
 		fail: function(e){
 		}
@@ -145,22 +151,24 @@ function setXjData(data,callback){
 }
 // setXjAllData全部巡查记录
 function setXjAllData(data,callback){ 
+	let list = [];
+	data.map((item)=>{
+		list.push("('" + item.id + "', '" + item.ks_id+ "', '" + item.is_ycdk+ "', '"+ item.is_dtxc+ "', '" + item.users_id + "', '" + item.kczt_dm + "', '" + item.yczt_dm+ "', '" + item.bz+ "', '" + item.dk_sj+ "', '" + item.dk_jd+ "', '" + item.dk_wd+ "', '" + item.dk_device+ "', '" + item.yj_zp + "', '"+ item.jj_zp + "', '"+ item.yj_zp_net + "', '" + item.jj_zp_net + "', '" + item.dsp+ "', '" + item.dsp_net + "')");
+	});
 	plus.sqlite.executeSql({
 		name: 'kqxj',
 		sql: 'create table if not exists xjAllData("id" CHAR(100) PRIMARY KEY,"ks_id" CHAR(100),"is_ycdk" CHAR(100),"is_dtxc" CHAR(100),"users_id" CHAR(100),"kczt_dm" CHAR(100),"yczt_dm" CHAR(100),"bz" CHAR(100),"dk_sj" CHAR(100),"dk_jd" CHAR(100),"dk_wd" CHAR(100),"dk_device" CHAR(100),"yj_zp" CHAR(100),"jj_zp" CHAR(100),"yj_zp_net" CHAR(100),"jj_zp_net" CHAR(100),"dsp" CHAR(100),"dsp_net" CHAR(100))',//id,name,password,is_admin
 		success: function(e){
-			data.map((item)=>{
-				plus.sqlite.executeSql({
-					name: 'kqxj',
-					sql: "insert or replace into xjAllData(id, ks_id,is_ycdk,is_dtxc,users_id, kczt_dm, yczt_dm, bz,dk_sj,dk_jd,dk_wd,dk_device,yj_zp,jj_zp,yj_zp_net,jj_zp_net,dsp,dsp_net) values('" + item.id + "', '" + item.ks_id+ "', '" + item.is_ycdk+ "', '"+ item.is_dtxc+ "', '" + item.users_id + "', '" + item.kczt_dm + "', '" + item.yczt_dm+ "', '" + item.bz+ "', '" + item.dk_sj+ "', '" + item.dk_jd+ "', '" + item.dk_wd+ "', '" + item.dk_device+ "', '" + item.yj_zp + "', '"+ item.jj_zp + "', '"+ item.yj_zp_net + "', '" + item.jj_zp_net + "', '" + item.dsp+ "', '" + item.dsp_net + "')",
-					success: function(e){
-						callback({error:null});
-					},
-					fail: function(e){
-						callback({error:JSON.stringify(e)})
-					}
-				});
-			})
+			plus.sqlite.executeSql({
+				name: 'kqxj',
+				sql: "insert or replace into xjAllData(id, ks_id,is_ycdk,is_dtxc,users_id, kczt_dm, yczt_dm, bz,dk_sj,dk_jd,dk_wd,dk_device,yj_zp,jj_zp,yj_zp_net,jj_zp_net,dsp,dsp_net) values"+list.toString(),
+				success: function(e){
+					callback({error:null});
+				},
+				fail: function(e){
+					callback({error:JSON.stringify(e)})
+				}
+			});
 		}, 
 		fail: function(e){
 		}
@@ -234,22 +242,24 @@ function deleteUpLoad(sql, callback){
 }
 //setWtData 委托列表
 function setWtData(data,callback){
+	let list = [];
+	data.map((item)=>{
+		list.push("('" + item.id + "', '" + item.ks_id + "', '" + item.wt_sj + "', '" + item.fqr_id + "', '" + item.bwtr_id + "', '" + item.wtzt_dm + "', '" + item.wtzt_mc + "')");
+	});
 	plus.sqlite.executeSql({
 		name: 'kqxj',
 		sql: 'create table if not exists wtData("id" CHAR(100) PRIMARY KEY,"ks_id" CHAR(100),"wt_sj" CHAR(100),"fqr_id" CHAR(100),"bwtr_id" CHAR(100),"wtzt_dm" CHAR(100),"wtzt_mc" CHAR(100))',
 		success: function(e){
-			data.map((item)=>{
-				plus.sqlite.executeSql({
-					name: 'kqxj',
-					sql: "insert or replace into wtData(id, ks_id, wt_sj, fqr_id, bwtr_id,wtzt_dm,wtzt_mc) values('" + item.id + "', '" + item.ks_id + "', '" + item.wt_sj + "', '" + item.fqr_id + "', '" + item.bwtr_id + "', '" + item.wtzt_dm + "', '" + item.wtzt_mc + "')",
-					success: function(e){
-						callback({error:null});
-					},
-					fail: function(e){
-						callback({error:JSON.stringify(e)})
-					}
-				});
-			})
+			plus.sqlite.executeSql({
+				name: 'kqxj',
+				sql: "insert or replace into wtData(id, ks_id, wt_sj, fqr_id, bwtr_id,wtzt_dm,wtzt_mc) values" + list.toString(),
+				success: function(e){
+					callback({error:null});
+				},
+				fail: function(e){
+					callback({error:JSON.stringify(e)})
+				}
+			});
 		}, 
 		fail: function(e){
 		}
@@ -270,22 +280,24 @@ function getWtData(sql, callback){
 }	
 //setUsersData 用户列表
 function setUsersData(data,callback){
+	let list = [];
+	data.map((item)=>{
+		list.push("('" + item.id + "', '" + item.xm + "', '" + item.lxdh + "', '" + item.is_admin + "', '"+ item.is_zz + "', '" + item.dw_mc + "', '" + item.zw_mc + "', '" + item.org_id + "', '" + item.org_name + "', '" + item.fkr_id + "')");
+	});
 	plus.sqlite.executeSql({
 		name: 'kqxj',
 		sql: 'create table if not exists usersData("id" CHAR(100) PRIMARY KEY,"xm" CHAR(100),"lxdh" CHAR(100),"is_admin" CHAR(100),"is_zz" CHAR(100),"dw_mc" CHAR(100),"zw_mc" CHAR(100),"org_id" CHAR(100),"org_name" CHAR(100),"fkr_id" CHAR(100))',
 		success: function(e){
-			data.map((item)=>{
-				plus.sqlite.executeSql({
-					name: 'kqxj',
-					sql: "insert or replace into usersData(id, xm, lxdh, is_admin, is_zz, dw_mc,zw_mc,org_id,org_name,fkr_id) values('" + item.id + "', '" + item.xm + "', '" + item.lxdh + "', '" + item.is_admin + "', '"+ item.is_zz + "', '" + item.dw_mc + "', '" + item.zw_mc + "', '" + item.org_id + "', '" + item.org_name + "', '" + item.fkr_id + "')",
-					success: function(e){
-						callback({error:null});
-					},
-					fail: function(e){
-						callback({error:JSON.stringify(e)})
-					}
-				});
-			})
+			plus.sqlite.executeSql({
+				name: 'kqxj',
+				sql: "insert or replace into usersData(id, xm, lxdh, is_admin, is_zz, dw_mc,zw_mc,org_id,org_name,fkr_id) values"+list.toString(),
+				success: function(e){
+					callback({error:null});
+				},
+				fail: function(e){
+					callback({error:JSON.stringify(e)})
+				}
+			});
 		}, 
 		fail: function(e){
 		}
@@ -306,22 +318,24 @@ function getUsersData(sql, callback){
 }
 //setUsersData 用户列表
 function setUsersAllData(data,callback){
+	let list = [];
+	data.map((item)=>{
+		list.push("('" + item.id + "', '" + item.xm + "', '" + item.lxdh + "', '" + item.is_admin + "', '"+ item.is_zz + "', '" + item.dw_mc + "', '" + item.zw_mc + "', '" + item.org_id + "', '" + item.org_name +"', '" + item.fkr_id + "')");
+	});
 	plus.sqlite.executeSql({
 		name: 'kqxj',
 		sql: 'create table if not exists usersAllData("id" CHAR(100) PRIMARY KEY,"xm" CHAR(100),"lxdh" CHAR(100),"is_admin" CHAR(100),"is_zz" CHAR(100),"dw_mc" CHAR(100),"zw_mc" CHAR(100),"org_id" CHAR(100),"org_name" CHAR(100),"fkr_id" CHAR(100))',
 		success: function(e){
-			data.map((item)=>{
-				plus.sqlite.executeSql({
-					name: 'kqxj',
-					sql: "insert or replace into usersAllData(id, xm, lxdh, is_admin, is_zz, dw_mc,zw_mc,org_id,org_name,fkr_id) values('" + item.id + "', '" + item.xm + "', '" + item.lxdh + "', '" + item.is_admin + "', '"+ item.is_zz + "', '" + item.dw_mc + "', '" + item.zw_mc + "', '" + item.org_id + "', '" + item.org_name +"', '" + item.fkr_id + "')",
-					success: function(e){
-						callback({error:null});
-					},
-					fail: function(e){
-						callback({error:JSON.stringify(e)})
-					}
-				});
-			})
+			plus.sqlite.executeSql({
+				name: 'kqxj',
+				sql: "insert or replace into usersAllData(id, xm, lxdh, is_admin, is_zz, dw_mc,zw_mc,org_id,org_name,fkr_id) values"+list.toString(),
+				success: function(e){
+					callback({error:null});
+				},
+				fail: function(e){
+					callback({error:JSON.stringify(e)})
+				}
+			});
 		}, 
 		fail: function(e){
 		}
