@@ -1,8 +1,12 @@
 <template>
 	<view>
-		<uni-list>
+		 <map style="width: 100%; height: 180px;" :latitude="latitude" :longitude="longitude" :markers="covers"></map>
+		<uni-list class="listBox">
 			<uni-list-item :showArrow="false">
-				<view class="name">{{item.dk_sj.substring(0,10)}}</view>
+				<view class="name">
+					<text class="topName">{{item.mc}}</text>
+					<text class="topTime">{{item.dk_sj.substring(0,10)}}</text>
+				</view>
 			</uni-list-item>
 			<uni-list-item :showArrow="false">
 				<view class="address"><text style="float: left;">巡查时间：{{item.dk_sj.substring(11,19)}}</text>
@@ -71,6 +75,11 @@
 				videoList:[],
 				playUrl:'',
 				isUpload:false,
+				latitude: '',
+				longitude: '',
+				latitudeText: '',
+				longitudeText: '',
+				covers: []
 			}
 		},
 		onBackPress:function(event){
@@ -90,6 +99,16 @@
 			}else{
 				this.record = {fzr_xm:detail&&detail.fzr_xm ? detail.fzr_xm : ''};
 			}
+			console.log('detail==========>',detail);
+			let coord02 = this.transform(Number(detail.dk_jd),Number(detail.dk_wd));
+			console.log('coord02======>',coord02[0],coord02[0]);
+			this.longitude = coord02[0];
+			this.latitude = coord02[1];
+			this.covers = [{
+				latitude: coord02[1],
+				longitude: coord02[0],
+				iconPath: '/static/gpsDetail.png'
+			}];
 			this.item = detail;
 			let that = this;
 			uni.getNetworkType({
@@ -155,12 +174,56 @@
 				// uni.navigateTo({
 				// 	 url: '../bigImg/bigImg'
 				// })
-			}
+			},
+			transform(lon, lat){
+			        const pi = 3.1415926535897932384626;
+			        const a = 6378245.0;
+			        const ee = 0.00669342162296594323;
+			
+			        let dLat = this.transformLat(lon - 105.0, lat - 35.0);
+			        let dLon = this.transformLon(lon - 105.0, lat - 35.0);
+			
+			        const radLat = (lat / 180.0) * pi;
+			        let magic = Math.sin(radLat);
+			        magic = 1 - ee * magic * magic;
+			        const sqrtMagic = Math.sqrt(magic);
+			
+			        dLat = (dLat * 180.0) / (((a * (1 - ee)) / (magic * sqrtMagic)) * pi);
+			        dLon = (dLon * 180.0) / ((a / sqrtMagic) * Math.cos(radLat) * pi);
+			
+			        const mgLat = lat + dLat;
+			        const mgLon = lon + dLon;
+			
+			        return [mgLon, mgLat];
+			},
+			transformLat(x, y) {
+					const pi = 3.1415926535897932384626;
+					let ret =
+						-100.0 + 2.0 * x + 3.0 * y + 0.2 * y * y + 0.1 * x * y + 0.2 * Math.sqrt(Math.abs(x));
+					ret += ((20.0 * Math.sin(6.0 * x * pi) + 20.0 * Math.sin(2.0 * x * pi)) * 2.0) / 3.0;
+					ret += ((20.0 * Math.sin(y * pi) + 40.0 * Math.sin((y / 3.0) * pi)) * 2.0) / 3.0;
+					ret +=
+						((160.0 * Math.sin((y / 12.0) * pi) + 320.0 * Math.sin((y * pi) / 30.0)) * 2.0) / 3.0;
+					return ret;
+			},
+			transformLon(x, y){
+					const pi = 3.1415926535897932384626;
+					let ret = 300.0 + x + 2.0 * y + 0.1 * x * x + 0.1 * x * y + 0.1 * Math.sqrt(Math.abs(x));
+					ret += ((20.0 * Math.sin(6.0 * x * pi) + 20.0 * Math.sin(2.0 * x * pi)) * 2.0) / 3.0;
+					ret += ((20.0 * Math.sin(x * pi) + 40.0 * Math.sin((x / 3.0) * pi)) * 2.0) / 3.0;
+					ret +=
+						((150.0 * Math.sin((x / 12.0) * pi) + 300.0 * Math.sin((x * pi) / 30.0)) * 2.0) / 3.0;
+					return ret;
+			},
 		}
 	}
 </script>
 
 <style>
+	.listBox{
+		background: #fff;
+		margin-top: -8px;
+	}
 	.uni-tag--primary{
 		float: left;
 		background: #41BEF9!important;
@@ -235,6 +298,17 @@
 	}
 	.name{
 		color: #000000;
+	}
+	.topName{
+		float: left;
+		width: 70%;
+	}
+	.topTime{
+		color: #999;
+		float: right;
+		width: 30%;
+		font-size: 16px;
+		text-align: right;
 	}
 	.address{
 		font-size: 14px;
