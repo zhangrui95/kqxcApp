@@ -9,17 +9,22 @@
 					 <cover-view class="kdNumberBox1">已巡检：{{kdNum - errorNum - warnNum}}个</cover-view>
 					 <cover-view class="kdNumberBox2" v-if="week == 0">未巡检：{{errorNum}}个</cover-view>
 					 <cover-view class="kdNumberBox3" v-if="week !== 0">未巡检：{{warnNum}}个</cover-view>
-					  <cover-view class="box">矿山名称：{{kdDetail.mc}}</cover-view>
-					  <cover-image src="~@/static/topJt.png" class="imageTopJt"></cover-image>
+					 <cover-view class="box">矿山名称：{{kdDetail.mc}}</cover-view>
+					 <cover-image src="~@/static/topJt.png" class="imageTopJt"></cover-image>
+					 <cover-view class="zrrBox" :style="{height: xjrHeight + 40 + 'px'}"></cover-view>
+					 <cover-image src="~@/static/zrr.png" class="imageFzr"></cover-image>
+					 <cover-image src="~@/static/xjr.png" class="imageXjr"></cover-image>
+					 <cover-view class="fzrText">责任人：{{kdDetail.fzr_xm ? kdDetail.fzr_xm : '暂无'}}</cover-view>
+					 <cover-view class="xjrText" :style="{height: xjrHeight + 'px'}">巡检人：{{yhName}}</cover-view>
 			     </map>
 			 </view>
 			 <view class="listBox" :style="{height: listHeight + 'px'}">
 				 <uni-list>
 				     <uni-list-item :show-arrow="false" class="nohover">
-						 <view class="msgBox">
-						 	<text class="leftBox">负责人：{{kdDetail.fzr_xm ? kdDetail.fzr_xm : '暂无'}}</text>
+						 <!-- <view class="msgBox"> -->
+						 	<!-- <text class="leftBox">负责人：{{kdDetail.fzr_xm ? kdDetail.fzr_xm : '暂无'}}</text> -->
 						 	<!-- <text class="rightBox">巡查人：王二</text> -->
-						 </view>
+						 <!-- </view> -->
 					 </uni-list-item>
 					  <view>
 					         <uni-segmented-control :current="current" :values="items" @clickItem="onClickItem" style-type="button" active-color="#172f87"></uni-segmented-control>
@@ -75,7 +80,7 @@
 		data() {
 			 return {
 			      id:0, // 使用 marker点击事件 需要填写id
-						height:250,
+						height:400,
 			            title: 'map',
 						scale:18,
 			            latitude: 45.21071,
@@ -89,6 +94,8 @@
 						list:[],
 						yjList:[],
 						yhList:[],
+						yhName:'',
+						xjrHeight:60,
 						week:moment().day(),
 						text:'',
 						 items: moment().day() == 0 ? ['历史巡查记录','人员列表','告警记录'] : ['历史巡查记录','人员列表','预警记录'],
@@ -103,13 +110,13 @@
 					this.errorNum = option.errorNum;
 					this.warnNum = option.warnNum;
 					// this.yjList = JSON.parse(option.yjList);
-					this.latitude= cover.latitude + 0.0012;
+					this.latitude= cover.latitude + 0.0027;
 					this.longitude = cover.longitude;
 					this.covers = [cover];
 					let that = this;
 					uni.getSystemInfo({
 						success:function(res) {
-							that.listHeight = res.windowHeight - 250
+							that.listHeight = res.windowHeight - 400
 						}
 					})
 					getKsAllData(`select A.*, B.xm as fzr_xm from ksAllData A LEFT JOIN usersAllData B ON A.fzr_id = B.id where A.id = '${cover.id}'`,(data)=>{
@@ -143,6 +150,13 @@
 								    return preVal 
 								}, []);
 								this.yhList = data2;
+								let yhName = [];
+								data2.map((item)=>{
+									yhName.push(item.xm);
+								});
+								this.yhName = yhName.toString();
+								console.log('Math.ceil(yhName.length / 7)',this.yhName.length); 
+								this.xjrHeight = Math.ceil((this.yhName.length+4) / 8) * 20; 
 								let list = [];
 								let successList = [];
 								res.data.data.map((item)=>{
@@ -184,7 +198,7 @@
 				let longitude = this.covers[e.detail.markerId].longitude;
 				this.longitude = longitude;
 				this.latitude = latitude;
-				this.height = 200;
+				this.height = 400;
 			},
 			getDetail:function(item){
 				uni.navigateTo({
@@ -317,6 +331,49 @@
 		height: 80px;
 		box-shadow:0px 0px 38px 0px rgba(194, 194, 194, 0.35);
 		border-radius: 10px;
+	}
+	.zrrBox{
+		background: rgba(0,0,0,0.6);
+		position: absolute!important;
+		top: 200px!important;
+		right: 10px!important;
+		z-index: 99;
+		font-size: 14px;
+		line-height: 22px;
+		width: 150px;
+		height: 80px;
+		box-shadow:0px 0px 38px 0px rgba(194, 194, 194, 0.35);
+		border-radius: 10px;
+	}
+	.fzrText,.xjrText{
+		color: #fff;
+		position: absolute!important;
+		top: 210px!important;
+		right: 20px!important;
+		z-index: 100;
+		font-size: 14px;
+		width: 100px;
+		height: 60px;
+	}
+	.xjrText{
+		top: 230px!important;
+		white-space: normal;
+		word-break: break-all;
+		word-wrap:break-word;
+		/* white-space:pre-line; */
+	}
+	.imageFzr,.imageXjr{
+		position: absolute!important;
+		top: 210px!important;
+		right: 125px!important;
+		z-index: 100;
+		width: 18px;
+		height: 18px;
+	}
+	.imageXjr{
+		width: 20px;
+		height: 18px;
+		top: 230px!important;
 	}
 	.kdNumberBox{
 		position: absolute!important;

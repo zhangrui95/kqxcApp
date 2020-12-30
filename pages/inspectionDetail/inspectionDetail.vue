@@ -1,6 +1,6 @@
 <template>
 	<view>
-		 <map style="width: 100%; height: 180px;" :latitude="latitude" :longitude="longitude" :markers="covers"></map>
+		<map v-if="mapShow" style="width: 100%; height: 180px;" :latitude="latitude" :longitude="longitude" :markers="covers"></map>
 		<uni-list class="listBox">
 			<uni-list-item :showArrow="false">
 				<view class="name">
@@ -79,7 +79,8 @@
 				longitude: '',
 				latitudeText: '',
 				longitudeText: '',
-				covers: []
+				covers: [],
+				mapShow: true,
 			}
 		},
 		onBackPress:function(event){
@@ -100,15 +101,19 @@
 				this.record = {fzr_xm:detail&&detail.fzr_xm ? detail.fzr_xm : ''};
 			}
 			console.log('detail==========>',detail);
-			let coord02 = this.transform(Number(detail.dk_jd),Number(detail.dk_wd));
-			console.log('coord02======>',coord02[0],coord02[0]);
-			this.longitude = coord02[0];
-			this.latitude = coord02[1];
-			this.covers = [{
-				latitude: coord02[1],
-				longitude: coord02[0],
-				iconPath: '/static/gpsDetail.png'
-			}];
+			if(detail.dk_jd && detail.dk_wd){
+				let coord02 = this.transform(Number(detail.dk_jd),Number(detail.dk_wd));
+				console.log('coord02======>',coord02[0],coord02[0]);
+				this.longitude = coord02[0];
+				this.latitude = coord02[1];
+				this.covers = [{
+					latitude: coord02[1],
+					longitude: coord02[0],
+					iconPath: '/static/gpsDetail.png'
+				}];
+			}else{
+				this.mapShow = false;
+			}
 			this.item = detail;
 			let that = this;
 			uni.getNetworkType({
