@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<map v-if="mapShow" style="width: 100%; height: 180px;" :latitude="latitude" :longitude="longitude" :markers="covers"></map>
+		<map v-if="mapShow" scale="15" style="width: 100%; height: 180px;" :latitude="latitude" :longitude="longitude" :markers="covers" :circles="circles"></map>
 		<uni-list class="listBox">
 			<uni-list-item :showArrow="false">
 				<view class="name">
@@ -12,6 +12,9 @@
 				<view class="address"><text style="float: left;">巡查时间：{{item.dk_sj.substring(11,19)}}</text>
 					<uni-tag :text="item.is_ycdk == '1' ? '定位异常':item.is_ycdk == '2' ? '无定位' : '正常'" :type="item.is_ycdk == '1' ? 'error' : item.is_ycdk == '2' ? 'warning' : 'primary'"></uni-tag>
 				</view>
+			</uni-list-item>
+			<uni-list-item :showArrow="false">
+				<view class='address'>所属区划：{{record&&record.dz ? record.dz : '暂无'}}</view>
 			</uni-list-item>
 			<uni-list-item :showArrow="false">
 				<view class='address'>责任人：{{record&&record.fzr_xm ? record.fzr_xm : '暂无'}}</view>
@@ -64,6 +67,7 @@
 	import uniList from "@/components/uni-list/uni-list.vue"
 	import uniListItem from "@/components/uni-list-item/uni-list-item.vue"
 	import uniTag from "@/components/uni-tag/uni-tag.vue"
+	import {getConfig} from '../common/env.js'
 	export default {
 		data() {
 			return {
@@ -81,6 +85,8 @@
 				longitudeText: '',
 				covers: [],
 				mapShow: true,
+				circles:[],
+				max_dkjl:500,
 			}
 		},
 		onBackPress:function(event){
@@ -94,6 +100,11 @@
 		},
 		onLoad: function (option) { //option为object类型，会序列化上个页面传递的参数
 			// console.log('option.datail',option.detail); //打印出上个页面传递的参数。
+			getConfig('select * from config',(data)=>{
+				if(data && data[0] && data[0].max_dkjl){
+					  this.max_dkjl = max_dkjl;
+				}
+			});
 			let detail = JSON.parse(option.detail);
 			if(option.record){
 				this.record = JSON.parse(option.record);
@@ -102,15 +113,31 @@
 			}
 			console.log('detail==========>',detail);
 			if(detail.dk_jd && detail.dk_wd){
+				let cover = [];
 				let coord02 = this.transform(Number(detail.dk_jd),Number(detail.dk_wd));
-				console.log('coord02======>',coord02[0],coord02[0]);
 				this.longitude = coord02[0];
 				this.latitude = coord02[1];
-				this.covers = [{
+				if(detail.jd && detail.wd){
+					let coordKs = this.transform(Number(detail.jd),Number(detail.wd));
+					cover.push({
+					latitude: coordKs[1],
+					longitude: coordKs[0],
+					iconPath: '/static/map1.png'
+					});
+					this.circles = [{
+						latitude: coordKs[1],
+						longitude: coordKs[0],
+						radius:this.max_dkjl,
+						fillColor:'#73d2ff30',
+						color:'#73d2ff'
+					}]
+				}
+				cover.push({
 					latitude: coord02[1],
 					longitude: coord02[0],
 					iconPath: '/static/gpsDetail.png'
-				}];
+				});
+				this.covers = cover;
 			}else{
 				this.mapShow = false;
 			}

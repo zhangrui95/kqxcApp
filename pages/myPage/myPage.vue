@@ -36,6 +36,17 @@
 				</view>
 			</view>
 		</view>
+		<!-- <view class="newUpBox">
+			<view class="updateBg">
+				<view class="upText">1.修改部分Bug,体验更加的流畅</view>
+				<view class="upText">2.新增图表统计功能</view>
+				<view class="upText">3.功能优化</view>
+				<view class="newUpbtnBox">
+					<text class="noUpBtn">暂不更新</text>
+					<text class="upBtn">立即更新</text>
+				</view>
+			</view>
+		</view> -->
 	</view>
 </template>
 
@@ -274,5 +285,49 @@
 	.btnBox{
 		margin-top: 90px;
 		padding: 30px;
+	}
+	.newUpBox{
+		background: rgba(0,0,0,0.35);
+		width: 100%;
+		height: 100%;
+		position: fixed;
+		top: 0;
+		left: 0;
+		z-index: 999;
+	}
+	.updateBg{
+		width: 600upx;
+		height: 300upx;
+		margin-left: 75upx;
+		margin-top: 200upx;
+		background: url(../../static/updateBg.png) no-repeat top;
+		background-size: 100% 100%;
+		padding: 300upx 0 20upx;
+		line-height: 30px;
+		position: relative;
+	}
+	.upText{
+		padding: 0 40upx;
+	}
+	.newUpbtnBox{
+		position: absolute;
+		bottom: 0;
+		width: 100%;
+		height: 50px;
+		border-top: 1upx solid #ddd;
+		line-height: 50px;
+	}
+	.noUpBtn{
+		width: 50%;
+		float: left;
+		text-align: center;
+		color: #aaa;
+		border-right: 1upx solid #ddd;
+	}
+	.upBtn{
+		width: calc(50% - 1upx);
+		float: left;
+		text-align: center;
+		color: #00B7F0;
 	}
 </style>

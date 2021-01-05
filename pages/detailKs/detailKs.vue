@@ -59,13 +59,12 @@
 				}
 			});
 			// console.log('id',id)
-			getXjData(`SELECT A.*, B.xm, C.mc FROM xjData A LEFT JOIN usersData B ON A.users_id = B.id LEFT JOIN ksData C ON A.ks_id = C.id WHERE A.ks_id = '${id}' AND A.users_id = '${getApp().globalData.uid}' ORDER BY dk_sj DESC`,(data)=>{
-				// console.log('巡查记录======================callback====================>',data)
+			getXjData(`SELECT A.*, B.xm, C.mc, C.jd, C.wd, C.dz FROM xjData A LEFT JOIN usersData B ON A.users_id = B.id LEFT JOIN ksData C ON A.ks_id = C.id WHERE A.ks_id = '${id}' AND A.users_id = '${getApp().globalData.uid}' ORDER BY dk_sj DESC`,(data)=>{
 				this.list = data;
 			});
 		}, 
 		onShow:function(){
-			getXjData(`SELECT A.*, B.xm, C.mc FROM xjData A LEFT JOIN usersData B ON A.users_id = B.id LEFT JOIN ksData C ON A.ks_id = C.id WHERE A.ks_id = '${this.record.id}' AND A.users_id = '${getApp().globalData.uid}' ORDER BY dk_sj DESC`,(data)=>{
+			getXjData(`SELECT A.*, B.xm, C.mc, C.jd, C.wd, C.dz FROM xjData A LEFT JOIN usersData B ON A.users_id = B.id LEFT JOIN ksData C ON A.ks_id = C.id WHERE A.ks_id = '${this.record.id}' AND A.users_id = '${getApp().globalData.uid}' ORDER BY dk_sj DESC`,(data)=>{
 				this.list = data;
 			});
 		},

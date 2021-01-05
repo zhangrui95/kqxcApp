@@ -42,14 +42,14 @@
 						<view class="time"> 
 							<picker :range="searchList" mode="selector" :value="value" @change="bindDateChange" class="timePicker">
 									<view class="uni-input">{{searchList[value]}}</view>
+									<uni-icons type="arrowdown" size="16" color="#000" class="icon"></uni-icons>
 							</picker>  
-						    <uni-icons type="arrowdown" size="16" color="#000" class="icon"></uni-icons>
 						</view>
 						<view :class="disabled ? 'timeDisabled' : 'time'">
 							<picker :disabled="disabled" :range="areaList" mode="selector" :value="value1" @change="bindDateChange1" class="timePicker">
 									<view class="uni-input">{{areaList[value1]}}</view>
+									<uni-icons type="arrowdown" size="16" :color="disabled ? '#999' : '#000'" class="icon"></uni-icons>
 							</picker>  
-						    <uni-icons type="arrowdown" size="16" :color="disabled ? '#999' : '#000'" class="icon"></uni-icons>
 						</view>
 						<view class="pageAll">共{{ksList.length}}条记录</view>
 					</view>

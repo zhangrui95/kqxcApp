@@ -1,11 +1,12 @@
 <template>
 	<view class="box">
-		<view v-if="list&&list.length > 0">
+		<uni-segmented-control :current="current" :values="items" @clickItem="onClickItem" style-type="button" active-color="#172f87"></uni-segmented-control>
+		<view v-if="list&&list.length > 0&&current==0">
 			<view class="warnTop">
 				<uni-notice-bar @getmore="getMore" showIcon="true" single="true" :text="'当前周期:'+start+'~'+end" backgroundColor="#e6f7ff" color="#2998fe" :showGetMore="true" moreText="查看更多"></uni-notice-bar>
 				<!-- <uni-notice-bar v-if="textZz && is_zz=='1'" :speed="speed" scrollable="true" single="true" :text="textZz" backgroundColor="#e6f7ff" color="#2998fe"></uni-notice-bar> -->
 			</view>
-			<view class="listBox" :style="{marginTop:'30px'}">  
+			<view class="listBox" :style="{marginTop:'80px'}">  
 				<uni-list v-for="(item,index) in list">
 				    <uni-list-item :show-arrow="false" @click="goDetail(item)">
 						<view class="listTitle"><text :style="{color: item.zt === 'error' || item.zt === 'errors' ? '#f45619' : item.zt === 'warning' || item.zt === 'warnings' ? 'rgb(222, 140, 23)' : ' #000'}">{{item.mc}}</text>
@@ -32,7 +33,7 @@
 				</uni-list>
 			</view>
 		</view>
-		<view v-if="noList">
+		<view v-if="noList&&current==0">
 			<view class="ksxjBox" @click="goXc()">
 				<view class="ksxjName">马上巡查</view>
 				<!-- <view>{{newTime}}</view> -->
@@ -40,6 +41,7 @@
 			<view class="ckBtn" @click="getList()" >查看巡查记录 <text class="jtRight">>></text></view>
 			<view class="ycBtn" @click="goXc('01')" >异常反馈 <text class="jtRight">>></text></view>
 		</view>
+		<map class="" v-if="current==1" class="mapStyle" :style="{height:height+ 'px'}" :latitude="latitude" :longitude="longitude" :markers="covers" @markertap='detailShow' @labeltap='detailShow'></map>
 		<!-- <tabBar :pagePath="'/pages/index/index'" :num="num"></tabBar> -->
 	</view>
 </template>
@@ -86,6 +88,12 @@
 				isOk:false,
 				days:2,
 				noList:false,
+				items: ['列表展示','地图展示'],
+				current: 0,
+				height:0,
+				latitude: '',
+				longitude: '',
+				covers: []
 			}
 		},
 		onLoad: function () { //isLxLogin
@@ -121,8 +129,15 @@
 					this.days = moment(end).diff(today,'day') + 1;
 				}
 			});
+			 this.getLatlng();
+		},
+		onHide() {
+			clearInterval(this.time);
 		},
 		onShow() {
+			this.time = setInterval(()=>{
+				this.getLatlng();
+			}, 3000);
 			this.getListKs();
 			this.getListXj();
 			getWtData(` SELECT A.*, B.dz, B.mc, C.xm as wtr_xm, C.lxdh as wtr_lxdh FROM wtData A
@@ -143,6 +158,25 @@
 			});
 		},
 		methods: {
+			detailShow:function(e){
+				let index = this.covers.findIndex((item)=>{
+					return item.id === e.detail.markerId
+				})
+				this.goDetail();
+			},
+			onClickItem:function(e) {
+			   if (this.current !== e.currentIndex) {
+				   this.current = e.currentIndex;
+			   }
+			   let that = this;
+			   if(e.currentIndex == 1){
+				   uni.getSystemInfo({
+						success:function(res) {
+							that.height = res.windowHeight - 50;
+						}
+				   });
+			   }
+			},
 			getList:function(){
 				uni.navigateTo({
 					url:'../inspectionList/inspectionList',
@@ -420,11 +454,160 @@
 				    }
 				});
 			},
+			async getLatlng() {
+				let that = this;
+				let covers = [];
+				let getLatlngOnline = ()=>{
+					return new Promise((resolve, reject)=>{
+						uni.getLocation({
+							type: 'gcj02',
+							success: (res)=> {
+								resolve({lat: res.latitude, lng: res.longitude,isline:true})
+							},
+							fail: (error)=> {
+								uni.showToast({
+									title: '当前位置获取失败,请检查GPS是否打开',
+									duration: 2000,
+									icon: 'none'
+								});
+								reject();
+							}
+						});
+					});
+				}
+				let getLatlngOffline = ()=>{
+					return new Promise((resolve, reject)=>{
+						plus.geolocation.getCurrentPosition((res)=>{
+							resolve({lat: res.coords.latitude, lng: res.coords.longitude,isline:false});
+						}, (error)=>{
+							uni.showToast({
+								title: error.message,
+								duration: 2000,
+								icon: 'none'
+							});
+							reject();
+						},{provider:'system'});
+					});
+				}
+				return new Promise((resolve, reject)=>{
+					uni.getNetworkType({
+						success: async ({networkType})=>{
+							try{
+								let coord = networkType === 'none'?await getLatlngOffline():await getLatlngOnline();
+								if(coord.isline){
+									let coord84 = this.gcj02towgs84(coord.lng,coord.lat);
+									that.longitude = coord.lng;
+									that.latitude = coord.lat;
+									covers.push({
+										latitude: coord.lat,
+										longitude: coord.lng,
+										iconPath: '/static/gps1.png'
+									});
+									that.list.map((item)=>{
+										 let gps = that.transform(Number(item.jd),Number(item.wd));
+										 covers.push({
+											latitude: gps[1],
+											longitude: gps[0],
+											iconPath: item.zt == 'error' || item.zt == 'errors' ? '/static/map3.png' : item.zt == 'warnings' || item.zt == 'warning' ? '/static/map3.png' : '/static/map1.png',
+											label:{content:item.mc},
+											id:item.id,
+										 });
+									});
+									that.covers = covers;
+								}else{
+									let coord02 = this.transform(coord.lng,coord.lat);
+									that.longitude = coord02[0];
+									that.latitude = coord02[1];
+									covers.push({
+										latitude: coord02[1],
+										longitude: coord02[0],
+										iconPath: '/static/gps1.png'
+									});
+									that.list.map((item)=>{
+										 let gps = that.transform(Number(item.jd),Number(item.wd));
+										 covers.push({
+											latitude: gps[1],
+											longitude:gps[0],
+											iconPath: item.zt == 'error' || item.zt == 'errors' ? '/static/map3.png' : item.zt == 'warnings' || item.zt == 'warning' ? '/static/map3.png' : '/static/map1.png',
+											label:{content:item.mc},
+											id:item.id,
+										 });
+									});
+									that.covers = covers;
+								}
+								resolve(coord);
+							}catch(_){
+								reject();
+							}
+						}
+					})
+				});
+			},
+			transform(lon, lat){
+			        const pi = 3.1415926535897932384626;
+			        const a = 6378245.0;
+			        const ee = 0.00669342162296594323;
+			
+			        let dLat = this.transformLat(lon - 105.0, lat - 35.0);
+			        let dLon = this.transformLon(lon - 105.0, lat - 35.0);
+			
+			        const radLat = (lat / 180.0) * pi;
+			        let magic = Math.sin(radLat);
+			        magic = 1 - ee * magic * magic;
+			        const sqrtMagic = Math.sqrt(magic);
+			
+			        dLat = (dLat * 180.0) / (((a * (1 - ee)) / (magic * sqrtMagic)) * pi);
+			        dLon = (dLon * 180.0) / ((a / sqrtMagic) * Math.cos(radLat) * pi);
+			
+			        const mgLat = lat + dLat;
+			        const mgLon = lon + dLon;
+			
+			        return [mgLon, mgLat];
+			},
+			transformLat(x, y) {
+					const pi = 3.1415926535897932384626;
+					let ret =
+						-100.0 + 2.0 * x + 3.0 * y + 0.2 * y * y + 0.1 * x * y + 0.2 * Math.sqrt(Math.abs(x));
+					ret += ((20.0 * Math.sin(6.0 * x * pi) + 20.0 * Math.sin(2.0 * x * pi)) * 2.0) / 3.0;
+					ret += ((20.0 * Math.sin(y * pi) + 40.0 * Math.sin((y / 3.0) * pi)) * 2.0) / 3.0;
+					ret +=
+						((160.0 * Math.sin((y / 12.0) * pi) + 320.0 * Math.sin((y * pi) / 30.0)) * 2.0) / 3.0;
+					return ret;
+			},
+			transformLon(x, y){
+					const pi = 3.1415926535897932384626;
+					let ret = 300.0 + x + 2.0 * y + 0.1 * x * x + 0.1 * x * y + 0.1 * Math.sqrt(Math.abs(x));
+					ret += ((20.0 * Math.sin(6.0 * x * pi) + 20.0 * Math.sin(2.0 * x * pi)) * 2.0) / 3.0;
+					ret += ((20.0 * Math.sin(x * pi) + 40.0 * Math.sin((x / 3.0) * pi)) * 2.0) / 3.0;
+					ret +=
+						((150.0 * Math.sin((x / 12.0) * pi) + 300.0 * Math.sin((x * pi) / 30.0)) * 2.0) / 3.0;
+					return ret;
+			},
+			gcj02towgs84(lng, lat){
+				        const PI = 3.1415926535897932384626;
+				        const a = 6378245.0;
+				        const ee = 0.00669342162296594323;
+				        let dlat = this.transformLat(lng - 105.0, lat - 35.0);
+				        let dlng = this.transformLon(lng - 105.0, lat - 35.0);
+				        let radlat = (lat / 180.0) * PI;
+				        let magic = Math.sin(radlat);
+				        magic = 1 - ee * magic * magic;
+				        const sqrtmagic = Math.sqrt(magic);
+				        dlat = (dlat * 180.0) / (((a * (1 - ee)) / (magic * sqrtmagic)) * PI);
+				        dlng = (dlng * 180.0) / ((a / sqrtmagic) * Math.cos(radlat) * PI);
+				        let mglat = lat + dlat;
+				        let mglng = lng + dlng;
+				        return [lng * 2 - mglng, lat * 2 - mglat];
+			}
 		}
 	}
 </script>
 
 <style>
+	.mapStyle{
+		width: 100%;
+		margin-top: 50px;
+	}
 	.ckBtn{
 		color: #0087ff;
 		font-size: 18px;
@@ -579,7 +762,7 @@
 		color: #333;
 		width: 100%;
 		position: fixed;
-		top: 0px;
+		top: 50px;
 		left: 0;
 		z-index: 99;
 	}
@@ -618,4 +801,33 @@
 		margin: 0 7px;
 		font-weight: 100;
 	}
+	.segmented-control--button{
+		height: 50px!important;
+	}
+	.segmented-control__item--button{
+			border-radius: 0!important;
+			position: absolute;
+			top: 0;
+			background: #fff;
+			border: none!important;
+			height: 50px!important;
+			border-bottom: 2px solid #fff!important;
+		}
+		.segmented-control__item--button--active{
+			background: #fff!important;
+			border-bottom: 2px solid #1b2f85!important;
+		}
+		.segmented-control__item--button .segmented-control__text{
+			color: #999!important;
+			}
+		.segmented-control__item--button--active .segmented-control__text{
+			color: #1b2f85!important;
+			}
+		.segmented-control{
+			width:100%;
+			position: fixed;
+			top: 0;
+			left: 0;
+			z-index: 999;
+		}
 </style>
