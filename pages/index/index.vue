@@ -136,7 +136,7 @@
 		},
 		onShow() {
 			this.time = setInterval(()=>{
-				this.getLatlng();
+				this.getLatlng(true);
 			}, 3000);
 			this.getListKs();
 			this.getListXj();
@@ -454,7 +454,7 @@
 				    }
 				});
 			},
-			async getLatlng() {
+			async getLatlng(isUp) {
 				let that = this;
 				let covers = [];
 				let getLatlngOnline = ()=>{
@@ -498,41 +498,59 @@
 									let coord84 = this.gcj02towgs84(coord.lng,coord.lat);
 									that.longitude = coord.lng;
 									that.latitude = coord.lat;
-									covers.push({
-										latitude: coord.lat,
-										longitude: coord.lng,
-										iconPath: '/static/gps1.png'
-									});
-									that.list.map((item)=>{
-										 let gps = that.transform(Number(item.jd),Number(item.wd));
-										 covers.push({
-											latitude: gps[1],
-											longitude: gps[0],
-											iconPath: item.zt == 'error' || item.zt == 'errors' ? '/static/map3.png' : item.zt == 'warnings' || item.zt == 'warning' ? '/static/map3.png' : '/static/map1.png',
-											label:{content:item.mc},
-											id:item.id,
-										 });
-									});
+									if(isUp){
+										that.covers [0] = {
+											latitude: coord.lat,
+											longitude: coord.lng,
+											iconPath: '/static/gps1.png'
+										};
+										covers = that.covers;
+									}else{
+										covers.push({
+											latitude: coord.lat,
+											longitude: coord.lng,
+											iconPath: '/static/gps1.png'
+										});
+										that.list.map((item)=>{
+											 let gps = that.transform(Number(item.jd),Number(item.wd));
+											 covers.push({
+												latitude: gps[1],
+												longitude: gps[0],
+												iconPath: item.zt == 'error' || item.zt == 'errors' ? '/static/map3.png' : item.zt == 'warnings' || item.zt == 'warning' ? '/static/map3.png' : '/static/map1.png',
+												label:{content:item.mc},
+												id:item.id,
+											 });
+										});
+									}
 									that.covers = covers;
 								}else{
 									let coord02 = this.transform(coord.lng,coord.lat);
 									that.longitude = coord02[0];
 									that.latitude = coord02[1];
-									covers.push({
-										latitude: coord02[1],
-										longitude: coord02[0],
-										iconPath: '/static/gps1.png'
-									});
-									that.list.map((item)=>{
-										 let gps = that.transform(Number(item.jd),Number(item.wd));
-										 covers.push({
-											latitude: gps[1],
-											longitude:gps[0],
-											iconPath: item.zt == 'error' || item.zt == 'errors' ? '/static/map3.png' : item.zt == 'warnings' || item.zt == 'warning' ? '/static/map3.png' : '/static/map1.png',
-											label:{content:item.mc},
-											id:item.id,
-										 });
-									});
+									if(isUp){
+										that.covers [0] = {
+											latitude: coord02[1],
+											longitude: coord02[0],
+											iconPath: '/static/gps1.png'
+										};
+										covers = that.covers;
+									}else{
+										covers.push({
+											latitude: coord02[1], 
+											longitude: coord02[0],
+											iconPath: '/static/gps1.png'
+										});
+										that.list.map((item)=>{
+											 let gps = that.transform(Number(item.jd),Number(item.wd));
+											 covers.push({
+												latitude: gps[1],
+												longitude:gps[0],
+												iconPath: item.zt == 'error' || item.zt == 'errors' ? '/static/map3.png' : item.zt == 'warnings' || item.zt == 'warning' ? '/static/map3.png' : '/static/map1.png',
+												label:{content:item.mc},
+												id:item.id,
+											 });
+										});
+									}
 									that.covers = covers;
 								}
 								resolve(coord);

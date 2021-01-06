@@ -88,6 +88,31 @@
 		<view class="btnBox">
 			   <button type="primary" :disabled="(!(imgsJ.length > 0)) || load" @click="getSave" :loading="btnLoading">提交</button>
 		</view>
+		<view class="newUpBox" v-if="ccfw">
+			<view class="updateBg">
+				<view class="dkfwBox">
+					<view class="dkfwTitle">超出打卡范围</view>
+					<view class="dkfwMsg">{{ccfwWord}}</view>
+				</view>
+				<view>
+					<view class="dkfwTitle">超出原因</view>
+					 <view class="uni-list">
+						<radio-group @change="radioChangeCcyy">
+							<label class="uni-list-cell uni-list-cell-pd" v-for="(item, index) in items" :key="item.value">
+								<view class="redioCy">
+									<radio :value="item.value" :checked="index === currentCcyy"/>
+									{{item.name}}
+								</view>
+							</label>
+						</radio-group>
+					</view>
+				</view>
+				<view class="newUpbtnBox">
+					<text class="noUpBtn" @click="getHideCcfw">取消</text>
+					<text class="upBtn" @click="getOkDk">确定打卡</text>
+				</view>
+			</view>
+		</view>
 	</view>
 </template>
 
@@ -125,6 +150,11 @@
 				isLx:getApp().isLx,
 				load:false,
 				btnLoading:false,
+				items: [],
+				currentCcyy: '',
+				ccfwWord:'',
+				ccfw:false,
+				dkMsg:{},
 			}
 		},
 		onBackPress:function(event){
@@ -138,7 +168,7 @@
 		},
 		onLoad: function (option) { //option为object类型，会序列化上个页面传递的参数
 					this.record = option&&option.record && JSON.parse(option.record) ? JSON.parse(option.record) : '';
-					console.log('this.record',this.record)
+					// console.log('this.record',this.record)
 					getWtData(` SELECT A.*, B.dz, C.xm as wtr_xm, C.lxdh as wtr_lxdh FROM wtData A
 					LEFT JOIN ksData B ON A.ks_id = B.id
 					LEFT JOIN usersData C ON A.fqr_id = C.id
@@ -151,8 +181,47 @@
 							  this.max_dkjl = max_dkjl;
 						}
 					});
+					this.getYcyy();
 		}, 
 		methods: {
+			getYcyy(){
+				let that = this;
+				uni.getNetworkType({
+					success: function (res) {
+						if(res.networkType !== 'none' &&  res.networkType !== '2g' &&  res.networkType !== '3g' && !that.isLx){
+							uni.request({
+							    url: getApp().globalData.ip + '/getSysDict',
+							    data: {
+								   "zdbh": "YCDWSM"
+								},
+								method:'POST',
+							    success: (record) => {
+									// console.log('record=======>',record.data.data);
+									let list = [];
+									record.data&&record.data.data&&record.data.data.map((item)=>{
+										list.push({
+											value: item.dm,
+											name: item.zw
+										});
+										that.items = list;
+										uni.setStorageSync('dict_YCDWSM', JSON.stringify(list));
+									});
+								},
+							});
+						}else{
+							that.items = uni.getStorageSync('dict_YCDWSM') ? JSON.parse(uni.getStorageSync('dict_YCDWSM')) : [];
+						}
+					},
+				});
+			},
+			radioChangeCcyy: function(evt) {
+			            for (let i = 0; i < this.items.length; i++) {
+			                if (this.items[i].value === evt.target.value) {
+			                    this.currentCcyy = i;
+			                    break;
+			                }
+			            }
+			        },
 			transformLon : function (x, y) {
 					var ret = 300.0 + x + 2.0 * y + 0.1 * x * x + 0.1 * x * y + 0.1 * Math.sqrt(Math.abs(x));
 					ret += (20.0 * Math.sin(6.0 * x * this.PI) + 20.0 * Math.sin(2.0 * x * this.PI)) * 2.0 / 3.0;
@@ -462,7 +531,7 @@
 			  text += possible.charAt(Math.floor(Math.random() * possible.length));
 			  return text;
 			},
-			getUpLoadWt:function(uid,longitude,latitude,back,is_ycdk){
+			getUpLoadWt:function(uid,longitude,latitude,back,is_ycdk,ycdwsm_dm){
 				uni.showLoading({
 				    title: '保存中…',
 					mask:true,
@@ -486,6 +555,11 @@
 								jj_zp_net:that.imgsJNet && that.imgsJNet.length > 0 ? that.imgsJNet.join('#') : '',
 								dsp_net:that.videoNet ? that.videoNet.join('#') : '',
 								is_ycdk:is_ycdk,
+								dk_fw:that.max_dkjl,
+								dk_device:uni.getStorageSync('uuid'),
+								version:getApp().globalData.version,
+								sc_sj:moment().format('YYYY-MM-DD HH:mm:ss'),
+								ycdwsm_dm:ycdwsm_dm && ycdwsm_dm.value ? ycdwsm_dm.value : ''
 						};
 						// console.log('data=========>',data);
 						uni.request({
@@ -493,7 +567,7 @@
 						    data: data,
 							method:'POST',
 						    success: (res) => {
-								// console.log('巡查成功',res.data);
+								console.log('巡查成功',res.data);
 								if(res.data.data && !res.data.error){
 									    if(back){
 											uni.hideLoading();
@@ -503,6 +577,7 @@
 											});
 										}
 										data.users_id = uid;
+										data.ycdwsm = ycdwsm_dm && ycdwsm_dm.name ? ycdwsm_dm.name : '';
 										setXjAllData([data],(res)=>{});
 										setXjData([data],(res)=>{//存巡查记录
 											if(back){
@@ -523,7 +598,7 @@
 						    }
 						});
 			},
-			getNoNet:function(uid,longitude,latitude,back,is_ycdk){
+			getNoNet:function(uid,longitude,latitude,back,is_ycdk,ycdwsm_dm){
 				uni.showLoading({
 				    title: '保存中…',
 					mask:true,
@@ -548,8 +623,13 @@
 								jj_zp_net:that.imgsJNet && that.imgsJNet.length > 0 ? that.imgsJNet.join('#') : '',
 								dsp_net:that.videoNet ? that.videoNet.join('#') : '',
 								is_ycdk:is_ycdk,
+								dk_fw:that.max_dkjl,
+								dk_device:uni.getStorageSync('uuid'),
+								version:getApp().globalData.version,
+								sc_sj:moment().format('YYYY-MM-DD HH:mm:ss'),
+								ycdwsm_dm:ycdwsm_dm && ycdwsm_dm.value ? ycdwsm_dm.value : '',
+								ycdwsm:ycdwsm_dm && ycdwsm_dm.name ? ycdwsm_dm.name : '',
 						};
-						// console.log('dataEnNet=========>',dataEnNet);
 						if(back){
 							uni.hideLoading();
 							that.btnLoading = false;
@@ -570,11 +650,11 @@
 							}
 						});
 			},
-			getNetSave:function(longitude,latitude,is_ycdk,idx){
+			getNetSave:function(longitude,latitude,is_ycdk,idx,ycdwsm_dm){
 				let that = this;
-				that.getUpLoadWt(getApp().globalData.uid,longitude,latitude,idx > -1 && that.wtList[idx].wtzt_dm === '02' ? false : true,is_ycdk);
+				that.getUpLoadWt(getApp().globalData.uid,longitude,latitude,idx > -1 && that.wtList[idx].wtzt_dm === '02' ? false : true,is_ycdk,ycdwsm_dm);
 				if(idx > -1 && that.wtList[idx].wtzt_dm === '02'){
-					that.getUpLoadWt(that.wtList[idx].fqr_id,longitude,latitude,true,is_ycdk);
+					that.getUpLoadWt(that.wtList[idx].fqr_id,longitude,latitude,true,is_ycdk,ycdwsm_dm);
 					uni.request({
 						url: getApp().globalData.ip + '/updateWtData',
 						data: {"wt_id":that.wtList[idx].id,"wtzt_dm":'04'},
@@ -590,11 +670,11 @@
 					});
 				}
 			},
-			getNoneNetSave:function(longitude,latitude,is_ycdk,idx){
+			getNoneNetSave:function(longitude,latitude,is_ycdk,idx,ycdwsm_dm){
 				let that = this;
-				that.getNoNet(getApp().globalData.uid,longitude,latitude,idx > -1 && that.wtList[idx].wtzt_dm === '02' ? false : true,is_ycdk);
+				that.getNoNet(getApp().globalData.uid,longitude,latitude,idx > -1 && that.wtList[idx].wtzt_dm === '02' ? false : true,is_ycdk,ycdwsm_dm);
 				if(idx > -1 && that.wtList[idx].wtzt_dm === '02'){
-					that.getNoNet(that.wtList[idx].fqr_id,longitude,latitude,true,is_ycdk);
+					that.getNoNet(that.wtList[idx].fqr_id,longitude,latitude,true,is_ycdk,ycdwsm_dm);
 				}
 			},
 			distance:function(lat1, lon1, lat2, lon2) {
@@ -615,6 +695,33 @@
 			  dist = parseInt(dist * 1.609344 * 1000);
 			  return dist;
 			 }
+			},
+			getHideCcfw:function(){
+				this.ccfw = false;
+				this.btnLoading = false;
+			},
+			getOkDk:function(){
+				let that = this;
+				// console.log('currentCcyy',that.currentCcyy)
+				if(that.currentCcyy || that.currentCcyy.toString()){
+					// console.log('that.items[that.currentCcyy]',that.items[that.currentCcyy])
+					uni.getNetworkType({
+					    success: function (res) {
+							// console.log('that.dkMsg',that.dkMsg);
+							if(res.networkType !== 'none' &&  res.networkType !== '2g' &&  res.networkType !== '3g' && !that.isLx){
+								that.getNetSave(that.dkMsg.longitude,that.dkMsg.latitude,'1',that.dkMsg.idx,that.items[that.currentCcyy]);
+							}else{
+								that.getNoneNetSave(that.dkMsg.longitude,that.dkMsg.latitude,'1',that.dkMsg.idx,that.items[that.currentCcyy]);
+							}
+						},
+					});
+				}else{
+					uni.showToast({
+						title: '请选择超出原因',
+						icon:'none',
+						duration: 2000
+					});	
+				}
 			},
 			getSave:function(){
 				let longitude = '';
@@ -644,16 +751,19 @@
 										// if(that.ydDistance&&that.ydDistance <= that.max_dkjl){
 										// 	that.getNetSave(that.ydJd,that.ydWd,'0',idx);
 										// }else{
-											uni.showModal({
-											    title: '您距离矿点位置'+(dist > 1000 ?  parseInt(dist/1000) + '千米' : dist + '米')+'，超出'+that.max_dkjl+'米的打卡范围，仍要打卡？',
-											    success: function (resDate) {
-											         if (resDate.confirm) {
-														that.getNetSave(longitude,latitude,'1',idx);
-											         } else if (resDate.cancel) {
-														 that.btnLoading = false;
-											         }
-												}
-											});
+											that.ccfw = true;
+											that.ccfwWord = '您距离矿山位置'+(dist > 1000 ?  parseInt(dist/1000) + '千米' : dist + '米')+'，超出'+that.max_dkjl+'米的打卡范围';
+											that.dkMsg = {longitude,latitude,idx};
+											// uni.showModal({
+											//     title: '您距离矿点位置'+(dist > 1000 ?  parseInt(dist/1000) + '千米' : dist + '米')+'，超出'+that.max_dkjl+'米的打卡范围，仍要打卡？',
+											//     success: function (resDate) {
+											//          if (resDate.confirm) {
+											// 			that.getNetSave(longitude,latitude,'1',idx);
+											//          } else if (resDate.cancel) {
+											// 			 that.btnLoading = false;
+											//          }
+											// 	}
+											// });
 										// }
 									}
 									
@@ -687,16 +797,19 @@
 										// if(that.ydDistance&&that.ydDistance <= that.max_dkjl){
 										// 	that.getNetSave(that.ydJd,that.ydWd,'0',idx);
 										// }else{
-											uni.showModal({
-											    title: '您距离矿点位置为'+(dist > 1000 ?  parseInt(dist/1000) + '千米' : dist + '米')+'，超出'+that.max_dkjl+'米的打卡范围，仍要打卡？',
-											    success: function (resDate) {
-											         if (resDate.confirm) {
-														that.getNoneNetSave(longitude,latitude,'1',idx);
-											         } else if (resDate.cancel) {
-											             that.btnLoading = false;
-											         }
-												}
-											});
+											that.ccfw = true;
+											that.ccfwWord = '您距离矿山位置'+(dist > 1000 ?  parseInt(dist/1000) + '千米' : dist + '米')+'，超出'+that.max_dkjl+'米的打卡范围';
+											that.dkMsg = {longitude,latitude,idx};
+											// uni.showModal({
+											//     title: '您距离矿点位置为'+(dist > 1000 ?  parseInt(dist/1000) + '千米' : dist + '米')+'，超出'+that.max_dkjl+'米的打卡范围，仍要打卡？',
+											//     success: function (resDate) {
+											//          if (resDate.confirm) {
+											// 			that.getNoneNetSave(longitude,latitude,'1',idx);
+											//          } else if (resDate.cancel) {
+											//              that.btnLoading = false;
+											//          }
+											// 	}
+											// });
 										// }
 									}
 								}, function(e){
@@ -801,5 +914,76 @@ uni-button[disabled]{
 	}
 	.videoItem{
 		width: 100%;
+	}
+	.newUpBox{
+		background: rgba(0,0,0,0.35);
+		width: 100%;
+		height: 100%;
+		position: fixed;
+		top: 0;
+		left: 0;
+		z-index: 999;
+	}
+	.updateBg{
+		width: 520upx;
+		height: 550upx;
+		margin-left: 75upx;
+		margin-top: 200upx;
+		background: #fff;
+		background-size: 100% 100%;
+		padding: 40upx 40upx;
+		line-height: 30px;
+		position: relative;
+		border-radius: 10px;
+	}
+	.newUpbtnBox{
+		position: absolute;
+		bottom: 0;
+		width: 520upx;
+		height: 60px;
+	}
+	.noUpBtn{
+		width: 47%;
+		float: left;
+		text-align: center;
+		color: #fff;
+		background: #b3b3b3;
+		height: 40px;
+		margin-bottom: 20px;
+		line-height: 40px;
+		border-radius: 5px;
+	}
+	.upBtn{
+		width: 47%;
+		float: left;
+		text-align: center;
+		color: #fff;
+		background: #4a9ff7;
+		height: 40px;
+		margin-bottom: 20px;
+		line-height: 40px;
+		border-radius: 5px;
+		margin-left: 6%;
+	}
+	.dkfwBox{
+		border-bottom: 1upx solid #e6e6e6;
+		margin-bottom: 5px;
+	}
+	.dkfwTitle{
+		color: #262626;
+		font-size: 18px;
+	}
+	.dkfwMsg{
+		color: #808080;
+		font-size: 14px;
+		margin-bottom: 10px;
+	}
+	.redioCy{
+		line-height: 36px;
+		font-size: 16px;
+	}
+	.redioCy .uni-radio-input{
+		width: 14px;
+		height:14px;
 	}
 </style>

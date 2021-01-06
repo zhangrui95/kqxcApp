@@ -35,7 +35,10 @@
 					<text class='address' style="width: 50%;float: left;">打卡纬度：{{item.dk_wd || ''}}</text>
 				</view>
 			</uni-list-item>
-			<uni-list-item :showArrow="false">
+			<uni-list-item :showArrow="false" v-if="item.ycdwsm">
+				<view class='address'>定位异常原因：{{item.ycdwsm}}</view>
+			</uni-list-item>
+			<uni-list-item :showArrow="false" v-if="item.bz">
 				<view class="address">备注说明：{{item.bz}}</view>
 			</uni-list-item>
 			<!-- <uni-list-item :showArrow="false" >
@@ -90,7 +93,7 @@
 			}
 		},
 		onBackPress:function(event){
-			console.log('=================执行返回================');
+			// console.log('=================执行返回================');
 			if(this.playUrl){
 				this.playUrl = '';
 				return true;
@@ -111,7 +114,7 @@
 			}else{
 				this.record = {fzr_xm:detail&&detail.fzr_xm ? detail.fzr_xm : ''};
 			}
-			console.log('detail==========>',detail);
+			// console.log('detail==========>',detail);
 			if(detail.dk_jd && detail.dk_wd){
 				let cover = [];
 				let coord02 = this.transform(Number(detail.dk_jd),Number(detail.dk_wd));

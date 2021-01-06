@@ -2,14 +2,15 @@
 export default {
 	globalData: {  
 	   ip:'https://jixi.app.hylink.net.cn:10002',
-	   // textIp:'http://112.102.212.130:10006',
-	   textIp:'http://192.168.104.137:8080',
-	   // socketIp:'http://60.15.118.104:8723',
+	   // ip:'http://192.168.104.100:8080',
+	   // ip:'http://112.102.212.130:10006',
+	   // ip:'http://192.168.104.137:8080',
+	   socketIp:'http://60.15.118.104:8723',
 	   is_admin:'0',
 	   uid:'',
 	   weedIp:'',
 	   httpImg:'',
-	   version:'1.2.5',
+	   version:'1.2.6',
 	   isLogin:false,
 	   is_zz:'0',
 	},  
@@ -17,7 +18,7 @@ export default {
 		console.log('App Launch');
 		plus.device.getInfo({
 			success: (e) => {
-				uni.setStorageSync('imei', e.imei)
+				uni.setStorageSync('uuid', e.uuid)
 			}
 		})
 	},

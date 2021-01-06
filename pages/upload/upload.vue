@@ -116,6 +116,7 @@
 																			 let uidId = item.users_id;
 																			 let {users_id, ...dataItem} = item;
 																			 dataItem.uid = uidId;
+																			 dataItem.sc_sj = moment().format('YYYY-MM-DD HH:mm:ss');
 																			 uni.request({
 																				 url: getApp().globalData.ip + '/saveXjData',
 																				 data: dataItem,

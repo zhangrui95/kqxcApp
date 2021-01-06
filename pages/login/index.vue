@@ -66,13 +66,13 @@
 						uni.getNetworkType({
 						    success: function (res) {
 								if(res.networkType !== 'none' &&  res.networkType !== '2g' &&  res.networkType !== '3g'){
-									console.log('==执行==')
+									// console.log('==执行==')
 									uni.request({
 									    url: getApp().globalData.ip + '/getConfig', 
 									    data: {},
 										method:'POST',
 									    success: (res) => {
-											console.log('dataRes',dataRes);
+											// console.log('dataRes',dataRes);
 											if(res.data.data && !res.data.error){
 												if(dataRes.version && dataRes.version === getApp().globalData.version && !(res.data.data.must_update === '1' &&  (that.toNum(getApp().globalData.version) < that.toNum(res.data.data.last_version)))){
 													that.getYh(dataRes.id,dataRes.is_admin);
@@ -116,12 +116,12 @@
 						    data: {},
 							method:'POST',
 						    success: (res) => {
-								console.log('getConfig===========>',res.data); 
+								// console.log('getConfig===========>',res.data); 
 								if(res.data.data && !res.data.error){
 									setConfig(res.data.data);
 									getApp().globalData.weedIp = res.data.data.zp_base;
 									getApp().globalData.httpImg = res.data.data.zp_pub;
-									console.log('getApp().globalData.version < res.data.data.last_version',that.toNum(getApp().globalData.version) < that.toNum(res.data.data.last_version),that.toNum(getApp().globalData.version) , that.toNum(res.data.data.last_version))
+									// console.log('getApp().globalData.version < res.data.data.last_version',that.toNum(getApp().globalData.version) < that.toNum(res.data.data.last_version),that.toNum(getApp().globalData.version) , that.toNum(res.data.data.last_version))
 									if(res.data.data.must_update === '1' && (that.toNum(getApp().globalData.version) < that.toNum(res.data.data.last_version))){
 										uni.showModal({
 										    title: '检测到新版本v'+res.data.data.last_version+'，与旧版本v'+getApp().globalData.version+'不兼容，请更新后使用。',
@@ -266,6 +266,7 @@
 									getApp().globalData.uid = JSON.parse(res.data).id;
 									getApp().globalData.is_zz = JSON.parse(res.data).is_zz;
 									getApp().noNetwork = true;
+									getApp().isLx = true;
 									uni.redirectTo({
 									    url: JSON.parse(res.data).is_admin=='1'?'../work/work':'../home/home'
 									});
@@ -330,6 +331,7 @@
 									    key: 'user',
 									    data: JSON.stringify(res.data.data),
 									    success: function () {
+											getApp().isLx = false;
 									       uni.redirectTo({
 									           url: res.data.data.is_admin == 1 ?'../work/work' : '../home/home'
 									       });
@@ -510,6 +512,7 @@
 																				 let uidId = item.users_id;
 																				 let {users_id, ...dataItem} = item;
 																				 dataItem.uid = uidId;
+																				 dataItem.sc_sj = moment().format('YYYY-MM-DD HH:mm:ss');
 																				 uni.request({
 																					 url: getApp().globalData.ip + '/saveXjData',
 																					 data: dataItem,

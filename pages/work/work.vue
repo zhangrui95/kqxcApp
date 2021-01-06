@@ -1,6 +1,10 @@
 <template>
     <view>
-		  <view class="pageBody">
+		<view class="pageBody" v-if="!isNet || isLx">
+			<uni-notice-bar single="true" text="您当前处于离线模式，请切换到在线模式访问工作督察模块。"></uni-notice-bar>
+			<map :style="{height:height + 25+ 'px'}" scale="12" style="width: 100%; position: relative;top: -10px;" :latitude="latitude" :longitude="longitude"></map>
+		</view>
+		<view class="pageBody" v-if="isNet">
 			 <uni-segmented-control :current="current" :values="items" @clickItem="onClickItem" style-type="button" active-color="#172f87"></uni-segmented-control>
 			    <view class="page-section page-section-gap" v-if="current === 0">
 			    	 <map :style="{height:height+ 'px'}" scale="12" style="width: 100%; position: relative;top: 56px;" :latitude="latitude" :longitude="longitude" :markers="covers" @markertap='listShow' @labeltap='listShow'>
@@ -113,6 +117,8 @@
 				value1:0,
 				ksListAll:[],
 				disabled:false,
+				isNet:getApp().isLx ? !getApp().isLx : true,
+				isLx:getApp().isLx,
 			}
 		},
 		 components: {
@@ -129,6 +135,7 @@
 			}
 		},
 		onLoad() {
+			console.log('isLx',this.isLx)
 			let that = this;
 			uni.getSystemInfo({
 				success:function(res) {
@@ -145,122 +152,87 @@
 					that.longitude = res.longitude;
 			    }
 			});
-			getConfig('select * from config',(data)=>{
-				if(data && data[0] && data[0].xj_jzrq){
-					let startTime = data[0].xj_jzrq;
-					let today = moment().format('YYYY-MM-DD');
-					let daysNum = Math.ceil((moment(today).diff(startTime, 'days') + 1) / (data[0].xj_zq ? data[0].xj_zq : 7)) - 1; 
-					let start =  moment(startTime).add(daysNum*(data[0].xj_zq ? data[0].xj_zq : 7),'day').format('YYYY-MM-DD');
-					let end =  moment(start).add(data[0].xj_zq-1,'day').format('YYYY-MM-DD');
-					this.start = start;
-					this.end = end; 
-					this.xj_jg = data[0].xj_jg;
-					this.xj_pc = 1;
-					this.xj_zq = data[0].xj_zq;
-					this.yj_xq_num = data[0].yj_xq_num;
-					getKsAllData(`SELECT
-					 A.id,
-					 A.dz,
-					 A.jd,
-					 A.wd,
-					 A.mc,
-					 A.dz_dm,
-					 A.visible,
-					 D.xm as fzr_xm,
-					 C.xm,
-					 B.dk_sj,
-					 B.kczt_dm,
-					 B.yczt_dm,
-					 B.jj_zp,
-					 B.dsp,
-					 B.yj_zp,
-					 B.bz
-					FROM
-					 ksAllData A  
-					 LEFT JOIN (SELECT * FROM xjAllData WHERE dk_sj >= '${start} 00:00:00' ORDER BY dk_sj DESC) B ON A.id = B.ks_id
-					 LEFT JOIN usersAllData C ON B.users_id = C.id
-					 LEFT JOIN usersAllData D ON A.fzr_id = D.id
-					 WHERE A.dz_dm LIKE '${getApp().globalData.qh_dm}%' AND A.visible = '0'
-					ORDER BY A.id,B.dk_sj desc`,(data)=>{
-						 let data1 = data;
-						 // console.log('data1===========>',data1);
-						let hash = {}; 
-						const data2 = data.reduce((preVal, curVal) => {
-						    hash[curVal.id] ? '' : hash[curVal.id] = true && preVal.push(curVal); 
-						    return preVal 
-						}, []);
-						this.kdNum = data2.length;
-						let yjList = [];
-						let latitude = 0;
-						let longitude = 0;
-						let covers = [];
-						data2.map((event)=>{
-							event.pxName = event.mc.split('号')[0];
-							let nowList = data1.filter(item=>(item.id === event.id) && (moment(item.dk_sj) >= moment(this.start + ' 00:00:00')));
-							let day = moment(this.end).diff(moment(event.dk_sj),'day');
-							let week = moment().day();
-							// if(nowList && (nowList.length < parseInt(this.xj_pc))){
-							// 	if(week === 0){
-							// 		event.zt = nowList.length === 0 ? 'warnings' :'warning';
-							// 		this.errorNum = this.errorNum + 1;
-							// 		yjList.push({xm:nowList.length > 0 ? [nowList.length - 1].xm : '',text:nowList.length === 0 ? '还需巡检两次次' : '还需巡检一次'});
-							// 	}else if(week >= this.yj_xq_num){
-							// 		event.zt = nowList.length === 0 ? 'warnings' :'warning';
-							// 		this.warnNum = this.warnNum + 1;
-							// 		yjList.push({xm:nowList.length > 0 ? [nowList.length - 1].xm : '',text:nowList.length === 0 ? '还需巡检两次次' : '还需巡检一次'});
-							// 	}else{
-							// 		event.zt = nowList.length === 0 ? 'primarys' : 'primary';
-							// 	}
-							// }else{
-							// 	let days = moment(nowList[nowList.length - 1].dk_sj.substring(0,10)).diff(nowList[0].dk_sj.substring(0,10),'day');
-							// 	if(days === 0 && week === 0){
-							// 		event.zt = 'warning';
-							// 		this.errorNum = this.errorNum + 1;
-							// 		yjList.push({xm:nowList.length > 0 ? [nowList.length - 1].xm : '',text:'还需巡检一次'});
-							// 	}else if(days === 0 && week >= this.yj_xq_num){
-							// 		event.zt = 'warning';
-							// 		this.warnNum = this.warnNum + 1;
-							// 		yjList.push({xm:nowList.length > 0 ? [nowList.length - 1].xm : '',text:'还需巡检一次'});
-							// 	}else{
-							// 		if(days === 0){
-							// 			event.zt = 'primary'; 
-							// 		}else{
-							// 			event.zt = 'success'; 
-							// 		}
-							// 	}
-							// }
-							if(nowList&&nowList.length > 0){
-								event.zt = 'success'; 
-							}else{
-								event.zt = 'warning'; 
-								this.warnNum = this.warnNum + 1;
-							}
-							let gps = this.gcj_encrypt(parseFloat(event.wd), parseFloat(event.jd));
-							// latitude = latitude + parseFloat(gps.lat);
-							// longitude = longitude + parseFloat(gps.lon);
-							this.ycId.map((res)=>{
-								if(res === event.id){
-									res.zt_dm = '02';
-								}
-							});
-							covers.push({
-								latitude: parseFloat(gps.lat),
-								longitude: parseFloat(gps.lon),
-								iconPath: event.zt == 'error' || event.zt == 'errors' ? '/static/map3.png' : event.zt == 'warnings' || event.zt == 'warning' ? '/static/map3.png' : '/static/map1.png',
-								label:{content:event.mc},
-								id:event.id,
-							});
-							this.yjList = yjList;
-						})
-						// console.log('data2=======>',data2);
-						this.ksList = data2.sort((a, b) => a.pxName- b.pxName);
-						this.ksListAll = data2.sort((a, b) => a.pxName- b.pxName);
-						// this.latitude = latitude / data.length;
-						// this.longitude = longitude / data.length; 
-						this.covers = covers;
-					});
-				}
-			});
+			this.getKsMap();
+			// getConfig('select * from config',(data)=>{
+			// 	if(data && data[0] && data[0].xj_jzrq){
+			// 		let startTime = data[0].xj_jzrq;
+			// 		let today = moment().format('YYYY-MM-DD');
+			// 		let daysNum = Math.ceil((moment(today).diff(startTime, 'days') + 1) / (data[0].xj_zq ? data[0].xj_zq : 7)) - 1; 
+			// 		let start =  moment(startTime).add(daysNum*(data[0].xj_zq ? data[0].xj_zq : 7),'day').format('YYYY-MM-DD');
+			// 		let end =  moment(start).add(data[0].xj_zq-1,'day').format('YYYY-MM-DD');
+			// 		this.start = start;
+			// 		this.end = end; 
+			// 		this.xj_jg = data[0].xj_jg;
+			// 		this.xj_pc = 1;
+			// 		this.xj_zq = data[0].xj_zq;
+			// 		this.yj_xq_num = data[0].yj_xq_num;
+			// 		getKsAllData(`SELECT
+			// 		 A.id,
+			// 		 A.dz,
+			// 		 A.jd,
+			// 		 A.wd,
+			// 		 A.mc,
+			// 		 A.dz_dm,
+			// 		 A.visible,
+			// 		 D.xm as fzr_xm,
+			// 		 C.xm,
+			// 		 B.dk_sj,
+			// 		 B.kczt_dm,
+			// 		 B.yczt_dm,
+			// 		 B.jj_zp,
+			// 		 B.dsp,
+			// 		 B.yj_zp,
+			// 		 B.bz
+			// 		FROM
+			// 		 ksAllData A  
+			// 		 LEFT JOIN (SELECT * FROM xjAllData WHERE dk_sj >= '${start} 00:00:00' ORDER BY dk_sj DESC) B ON A.id = B.ks_id
+			// 		 LEFT JOIN usersAllData C ON B.users_id = C.id
+			// 		 LEFT JOIN usersAllData D ON A.fzr_id = D.id
+			// 		 WHERE A.dz_dm LIKE '${getApp().globalData.qh_dm}%' AND A.visible = '0'
+			// 		ORDER BY A.id,B.dk_sj desc`,(data)=>{
+			// 			 let data1 = data;
+			// 			let hash = {}; 
+			// 			const data2 = data.reduce((preVal, curVal) => {
+			// 			    hash[curVal.id] ? '' : hash[curVal.id] = true && preVal.push(curVal); 
+			// 			    return preVal 
+			// 			}, []);
+			// 			this.kdNum = data2.length;
+			// 			let yjList = [];
+			// 			let latitude = 0;
+			// 			let longitude = 0;
+			// 			let covers = [];
+			// 			data2.map((event)=>{
+			// 				event.pxName = event.mc.split('号')[0];
+			// 				let nowList = data1.filter(item=>(item.id === event.id) && (moment(item.dk_sj) >= moment(this.start + ' 00:00:00')));
+			// 				let day = moment(this.end).diff(moment(event.dk_sj),'day');
+			// 				let week = moment().day();
+			// 				if(nowList&&nowList.length > 0){
+			// 					event.zt = 'success'; 
+			// 				}else{
+			// 					event.zt = 'warning'; 
+			// 					this.warnNum = this.warnNum + 1;
+			// 				}
+			// 				let gps = this.gcj_encrypt(parseFloat(event.wd), parseFloat(event.jd));
+			// 				this.ycId.map((res)=>{
+			// 					if(res === event.id){
+			// 						res.zt_dm = '02';
+			// 					}
+			// 				});
+			// 				covers.push({
+			// 					latitude: parseFloat(gps.lat),
+			// 					longitude: parseFloat(gps.lon),
+			// 					iconPath: event.zt == 'error' || event.zt == 'errors' ? '/static/map3.png' : event.zt == 'warnings' || event.zt == 'warning' ? '/static/map3.png' : '/static/map1.png',
+			// 					label:{content:event.mc},
+			// 					id:event.id,
+			// 				});
+			// 				this.yjList = yjList;
+			// 			})
+			// 			this.ksList = data2.sort((a, b) => a.pxName- b.pxName);
+			// 			this.ksListAll = data2.sort((a, b) => a.pxName- b.pxName);
+			// 			this.covers = covers;
+			// 		});
+			// 	}
+			// });
 			uni.getStorage({
 			    key: 'userData',
 			    success: function (res) {
@@ -273,6 +245,16 @@
 			});
 		},
 		onShow() {
+			let that = this;
+			uni.getNetworkType({
+				success: function (res) {
+					if(res.networkType !== 'none' &&  res.networkType !== '2g' &&  res.networkType !== '3g' && !that.isLx){
+						that.isNet = true;
+					}else{
+						that.isNet = false;
+					}
+				},
+			});
 			getWtData(` SELECT A.*, B.dz, B.mc, C.xm as wtr_xm, C.lxdh as wtr_lxdh FROM wtData A
 			LEFT JOIN ksData B ON A.ks_id = B.id
 			LEFT JOIN usersData C ON A.fqr_id = C.id
@@ -286,6 +268,80 @@
 					});
 		},
 		methods: {
+			getKsMap(){
+				let that = this;
+				getConfig('select * from config',(data)=>{
+					if(data && data[0] && data[0].xj_jzrq){
+						let startTime = data[0].xj_jzrq;
+						let today = moment().format('YYYY-MM-DD');
+						let daysNum = Math.ceil((moment(today).diff(startTime, 'days') + 1) / (data[0].xj_zq ? data[0].xj_zq : 7)) - 1; 
+						let start =  moment(startTime).add(daysNum*(data[0].xj_zq ? data[0].xj_zq : 7),'day').format('YYYY-MM-DD');
+						let end =  moment(start).add(data[0].xj_zq-1,'day').format('YYYY-MM-DD');
+						this.start = start;
+						this.end = end; 
+						this.xj_jg = data[0].xj_jg;
+						this.xj_pc = 1;
+						this.xj_zq = data[0].xj_zq;
+						this.yj_xq_num = data[0].yj_xq_num;
+						uni.getNetworkType({
+							success: function (res) {
+								if(res.networkType !== 'none' &&  res.networkType !== '2g' &&  res.networkType !== '3g' && !that.isLx){
+									uni.request({
+									    url: getApp().globalData.ip + '/tj/getKsMapData',
+									    data: {
+										   "dz_dm": getApp().globalData.qh_dm,
+										    "kssj": start + " 00:00:00",
+										    "jssj": today + " 23:59:59"
+										},
+										method:'POST',
+									    success: (record) => {
+											if(record.data&&record.data.data){
+												let data2 = record.data.data;
+												that.kdNum = record.data.data.length;
+												let yjList = [];
+												let latitude = 0;
+												let longitude = 0;
+												let covers = [];
+												data2.map((event)=>{
+													event.pxName = event.mc.split('号')[0];
+													let day = moment(that.end).diff(moment(event.dk_sj),'day');
+													let week = moment().day();
+													if(event.xj_cnt > 0){
+														event.zt = 'success'; 
+													}else{
+														event.zt = 'warning'; 
+														that.warnNum = that.warnNum + 1;
+													}
+													let gps = that.gcj_encrypt(parseFloat(event.wd), parseFloat(event.jd));
+													that.ycId.map((res)=>{
+														if(res === event.id){
+															res.zt_dm = '02'; 
+														}
+													});
+													covers.push({
+														latitude: parseFloat(gps.lat),
+														longitude: parseFloat(gps.lon),
+														iconPath: event.zt == 'error' || event.zt == 'errors' ? '/static/map3.png' : event.zt == 'warnings' || event.zt == 'warning' ? '/static/map3.png' : '/static/map1.png',
+														label:{content:event.mc},
+														id:event.id,
+													});
+													that.yjList = yjList;
+												})
+												that.ksList = data2.sort((a, b) => a.pxName- b.pxName);
+												that.ksListAll = data2.sort((a, b) => a.pxName- b.pxName);
+												that.covers = covers;
+											}
+										},
+									});
+									that.isNet = true;
+								}else{
+									that.isNet = false;
+								}
+							},
+						});
+					}
+				});
+			},
 			bindDateChange: function(e) {
 			   this.value = e.target.value;
 			   let zt = e.target.value === 1 ? 'warning' :  e.target.value === 2 ? 'success' : '';

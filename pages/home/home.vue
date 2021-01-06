@@ -375,6 +375,7 @@
 																				 let uidId = item.users_id;
 																				 let {users_id, ...dataItem} = item;
 																				 dataItem.uid = uidId;
+																				 dataItem.sc_sj = moment().format('YYYY-MM-DD HH:mm:ss');
 																				 uni.request({
 																					 url: getApp().globalData.ip + '/saveXjData',
 																					 data: dataItem,
@@ -617,6 +618,7 @@
 					method:'POST',
 				    success: (res) => {
 						if(res.data.data && !res.data.error){
+							// console.log('巡检====>',res.data.data)
 							setXjData(res.data.data,(res)=>{});
 							if(this.is_zz === '1'){
 								if(res.data.data.length >= this.xj_pc_zz){

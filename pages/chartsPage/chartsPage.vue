@@ -144,7 +144,7 @@
 			let year = parseInt(moment().format('YYYY'));
 			let index = 53;
 			let weeks = this.getWeek(moment().format('YYYY'));
-			console.log('weeks',weeks);
+			// console.log('weeks',weeks);
 			for(var i =2019;i<=year;i++){
 				searchList.unshift(i);
 			}
@@ -270,25 +270,26 @@
 				let nameList = [];
 				let csList = [];
 				uni.request({
-				    url: getApp().globalData.textIp + '/tj/getSjxjcntTj',
+				    url: getApp().globalData.ip + '/tj/getSjxjcntTj',
 				   data: {
 					 "kssj": kssj,
 					 "jssj": jssj
 					},
 					method:'POST',
 				    success: (res) => {
-						console.log('数据========>',res);
+						// console.log('数据========>',res);
 						res.data.data.map((item)=>{
 							nameList.push(item.dz);
 							csList.push(item.count);
 						});
-						console.log('nameList',nameList)
+						// console.log('nameList',nameList)
 						let data = {"categories":nameList,"series":[{"name":"次数","data":csList,color:"#1b2f85",textColor:"#1b2f85",textSize:12}]};
 						_self.serverData=data;
 						let Column={categories:[],series:[]};
 						Column.categories=data.categories;
 						Column.series=data.series;
-						_self.showColumn("canvasColumn",Column);
+						let max = Math.max(...csList) > 10 ? Math.max(...csList) : 10;
+						_self.showColumn("canvasColumn",Column,max);
 					},
 				});
 			},
@@ -298,7 +299,7 @@
 				let wxjList = [];
 				let allCountList = [];
 				uni.request({
-				    url: getApp().globalData.textIp + '/tj/getSjxjTj',
+				    url: getApp().globalData.ip + '/tj/getSjxjTj',
 				   data: {
 					 "kssj": kssj,
 					 "jssj": jssj
@@ -321,11 +322,11 @@
 				});
 			},
 			getServerQjData(kssj,jssj,dz_dm){
-				console.log('kssj,jssj,dz_dm======>',kssj,jssj,dz_dm)
+				// console.log('kssj,jssj,dz_dm======>',kssj,jssj,dz_dm)
 				let nameList = [];
 				let countList = [];
 				uni.request({
-				    url: getApp().globalData.textIp + '/tj/getXunJianTj',
+				    url: getApp().globalData.ip + '/tj/getXunJianTj',
 				   data: {
 					 kssj,
 					 jssj,
@@ -333,7 +334,7 @@
 					},
 					method:'POST',
 				    success: (res) => {
-						console.log('res.data.data',res.data.data);
+						// console.log('res.data.data',res.data.data);
 						if(res.data.data&&res.data.data.length > 0){
 							res.data.data.map((item)=>{
 								nameList.push(item.xm);
@@ -356,7 +357,7 @@
 				let nameList = [];
 				let countList = [];
 				uni.request({
-				    url: getApp().globalData.textIp + '/tj/getDaKaCsTj',
+				    url: getApp().globalData.ip + '/tj/getDaKaCsTj',
 				   data: {
 					 kssj,
 					 jssj,
@@ -364,7 +365,7 @@
 					},
 					method:'POST',
 				    success: (res) => {
-						console.log('巡检次数',res.data.data);
+						// console.log('巡检次数',res.data.data);
 						if(res.data.data&&res.data.data.length > 0){
 							res.data.data.map((item)=>{
 								nameList.push(item.rq.substring(5,10));
@@ -385,7 +386,7 @@
 			},
 			fxdNumber(kssj,jssj,dz_dm){
 				uni.request({
-				    url: getApp().globalData.textIp + '/tj/getWeekXjTj',
+				    url: getApp().globalData.ip + '/tj/getWeekXjTj',
 				   data: {
 					 kssj,
 					 jssj,
@@ -442,7 +443,7 @@
 					},
 				});
 			},
-			showColumn(canvasId,chartData){
+			showColumn(canvasId,chartData,max){
 				canvaColumn=new uCharts({
 					$this:_self,
 					canvasId: canvasId,
@@ -465,6 +466,7 @@
 						dashLength:6,
 						gridColor:'#d9e6fe',
 						min:0,
+						max
 					},
 					dataLabel: true,
 					width: _self.cWidth*_self.pixelRatio,

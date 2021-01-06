@@ -83,20 +83,20 @@
 			LEFT JOIN ksData B ON A.ks_id = B.id
 			LEFT JOIN usersData C ON A.bwtr_id = C.id
 			WHERE A.fqr_id = '${getApp().globalData.uid}' AND A.ks_id='${this.record.id}'  ORDER BY A.wt_sj DESC`,(data)=>{
-							console.log('委托',data);
+							// console.log('委托',data);
 							let wtList = [];
 							data.map((item)=>{
-								console.log('-----item.wtzt_dm-----',item.wt_sj,this.start,this.end,item.wtzt_dm);
-								console.log('===判断==',(moment(item.wt_sj) >= moment(this.start)),(moment(item.wt_sj) <= moment(this.end)) ,(item.wtzt_dm === '01' || item.wtzt_dm === '02'))
+								// console.log('-----item.wtzt_dm-----',item.wt_sj,this.start,this.end,item.wtzt_dm);
+								// console.log('===判断==',(moment(item.wt_sj) >= moment(this.start)),(moment(item.wt_sj) <= moment(this.end)) ,(item.wtzt_dm === '01' || item.wtzt_dm === '02'))
 								if((moment(item.wt_sj) >= moment(this.start)) && (moment(item.wt_sj) <= moment(this.end)) && (item.wtzt_dm === '01' || item.wtzt_dm === '02')){
 									wtList.push(item);
-									console.log('item',item)
+									// console.log('item',item)
 								}
 								this.wtList = wtList;
 								if(wtList.length > 0){
 									this.text = '当前矿山已被委托给'+wtList[0].bwtr_xm+'确定撤销上次委托，并'
 								}
-								console.log('委托wtList',wtList);
+								// console.log('委托wtList',wtList);
 							})
 						});
 		},
@@ -125,7 +125,7 @@
 								if(that.record){
 									that.$refs.popup.open();
 								}else{
-									console.log('JSON.stringify(item)======?',JSON.stringify(item))
+									// console.log('JSON.stringify(item)======?',JSON.stringify(item))
 									uni.navigateTo({
 									    url: '../choiceKs/choiceKs?record='+JSON.stringify(item)
 									});

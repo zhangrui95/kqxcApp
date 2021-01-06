@@ -98,7 +98,7 @@
 				LEFT JOIN ksAllData B ON A.ks_id = B.id
 				LEFT JOIN usersAllData C ON A.fqr_id = C.id
 				WHERE A.bwtr_id = '${getApp().globalData.uid}' ORDER BY A.wt_sj DESC, A.id`,(data)=>{
-											console.log('委托',data);
+											// console.log('委托',data);
 											 this.list = data;
 										});
 			},

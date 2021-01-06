@@ -236,7 +236,7 @@
 								 setWtData([data],(res)=>{});
 								 if(this.wtList.length > 0){
 									 let wtData = this.wtList.filter(item => JSON.stringify(item).includes(ks_id)); 
-									 console.log('wtData：',wtData);
+									 // console.log('wtData：',wtData);
 									 if(wtData && wtData.length > 0){
 										 uni.request({
 											 url: getApp().globalData.ip + '/updateWtData',
@@ -278,7 +278,7 @@
 			 checkboxChange: function (e) {
 			                let items = this.list,
 			                    values = e.detail.value;
-								console.log('values',values)
+								// console.log('values',values)
 								this.values = values;
 			                for (let i = 0, lenI = items.length; i < lenI; ++i) {
 			                    const item = items[i]
