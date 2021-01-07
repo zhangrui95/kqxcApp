@@ -91,9 +91,9 @@
 			});
 		},
 		onShow() {
-			if(this.$refs.tabBar){
-				this.$refs.tabBar.getNum();
-			}
+			// if(this.$refs.tabBar){
+			// 	this.$refs.tabBar.getNum();
+			// }
 			getWtData(` SELECT A.*, B.dz, B.mc, C.xm as wtr_xm, C.lxdh as wtr_lxdh FROM wtData A
 			LEFT JOIN ksData B ON A.ks_id = B.id
 			LEFT JOIN usersData C ON A.fqr_id = C.id

@@ -128,15 +128,15 @@ function getConfig(sql, callback){
 function setXjData(data,callback){ 
 	let list = [];
 	data.map((item)=>{
-		list.push("('" + item.id + "', '" + item.ks_id+ "', '"+ item.is_ycdk+ "', '"+ item.is_dtxc+ "', '" + item.users_id + "', '" + item.kczt_dm + "', '" + item.yczt_dm+ "', '" + item.bz+ "', '" + item.dk_sj+ "', '" + item.dk_jd+ "', '" + item.dk_wd+ "', '" + item.dk_device+ "', '" + item.yj_zp + "', '"+ item.jj_zp + "', '"+ item.yj_zp_net + "', '" + item.jj_zp_net+ "', '" + item.dsp+ "', '" + item.dsp_net+ "', '" + item.ycdwsm_dm+ "', '" + item.ycdwsm + "')");
+		list.push("('" + item.id + "', '" + item.ks_id+ "', '"+ item.is_ycdk+ "', '"+ item.is_dtxc+ "', '" + item.users_id + "', '" + item.kczt_dm + "', '" + item.yczt_dm+ "', '" + item.bz+ "', '" + item.dk_sj+ "', '" + item.dk_jd+ "', '" + item.dk_wd+ "', '" + item.dk_device+ "', '" + item.yj_zp + "', '"+ item.jj_zp + "', '"+ item.yj_zp_net + "', '" + item.jj_zp_net+ "', '" + item.dsp+ "', '" + item.dsp_net+ "', '" + item.ycdwsm_dm+ "', '" + item.ycdwsm+ "', '" + item.version + "')");
 	});
 	plus.sqlite.executeSql({
 		name: 'kqxj',
-		sql: 'create table if not exists xjData("id" CHAR(100) PRIMARY KEY,"ks_id" CHAR(100),"is_ycdk" CHAR(100),"is_dtxc" CHAR(100),"users_id" CHAR(100),"kczt_dm" CHAR(100),"yczt_dm" CHAR(100),"bz" CHAR(100),"dk_sj" CHAR(100),"dk_jd" CHAR(100),"dk_wd" CHAR(100),"dk_device" CHAR(100),"yj_zp" CHAR(100),"jj_zp" CHAR(100),"yj_zp_net" CHAR(100),"jj_zp_net" CHAR(100),"dsp" CHAR(100),"dsp_net" CHAR(100),"ycdwsm_dm" CHAR(100),"ycdwsm" CHAR(100))',//id,name,password,is_admin
+		sql: 'create table if not exists xjData("id" CHAR(100) PRIMARY KEY,"ks_id" CHAR(100),"is_ycdk" CHAR(100),"is_dtxc" CHAR(100),"users_id" CHAR(100),"kczt_dm" CHAR(100),"yczt_dm" CHAR(100),"bz" CHAR(100),"dk_sj" CHAR(100),"dk_jd" CHAR(100),"dk_wd" CHAR(100),"dk_device" CHAR(100),"yj_zp" CHAR(100),"jj_zp" CHAR(100),"yj_zp_net" CHAR(100),"jj_zp_net" CHAR(100),"dsp" CHAR(100),"dsp_net" CHAR(100),"ycdwsm_dm" CHAR(100),"ycdwsm" CHAR(100),"version" CHAR(100))',//id,name,password,is_admin
 		success: function(e){
 			plus.sqlite.executeSql({
 				name: 'kqxj',
-				sql: "insert or replace into xjData(id, ks_id, is_ycdk, is_dtxc, users_id, kczt_dm, yczt_dm, bz,dk_sj,dk_jd,dk_wd,dk_device,yj_zp,jj_zp,yj_zp_net,jj_zp_net,dsp,dsp_net,ycdwsm_dm,ycdwsm) values"+list.toString(),
+				sql: "insert or replace into xjData(id, ks_id, is_ycdk, is_dtxc, users_id, kczt_dm, yczt_dm, bz,dk_sj,dk_jd,dk_wd,dk_device,yj_zp,jj_zp,yj_zp_net,jj_zp_net,dsp,dsp_net,ycdwsm_dm,ycdwsm,version) values"+list.toString(),
 				success: function(e){
 					callback({error:null});
 				},
@@ -153,15 +153,15 @@ function setXjData(data,callback){
 function setXjAllData(data,callback){ 
 	let list = [];
 	data.map((item)=>{
-		list.push("('" + item.id + "', '" + item.ks_id+ "', '" + item.is_ycdk+ "', '"+ item.is_dtxc+ "', '" + item.users_id + "', '" + item.kczt_dm + "', '" + item.yczt_dm+ "', '" + item.bz+ "', '" + item.dk_sj+ "', '" + item.dk_jd+ "', '" + item.dk_wd+ "', '" + item.dk_device+ "', '" + item.yj_zp + "', '"+ item.jj_zp + "', '"+ item.yj_zp_net + "', '" + item.jj_zp_net + "', '" + item.dsp+ "', '" + item.dsp_net+ "', '" + item.ycdwsm_dm+ "', '" + item.ycdwsm + "')");
+		list.push("('" + item.id + "', '" + item.ks_id+ "', '" + item.is_ycdk+ "', '"+ item.is_dtxc+ "', '" + item.users_id + "', '" + item.kczt_dm + "', '" + item.yczt_dm+ "', '" + item.bz+ "', '" + item.dk_sj+ "', '" + item.dk_jd+ "', '" + item.dk_wd+ "', '" + item.dk_device+ "', '" + item.yj_zp + "', '"+ item.jj_zp + "', '"+ item.yj_zp_net + "', '" + item.jj_zp_net + "', '" + item.dsp+ "', '" + item.dsp_net+ "', '" + item.ycdwsm_dm+ "', '" + item.ycdwsm + "', '" + item.version + "')");
 	});
 	plus.sqlite.executeSql({
 		name: 'kqxj',
-		sql: 'create table if not exists xjAllData("id" CHAR(100) PRIMARY KEY,"ks_id" CHAR(100),"is_ycdk" CHAR(100),"is_dtxc" CHAR(100),"users_id" CHAR(100),"kczt_dm" CHAR(100),"yczt_dm" CHAR(100),"bz" CHAR(100),"dk_sj" CHAR(100),"dk_jd" CHAR(100),"dk_wd" CHAR(100),"dk_device" CHAR(100),"yj_zp" CHAR(100),"jj_zp" CHAR(100),"yj_zp_net" CHAR(100),"jj_zp_net" CHAR(100),"dsp" CHAR(100),"dsp_net" CHAR(100),"ycdwsm_dm" CHAR(100),"ycdwsm" CHAR(100))',//id,name,password,is_admin
+		sql: 'create table if not exists xjAllData("id" CHAR(100) PRIMARY KEY,"ks_id" CHAR(100),"is_ycdk" CHAR(100),"is_dtxc" CHAR(100),"users_id" CHAR(100),"kczt_dm" CHAR(100),"yczt_dm" CHAR(100),"bz" CHAR(100),"dk_sj" CHAR(100),"dk_jd" CHAR(100),"dk_wd" CHAR(100),"dk_device" CHAR(100),"yj_zp" CHAR(100),"jj_zp" CHAR(100),"yj_zp_net" CHAR(100),"jj_zp_net" CHAR(100),"dsp" CHAR(100),"dsp_net" CHAR(100),"ycdwsm_dm" CHAR(100),"ycdwsm" CHAR(100),"version" CHAR(100))',//id,name,password,is_admin
 		success: function(e){
 			plus.sqlite.executeSql({
 				name: 'kqxj',
-				sql: "insert or replace into xjAllData(id, ks_id,is_ycdk,is_dtxc,users_id, kczt_dm, yczt_dm, bz,dk_sj,dk_jd,dk_wd,dk_device,yj_zp,jj_zp,yj_zp_net,jj_zp_net,dsp,dsp_net,ycdwsm_dm,ycdwsm) values"+list.toString(),
+				sql: "insert or replace into xjAllData(id, ks_id,is_ycdk,is_dtxc,users_id, kczt_dm, yczt_dm, bz,dk_sj,dk_jd,dk_wd,dk_device,yj_zp,jj_zp,yj_zp_net,jj_zp_net,dsp,dsp_net,ycdwsm_dm,ycdwsm,version) values"+list.toString(),
 				success: function(e){
 					callback({error:null});
 				},
@@ -193,12 +193,12 @@ function getXjData(sql,callback){
 function setXjDataUpLoad(data,callback){
 	plus.sqlite.executeSql({
 		name: 'kqxj',
-		sql: 'create table if not exists xjDataUpLoad("id" CHAR(100) PRIMARY KEY,"ks_id" CHAR(100),"is_ycdk" CHAR(100),"is_dtxc" CHAR(100),"users_id" CHAR(100),"kczt_dm" CHAR(100),"yczt_dm" CHAR(100),"bz" CHAR(100),"dk_sj" CHAR(100),"dk_jd" CHAR(100),"dk_wd" CHAR(100),"dk_device" CHAR(100),"yj_zp" CHAR(100),"jj_zp" CHAR(100),"yj_zp_net" CHAR(100),"jj_zp_net" CHAR(100),"dsp" CHAR(100),"dsp_net" CHAR(100))',//id,name,password,is_admin
+		sql: 'create table if not exists xjDataUpLoad("id" CHAR(100) PRIMARY KEY,"ks_id" CHAR(100),"is_ycdk" CHAR(100),"is_dtxc" CHAR(100),"users_id" CHAR(100),"kczt_dm" CHAR(100),"yczt_dm" CHAR(100),"bz" CHAR(100),"dk_sj" CHAR(100),"dk_jd" CHAR(100),"dk_wd" CHAR(100),"dk_device" CHAR(100),"yj_zp" CHAR(100),"jj_zp" CHAR(100),"yj_zp_net" CHAR(100),"jj_zp_net" CHAR(100),"dsp" CHAR(100),"dsp_net" CHAR(100),"ycdwsm_dm" CHAR(100),"ycdwsm" CHAR(100),"version" CHAR(100))',//id,name,password,is_admin
 		success: function(e){
 			data.map((item)=>{
 				plus.sqlite.executeSql({
 					name: 'kqxj',
-					sql: "insert or replace into xjDataUpLoad(id, ks_id,is_ycdk,is_dtxc,users_id, kczt_dm, yczt_dm, bz,dk_sj,dk_jd,dk_wd,dk_device,yj_zp,jj_zp,yj_zp_net,jj_zp_net,dsp,dsp_net) values('" + item.id + "', '" + item.ks_id+ "', '" + item.is_ycdk+ "', '"+ item.is_dtxc+ "', '" + item.users_id + "', '" + item.kczt_dm + "', '" + item.yczt_dm+ "', '" + item.bz+ "', '" + item.dk_sj+ "', '" + item.dk_jd+ "', '" + item.dk_wd+ "', '" + item.dk_device+ "', '" + item.yj_zp + "', '"+ item.jj_zp + "', '"+ item.yj_zp_net + "', '" + item.jj_zp_net  + "', '" + item.dsp+ "', '" + item.dsp_net + "')",
+					sql: "insert or replace into xjDataUpLoad(id, ks_id,is_ycdk,is_dtxc,users_id, kczt_dm, yczt_dm, bz,dk_sj,dk_jd,dk_wd,dk_device,yj_zp,jj_zp,yj_zp_net,jj_zp_net,dsp,dsp_net,ycdwsm_dm,ycdwsm,version) values('" + item.id + "', '" + item.ks_id+ "', '" + item.is_ycdk+ "', '"+ item.is_dtxc+ "', '" + item.users_id + "', '" + item.kczt_dm + "', '" + item.yczt_dm+ "', '" + item.bz+ "', '" + item.dk_sj+ "', '" + item.dk_jd+ "', '" + item.dk_wd+ "', '" + item.dk_device+ "', '" + item.yj_zp + "', '"+ item.jj_zp + "', '"+ item.yj_zp_net + "', '" + item.jj_zp_net  + "', '" + item.dsp+ "', '" + item.dsp_net+ "', '" + item.ycdwsm_dm+ "', '" + item.ycdwsm+ "', '" + item.version + "')",
 					success: function(e){
 						// console.log(JSON.stringify(e))
 						callback({error:null});

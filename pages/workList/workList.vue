@@ -9,7 +9,7 @@
 					 <cover-view class="kdNumberBox1">已巡检：{{kdNum - errorNum - warnNum}}个</cover-view>
 					 <cover-view class="kdNumberBox2" v-if="week == 0">未巡检：{{errorNum}}个</cover-view>
 					 <cover-view class="kdNumberBox3" v-if="week !== 0">未巡检：{{warnNum}}个</cover-view>
-					 <cover-view class="box">矿山名称：{{kdDetail.mc}}</cover-view>
+					 <cover-view class="box">矿山名称：{{kdDetail.mc && kdDetail.mc.length > 16 ? kdDetail.mc.substring(0,16) + '…' : kdDetail.mc}}</cover-view>
 					 <cover-image src="~@/static/topJt.png" class="imageTopJt"></cover-image>
 					 <cover-view class="zrrBox" :style="{height: xjrHeight + 40 + 'px'}"></cover-view>
 					 <cover-image src="~@/static/zrr.png" class="imageFzr"></cover-image>
@@ -123,10 +123,23 @@
 						// console.log('data[0]',data)
 						this.kdDetail = data && data[0] ? data[0]: {}
 					});
-					getXjData(`SELECT A.*, B.xm, C.mc FROM xjAllData A LEFT JOIN usersAllData B ON A.users_id = B.id LEFT JOIN ksAllData C ON A.ks_id = C.id WHERE A.ks_id = '${cover.id}' ORDER BY dk_sj DESC`,(data)=>{
-						// console.log('data====>',data)
-						this.list = data;
-					})
+					console.log('cover.id',cover.id)
+					// getXjData(`SELECT A.*, B.xm, C.mc FROM xjAllData A LEFT JOIN usersAllData B ON A.users_id = B.id LEFT JOIN ksAllData C ON A.ks_id = C.id WHERE A.ks_id = '${cover.id}' ORDER BY dk_sj DESC`,(data)=>{
+					// 	console.log('data====>',data)
+					// 	this.list = data;
+					// })
+					uni.request({
+					    url: getApp().globalData.ip + '/getXjData', //获取下载巡查记录
+					    data: {
+							ks_id:cover.id
+						},
+						method:'POST',
+					    success: (res) => {
+							if(res.data.data && !res.data.error){
+								this.list = res.data.data;
+							} 
+					    }
+					});
 					let start =  moment().startOf('week').format("YYYY-MM-DD");
 					let end =  moment().endOf('week').format("YYYY-MM-DD");
 					let start_zz =  moment().startOf('month').format("YYYY-MM-DD");

@@ -52,7 +52,7 @@
 				time: moment().format('YYYY.MM.DD'),
 				newTime: moment().format('HH:mm:ss'),
 				list:[],
-				network:false, 
+				network:true, 
 				start:'',
 				end:'',
 				oldStart:'',

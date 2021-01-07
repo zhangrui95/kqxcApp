@@ -38,6 +38,7 @@
 
 <script>
 	import {openComDB,dropSQL,setConfig,setUsersData,getUsersData,setUsersAllData,getUsersAllData,deleteUpLoad,getXjDataUpLoad,getKsData,setKsData,getConfig,getXjData,setXjData,getWtData,setWtData,setKsAllData,setXjAllData} from '../common/env.js'
+	import moment from 'moment';
 	export default {
 		data() {
 			return {
@@ -523,9 +524,12 @@
 																							 deleteUpLoad(`DELETE FROM xjDataUpLoad WHERE id = '${item.id}'`,(res)=>{
 																								// console.log('删除待上传成功',res.error);
 																							 });
-																							 let idx = that.wtList.findIndex((event)=>{
-																								return event.ks_id === item.ks_id;
-																							 });
+																							 let idx = -1;
+																							 if(that.wtList && that.wtList.length > 0){
+																								 idx = that.wtList.findIndex((event)=>{
+																								 		return event.ks_id === item.ks_id;
+																								 });
+																							 }
 																							 if(idx > -1 && that.wtList[idx].wtzt_dm === '02'){
 																								 uni.request({
 																									 url: getApp().globalData.ip + '/updateWtData',
@@ -735,7 +739,11 @@
 				});
 				uni.request({
 				    url: getApp().globalData.ip + '/getXjData', //获取下载巡查记录
-				    data: {"uid": getApp().globalData.uid},
+				    data: {
+						"uid": getApp().globalData.uid,
+						"jssj":moment().format('YYYY-MM-DD') +' 23:59:59',
+						"kssj":moment(new Date()).subtract(3, 'months').format('YYYY-MM-DD') + ' 00:00:00'
+					},
 					method:'POST',
 				    success: (res) => {
 						if(res.data.data && !res.data.error){
@@ -758,11 +766,14 @@
 				});
 				uni.request({
 				    url: getApp().globalData.ip + '/getXjData', //获取下载巡查记录
-				    data: {},
+				    data: {
+						jssj:moment().format('YYYY-MM-DD') +' 23:59:59',
+						kssj:moment(new Date()).subtract(3, 'months').format('YYYY-MM-DD') + ' 00:00:00'
+					},
 					method:'POST',
 				    success: (res) => {
 						if(res.data.data && !res.data.error){
-							setXjAllData(res.data.data,(res)=>{//存巡查记录
+							setXjAllData(res.data.data,(res)=>{//存巡查记录 
 							});
 						} 
 				    }

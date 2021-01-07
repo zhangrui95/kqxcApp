@@ -135,11 +135,14 @@
 			}
 		},
 		onLoad() {
-			console.log('isLx',this.isLx)
 			let that = this;
 			uni.getSystemInfo({
 				success:function(res) {
-					that.height = uni.getStorageSync('workHeight') ? uni.getStorageSync('workHeight') : res.windowHeight - 106;
+					if(uni.getSystemInfoSync() && uni.getSystemInfoSync().windowHeight && uni.getSystemInfoSync().windowHeight !== res.windowHeight){
+						that.height = uni.getSystemInfoSync().windowHeight - 106;
+					}else{
+						that.height = uni.getStorageSync('workHeight') ? uni.getStorageSync('workHeight') : res.windowHeight - 106;
+					}
 					uni.setStorageSync('workHeight', that.height);
 				}
 			});
@@ -423,7 +426,10 @@
 			           if (this.current !== e.currentIndex) {
 			               this.current = e.currentIndex;
 						   if(e.currentIndex == 0 || e.currentIndex == 2){
-							   	this.getKsMap();
+							   this.kdNum=0;
+							   this.errorNum=0;
+							   this.warnNum=0;
+							   this.getKsMap();
 						   }
 			           }
 			       },

@@ -561,7 +561,6 @@
 								sc_sj:moment().format('YYYY-MM-DD HH:mm:ss'),
 								ycdwsm_dm:ycdwsm_dm && ycdwsm_dm.value ? ycdwsm_dm.value : ''
 						};
-						// console.log('data=========>',data);
 						uni.request({
 						    url: getApp().globalData.ip + '/saveXjData',
 						    data: data,
