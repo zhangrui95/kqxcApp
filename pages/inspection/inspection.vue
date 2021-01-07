@@ -926,12 +926,12 @@ uni-button[disabled]{
 	}
 	.updateBg{
 		width: 520upx;
-		height: 550upx;
+		/* height: 550upx; */
 		margin-left: 75upx;
 		margin-top: 200upx;
 		background: #fff;
 		background-size: 100% 100%;
-		padding: 40upx 40upx;
+		padding: 40upx 40upx 100px 40upx;
 		line-height: 30px;
 		position: relative;
 		border-radius: 10px;

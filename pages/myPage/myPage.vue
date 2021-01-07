@@ -7,7 +7,7 @@
 		<uni-list style="margin-top:10px;">
 			<!-- <uni-list-item thumb="../../static/msg.png" title="我的消息" @click="myMessage" :show-badge="parseInt(allNum) > 0 ? true : false" :badge-text="allNum" badge-type="error"></uni-list-item> -->
 		    <uni-list-item thumb="../../static/tjxz.png" title="推荐下载" @click="getTj"></uni-list-item>
-			<uni-list-item thumb="../../static/bbjc.png" title="检测版本" @click="getUpdate" :rightText="'v'+version"></uni-list-item>
+			<uni-list-item thumb="../../static/bbjc.png" title="软件更新" @click="getUpdate" :rightText="'v'+version"></uni-list-item>
 			<uni-list-item thumb="../../static/gps.png" title="工具箱-GPS坐标" @click="getGps"></uni-list-item>
 			<!-- <uni-list-item thumb="../../static/rjxy.png" title="软件许可协议"></uni-list-item> -->
 		</uni-list>
@@ -66,6 +66,8 @@
 				load:false,
 				allNum:'0',
 				version:getApp().globalData.version,
+				isLx:getApp().isLx,
+				isNet:true
 			}
 		},
 		onLoad() {
@@ -77,6 +79,15 @@
 						that.name = JSON.parse(res.data).xm;
 					}
 			    }
+			});
+			uni.getNetworkType({
+				success: function (res) {
+					if(res.networkType !== 'none' &&  res.networkType !== '2g' &&  res.networkType !== '3g' && !that.isLx){
+						that.isNet = true
+					}else{
+						that.isNet = false
+					}
+				},	
 			});
 		},
 		onShow() {
@@ -94,6 +105,11 @@
 							}
 						})
 					});
+		},
+		onReady() {
+			uni.setNavigationBarTitle({
+			    title: !this.isNet || this.isLx ? '我的(离线)' : '我的'
+			});
 		},
 		components: {
 			uniPopup,

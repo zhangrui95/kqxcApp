@@ -255,7 +255,7 @@
 				});
 				// }
 			},
-			getLoginLx: function(){
+			getLoginLx: function(isLogin){
 				let that = this;
 				uni.getStorage({
 					    key: 'user',
@@ -266,7 +266,7 @@
 									getApp().globalData.uid = JSON.parse(res.data).id;
 									getApp().globalData.is_zz = JSON.parse(res.data).is_zz;
 									getApp().noNetwork = true;
-									getApp().isLx = true;
+									getApp().isLx = isLogin && isLogin == 'isLogin' ?  false : true;
 									uni.redirectTo({
 									    url: JSON.parse(res.data).is_admin=='1'?'../work/work':'../home/home'
 									});
@@ -347,9 +347,8 @@
 						    }
 						});
 					}else{
-						this.getLoginLx();
+						this.getLoginLx('isLogin');
 					}
-					
 				}else{
 					uni.showToast({
 						title:'用户名及密码不能为空',

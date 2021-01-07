@@ -5,14 +5,14 @@
 			<view :class="disabled ? 'timeDisabled' : 'time'" v-if="current == 1"> 
 				<picker :disabled="disabled" :range="areaList" mode="selector" :value="value3" class="timePicker" @change="getArea">
 						<view class="uni-input">{{areaList[value3]}}</view>
+						<uni-icons type="arrowdown" size="16" :color="disabled ? '#999' : '#000'" class="icon"></uni-icons>
 				</picker>  
-			    <uni-icons type="arrowdown" size="16" :color="disabled ? '#999' : '#000'" class="icon"></uni-icons>
 			</view>
 			<view class="time"> 
 				<picker :range="searchList" mode="selector" :value="value"  class="timePicker" @change="getYear">
 						<view class="uni-input">{{searchList[value]}}年</view>
+						 <uni-icons type="arrowdown" size="16" color="#000" class="icon"></uni-icons>
 				</picker>  
-			    <uni-icons type="arrowdown" size="16" color="#000" class="icon"></uni-icons>
 			</view>
 			<!-- <view class="time">
 				<picker :range="monList" mode="selector" :value="value1" class="timePicker">
@@ -22,14 +22,14 @@
 			</view> -->
 			<view class="time">
 				<picker :range="weekList" mode="selector" :value="value2" class="timePicker" @change="getWeekChoice">
-						<view class="uni-input">{{weekList[value2]}}</view>
+						<view class="uni-input">{{weekList[value2].split('(')[0]}}</view>
+						<uni-icons type="arrowdown" size="16" color="#000" class="icon"></uni-icons>
 				</picker>  
-			    <uni-icons type="arrowdown" size="16" color="#000" class="icon"></uni-icons>
 			</view>
 		</view>
 		<view v-if="current == 0">
 			<view class="qiun-bg-white qiun-title-bar qiun-common-mt" :style="{'margin-top':(qh_dm === '2303' ? 95 : 45)+'px'}">
-				<view class="qiun-title-dot-light">风险点</view>
+				<view class="qiun-title-dot-light">已巡检风险点数量统计</view>
 			</view>
 			<view class="qiun-charts">
 				<!--#ifdef MP-ALIPAY -->
@@ -40,7 +40,7 @@
 				<!--#endif-->
 			</view>
 			<view class="qiun-bg-white qiun-title-bar qiun-common-mt" >
-				<view class="qiun-title-dot-light">次数</view>
+				<view class="qiun-title-dot-light">巡检次数统计</view>
 			</view>
 			<view class="qiun-charts">
 				<!--#ifdef MP-ALIPAY -->
@@ -53,7 +53,7 @@
 		</view>
 		<view v-if="current == 1">
 			<view class="qiun-bg-white qiun-title-bar qiun-common-mt" :style="{'margin-top':(qh_dm === '2303' ? 95 : 45)+'px'}"> 
-				<view class="qiun-title-dot-light">巡检趋势</view>
+				<view class="qiun-title-dot-light">每日巡检次数统计</view>
 			</view>
 			<view class="qiun-charts">
 				<!--#ifdef MP-ALIPAY -->
@@ -64,7 +64,7 @@
 				<!--#endif-->
 			</view>
 			<view class="qiun-bg-white qiun-title-bar qiun-common-mt">
-				<view class="qiun-title-dot-light">用户/机构巡检次数</view>
+				<view class="qiun-title-dot-light">用户/机构巡检次数统计</view>
 			</view>
 			<view class="qiun-charts">
 				<!--#ifdef MP-ALIPAY -->
@@ -75,7 +75,7 @@
 				<!--#endif-->
 			</view>
 			<view class="qiun-bg-white qiun-title-bar qiun-common-mt">
-				<view class="qiun-title-dot-light">风险点数</view>
+				<view class="qiun-title-dot-light">已巡检风险点数量统计</view>
 			</view>
 			<view class="qiun-charts">
 				<!--#ifdef MP-ALIPAY -->
@@ -105,9 +105,9 @@
 				pixelRatio:1,
 				serverData:'',
 				items: ['市局','区级'],
-				searchList:['2020', '2019'],
-				monList:['1月','2月', '3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'],
-				weekList:['第1周','第2周','第3周','第4周'],
+				searchList:[],
+				monList:[],
+				weekList:[],
 				areaList:['鸡冠区', '恒山区','城子河区','麻山区','滴道区','梨树区','虎林市','密山市','鸡东县'],
 				codeList:['230302', '230303','230306','230307','230304','230305','230381','230382','230321'],
 				area:getApp().globalData.qh_dm && getApp().globalData.qh_dm!=='2303' ? getApp().globalData.qh_dm : '230302',
@@ -142,7 +142,7 @@
 			let weekList = [];
 			let searchList = [];
 			let year = parseInt(moment().format('YYYY'));
-			let index = 53;
+			let index = this.getNewWeek() + 1;
 			let weeks = this.getWeek(moment().format('YYYY'));
 			// console.log('weeks',weeks);
 			for(var i =2019;i<=year;i++){
@@ -153,40 +153,43 @@
 				index = 54;
 			}
 			for(var i = 1;i<=index;i++){
-				weekList.push('第'+ i +'周('+weeks[i][0]+'~'+weeks[i][weeks[i].length - 1]+')'); 
+				weekList.unshift('第'+ i +'周('+weeks[i][0]+'~'+weeks[i][weeks[i].length - 1]+')'); 
 			}
 			this.weekList = weekList;
-			this.value2 = this.getNewWeek();
+			this.value2 = 0;
 			this.weeks = weeks;
+			let idx = this.weekList.length - this.value2;
 			if(this.current == 0){
-				this.getServerData(weeks[this.value2 + 1][0],weeks[this.value2 + 1][weeks[this.value2 + 1].length - 1]);
-				this.getServerFxdData(weeks[this.value2 + 1][0],weeks[this.value2 + 1][weeks[this.value2 + 1].length - 1]);
+				this.getServerData(this.weeks[idx][0],this.weeks[idx][this.weeks[idx].length - 1]);
+				this.getServerFxdData(this.weeks[idx][0],this.weeks[idx][this.weeks[idx].length - 1]);
 			}else{
-				this.getServerQjData(this.weeks[this.value2 + 1][0],this.weeks[this.value2 + 1][this.weeks[this.value2 + 1].length - 1],this.area);
-				this.getQjXAreaData(this.weeks[this.value2 + 1][0],this.weeks[this.value2 + 1][this.weeks[this.value2 + 1].length - 1],this.area);
-				this.fxdNumber(this.weeks[this.value2 + 1][0],this.weeks[this.value2 + 1][this.weeks[this.value2 + 1].length - 1],this.area);
+				this.getServerQjData(this.weeks[idx][0],this.weeks[idx][this.weeks[idx].length - 1],this.area);
+				this.getQjXAreaData(this.weeks[idx][0],this.weeks[idx][this.weeks[idx].length - 1],this.area);
+				this.fxdNumber(this.weeks[idx][0],this.weeks[idx][this.weeks[idx].length - 1],this.area);
 			}
 			
 		},
 		methods: {
 			getWeekChoice(e){
 				this.value2 = e.target.value;
+				let index = this.weekList.length - this.value2;
 				if(this.current == 0){
-						 this.getServerData(this.weeks[this.value2 + 1][0],this.weeks[this.value2 + 1][this.weeks[this.value2 + 1].length - 1]);
-						 this.getServerFxdData(this.weeks[this.value2 + 1][0],this.weeks[this.value2 + 1][this.weeks[this.value2 + 1].length - 1]);
+						 this.getServerData(this.weeks[index][0],this.weeks[index][this.weeks[index].length - 1]);
+						 this.getServerFxdData(this.weeks[index][0],this.weeks[index][this.weeks[index].length - 1]);
 				}else{
-						 this.getServerQjData(this.weeks[this.value2 + 1][0],this.weeks[this.value2 + 1][this.weeks[this.value2 + 1].length - 1],this.area);
-						 this.getQjXAreaData(this.weeks[this.value2 + 1][0],this.weeks[this.value2 + 1][this.weeks[this.value2 + 1].length - 1],this.area);
-						 this.fxdNumber(this.weeks[this.value2 + 1][0],this.weeks[this.value2 + 1][this.weeks[this.value2 + 1].length - 1],this.area);
+						 this.getServerQjData(this.weeks[index][0],this.weeks[index][this.weeks[index].length - 1],this.area);
+						 this.getQjXAreaData(this.weeks[index][0],this.weeks[index][this.weeks[index].length - 1],this.area);
+						 this.fxdNumber(this.weeks[index][0],this.weeks[index][this.weeks[index].length - 1],this.area);
 				}
 			},
 			getArea(e){
 				this.value3 = e.target.value;
 				let area = this.codeList[e.target.value];
 				this.area = area;
-				this.getServerQjData(this.weeks[this.value2 + 1][0],this.weeks[this.value2 + 1][this.weeks[this.value2 + 1].length - 1],area);
-				this.getQjXAreaData(this.weeks[this.value2 + 1][0],this.weeks[this.value2 + 1][this.weeks[this.value2 + 1].length - 1],area);
-				this.fxdNumber(this.weeks[this.value2 + 1][0],this.weeks[this.value2 + 1][this.weeks[this.value2 + 1].length - 1],area);
+				let index = this.weekList.length - this.value2;
+				this.getServerQjData(this.weeks[index][0],this.weeks[index][this.weeks[index].length - 1],area);
+				this.getQjXAreaData(this.weeks[index][0],this.weeks[index][this.weeks[index].length - 1],area);
+				this.fxdNumber(this.weeks[index][0],this.weeks[index][this.weeks[index].length - 1],area);
 			},
 			getYear(e){
 				 this.value = e.target.value;
@@ -196,21 +199,27 @@
 				 console.log('year',year)
 				 let index = 53;
 				 let weeks = this.getWeek(year);
+				 // let idx = this.weekList.length - this.value2;
 				 this.weeks = weeks;
-				 if(weeks['54']){
+				 if(year == moment().format('YYYY')){
+					 index = this.getNewWeek() + 1;
+				 }else if(weeks['54']){
 				 	index = 54;
 				 }
+				 // if(idx > index){
+				 // 	idx = this.weekList.length;
+				 // }
 				 for(var i = 1;i<=index;i++){
-				 	weekList.push('第'+ i +'周('+weeks[i][0]+'~'+weeks[i][weeks[i].length - 1]+')'); 
+				 	weekList.unshift('第'+ i +'周('+weeks[i][0]+'~'+weeks[i][weeks[i].length - 1]+')'); 
 				 }
 				 this.weekList = weekList;
 				 if(this.current == 0){
-					 this.getServerData(this.weeks[this.value2 + 1][0],this.weeks[this.value2 + 1][this.weeks[this.value2 + 1].length - 1]);
-					 this.getServerFxdData(this.weeks[this.value2 + 1][0],this.weeks[this.value2 + 1][this.weeks[this.value2 + 1].length - 1]);
+					 this.getServerData(this.weeks[this.weekList.length][0],this.weeks[this.weekList.length][this.weeks[this.weekList.length].length - 1]);
+					 this.getServerFxdData(this.weeks[this.weekList.length][0],this.weeks[this.weekList.length][this.weeks[this.weekList.length].length - 1]);
 				 }else{
-					 this.getServerQjData(this.weeks[this.value2 + 1][0],this.weeks[this.value2 + 1][this.weeks[this.value2 + 1].length - 1],this.area);
-					 this.getQjXAreaData(this.weeks[this.value2 + 1][0],this.weeks[this.value2 + 1][this.weeks[this.value2 + 1].length - 1],this.area);
-					 this.fxdNumber(this.weeks[this.value2 + 1][0],this.weeks[this.value2 + 1][this.weeks[this.value2 + 1].length - 1],this.area);
+					 this.getServerQjData(this.weeks[this.weekList.length][0],this.weeks[this.weekList.length][this.weeks[this.weekList.length].length - 1],this.area);
+					 this.getQjXAreaData(this.weeks[this.weekList.length][0],this.weeks[this.weekList.length][this.weeks[this.weekList.length].length - 1],this.area);
+					 this.fxdNumber(this.weeks[this.weekList.length][0],this.weeks[this.weekList.length][this.weeks[this.weekList.length].length - 1],this.area);
 				 }
 			},
 			getNewWeek:function(){
@@ -227,22 +236,22 @@
 			    return n.toString().length > 1 ? n : '0' + n;
 			},
 			getWeek: function (year) {
-			        var days = this.getDate(year || new Date().getFullYear())
-			        var weeks = {};
-			        for (var i = 0; i < days.length; i++) {
-			            var weeksKeyLen = Object.keys(weeks).length;
-			            var daySplit = days[i].split('_');
-			            if (weeks[weeksKeyLen] == undefined) {
-			                weeks[weeksKeyLen + 1] = [daySplit[0]]
-			            } else {
-			                if (daySplit[1] == '1') {
-			                    weeks[weeksKeyLen + 1] = [daySplit[0]]
-			                } else {
-			                    weeks[weeksKeyLen].push(daySplit[0])
-			                }
-			            }
-			         }
-			         return weeks
+				var days = this.getDate(year || new Date().getFullYear())
+				var weeks = {};
+				for (var i = 0; i < days.length; i++) {
+					var weeksKeyLen = Object.keys(weeks).length;
+					var daySplit = days[i].split('_');
+					if (weeks[weeksKeyLen] == undefined) {
+						weeks[weeksKeyLen + 1] = [daySplit[0]]
+					} else {
+						if (daySplit[1] == '1') {
+							weeks[weeksKeyLen + 1] = [daySplit[0]]
+						} else {
+							weeks[weeksKeyLen].push(daySplit[0])
+						}
+					}
+				 }
+				 return weeks
 			},
 			 getDate: function (year) {
 				 var dates = []
@@ -257,13 +266,14 @@
 			           if (this.current !== e.currentIndex) {
 			               this.current = e.currentIndex;
 			           }
+					   let index = this.weekList.length - this.value2;
 					   if(e.currentIndex == 0){
-						   this.getServerData(this.weeks[this.value2 + 1][0],this.weeks[this.value2 + 1][this.weeks[this.value2 + 1].length - 1]);
-						   this.getServerFxdData(this.weeks[this.value2 + 1][0],this.weeks[this.value2 + 1][this.weeks[this.value2 + 1].length - 1]);
+						   this.getServerData(this.weeks[index][0],this.weeks[index][this.weeks[index].length - 1]);
+						   this.getServerFxdData(this.weeks[index][0],this.weeks[index][this.weeks[index].length - 1]);
 					   }else{
-							this.getServerQjData(this.weeks[this.value2 + 1][0],this.weeks[this.value2 + 1][this.weeks[this.value2 + 1].length - 1],this.area);
-							this.getQjXAreaData(this.weeks[this.value2 + 1][0],this.weeks[this.value2 + 1][this.weeks[this.value2 + 1].length - 1],this.area);
-							this.fxdNumber(this.weeks[this.value2 + 1][0],this.weeks[this.value2 + 1][this.weeks[this.value2 + 1].length - 1],this.area);
+							this.getServerQjData(this.weeks[index][0],this.weeks[index][this.weeks[index].length - 1],this.area);
+							this.getQjXAreaData(this.weeks[index][0],this.weeks[index][this.weeks[index].length - 1],this.area);
+							this.fxdNumber(this.weeks[index][0],this.weeks[index][this.weeks[index].length - 1],this.area);
 						}
 			       },
 			getServerData(kssj,jssj){
@@ -715,7 +725,7 @@
 		font-size: 12px;
 		line-height: 30px;
 		text-align: center;
-		width: 22%;
+		width: 100px;
 		margin: 8px 1%;
 		float: left;
 		position: relative;

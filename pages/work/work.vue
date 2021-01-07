@@ -1,7 +1,7 @@
 <template>
     <view>
 		<view class="pageBody" v-if="!isNet || isLx">
-			<uni-notice-bar single="true" text="您当前处于离线模式，请切换到在线模式访问工作督察模块。"></uni-notice-bar>
+			<uni-notice-bar single="true" :text="isLx ? '您当前处于离线模式，请切换到在线模式访问工作督察模块。' : '无网络，请检查您的网络连接'"></uni-notice-bar>
 			<map :style="{height:height + 25+ 'px'}" scale="12" style="width: 100%; position: relative;top: -10px;" :latitude="latitude" :longitude="longitude"></map>
 		</view>
 		<view class="pageBody" v-if="isNet">
@@ -267,6 +267,11 @@
 						})
 					});
 		},
+		onReady() {
+			uni.setNavigationBarTitle({
+			    title: !this.isNet || this.isLx ? '工作督查(离线)' : '工作督查'
+			});
+		},
 		methods: {
 			getKsMap(){
 				let that = this;
@@ -417,6 +422,9 @@
 			onClickItem:function(e) {
 			           if (this.current !== e.currentIndex) {
 			               this.current = e.currentIndex;
+						   if(e.currentIndex == 0 || e.currentIndex == 2){
+							   	this.getKsMap();
+						   }
 			           }
 			       },
 			transformLon : function (x, y) {

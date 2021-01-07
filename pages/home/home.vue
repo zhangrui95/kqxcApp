@@ -85,6 +85,7 @@
 				numAll:'0',
 				numDsc:0,
 				isLxLogin:getApp().noNetwork,
+				isLx:getApp().isLx,
 			}
 		},
 		onLoad(){
@@ -198,6 +199,11 @@
 		},
 		mounted() {
 			this.getNum();
+		},
+		onReady() {
+			uni.setNavigationBarTitle({
+			    title: !this.network || this.isLx ? '首页(离线)' : '首页'
+			});
 		},
 		methods: {
 			getNum:function(){
