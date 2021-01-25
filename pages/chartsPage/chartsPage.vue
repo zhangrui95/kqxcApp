@@ -142,7 +142,7 @@
 			let weekList = [];
 			let searchList = [];
 			let year = parseInt(moment().format('YYYY'));
-			let index = this.getNewWeek() + 1;
+			let index = this.getNewWeek(moment().format('YYYY'));
 			let weeks = this.getWeek(moment().format('YYYY'));
 			// console.log('weeks',weeks);
 			for(var i =2019;i<=year;i++){
@@ -196,13 +196,12 @@
 				 let weekList = [];
 				 let searchList = [];
 				 let year = this.searchList[e.target.value];
-				 console.log('year',year)
 				 let index = 53;
 				 let weeks = this.getWeek(year);
 				 // let idx = this.weekList.length - this.value2;
 				 this.weeks = weeks;
 				 if(year == moment().format('YYYY')){
-					 index = this.getNewWeek() + 1;
+					 index = this.getNewWeek(year);
 				 }else if(weeks['54']){
 				 	index = 54;
 				 }
@@ -222,13 +221,15 @@
 					 this.fxdNumber(this.weeks[this.weekList.length][0],this.weeks[this.weekList.length][this.weeks[this.weekList.length].length - 1],this.area);
 				 }
 			},
-			getNewWeek:function(){
+			getNewWeek:function(year){
+				let weeks = this.getWeek(year)['1'];
+				let len = 7 - weeks.length; 
 				var d1 = new Date();
 				var d2 = new Date();
 				d2.setMonth(0);
 				d2.setDate(1);
 				var rq = d1-d2;
-				var s1 = Math.ceil(rq/(24*60*60*1000));
+				var s1 = Math.ceil(rq/(24*60*60*1000)) + len + 1;
 				var s2 = Math.ceil(s1/7);
 				return s2;
 			},

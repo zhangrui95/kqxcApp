@@ -10,8 +10,8 @@
 			    	 <map :style="{height:height+ 'px'}" scale="12" style="width: 100%; position: relative;top: 56px;" :latitude="latitude" :longitude="longitude" :markers="covers" @markertap='listShow' @labeltap='listShow'>
 			    		 <cover-view class="kdNumberBoxAll" v-if="current === 0"></cover-view>
 			    		 <cover-view class="kdNumberBox" v-if="current === 0"> 风险点：{{kdNum}}个</cover-view>
-			    		 <cover-view class="kdNumberBox1" v-if="current === 0">已巡检：{{kdNum - errorNum - warnNum}}个</cover-view>
-			    		 <cover-view class="kdNumberBox2" v-if="week == 0 && current === 0">未巡检：{{errorNum}}个</cover-view>
+			    		 <cover-view class="kdNumberBox1" v-if="current === 0">已巡检：{{kdNum - warnNum}}个</cover-view>
+			    		 <cover-view class="kdNumberBox2" v-if="week == 0 && current === 0">未巡检：{{warnNum}}个</cover-view>
 			    		 <cover-view class="kdNumberBox3" v-if="week !== 0 && current === 0">未巡检：{{warnNum}}个</cover-view>
 						 <cover-image src="../../static/beijing.png" class="buttonChartBg"></cover-image>
 						 <cover-view class="buttonChart" v-if="current === 0" @click="goChart">统计分析</cover-view>
@@ -59,7 +59,7 @@
 					</view>
 				 	<uni-list v-if="ksList&&ksList.length > 0" style="margin-top: 100px;"> 
 				 		<uni-list-item v-for="(item) in ksList" class="nohover" @click="getDetail(item)">
-				 			<view class="msgBox"><view class="listTitle">{{item.mc}}</view> <uni-tag :text="item.zt == 'warning' ? '未巡检' : '已巡检'" :type="item.zt"></uni-tag></view> 
+				 			<view class="msgBox"><view class="listTitle">{{item.mc}}({{item.dz}})</view> <uni-tag :text="item.zt == 'warning' ? '未巡检' : '已巡检'" :type="item.zt"></uni-tag></view> 
 				 		</uni-list-item>
 				 	</uni-list>
 				 	 <view class="noList" v-if="ksList.length == 0"><image src="../../static/noList.png" style="width: 200px;height: 123px;"></image>
